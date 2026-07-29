@@ -138,6 +138,7 @@ local function draw()
     local status = Client.status
     if not player or not status then return end
     local active = type(status.activeCycle) == "table"
+    if active and not inside(Rules.ROOM, player) then return end
     if not active and not inside(Rules.INTERACTION, player) then return end
 
     local x = getCore():getScreenWidth() - 370

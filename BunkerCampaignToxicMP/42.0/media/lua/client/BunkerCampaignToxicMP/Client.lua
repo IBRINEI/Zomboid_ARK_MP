@@ -50,6 +50,102 @@ local function applyFilterRemaining(player, value, itemId)
     setVisibleFilterCondition(item, value)
 end
 
+local function cleanLocalItem(item, removalFraction)
+    if not item or not item.getModData then return end
+    local data = item:getModData()
+    local current = math.max(0, math.min(100,
+        tonumber(data[Constants.CONTAMINATION_MODDATA_KEY]) or 0))
+    data[Constants.CONTAMINATION_MODDATA_KEY] = current
+        * (1 - math.max(0, math.min(1, tonumber(removalFraction) or 0)))
+end
+
+local function visitContainer(container, callback, limit)
+    if not container or not container.getItems then return 0 end
+    local containers = { container }
+    local containerIndex = 1
+    local visited = 0
+    while containerIndex <= #containers and visited < limit do
+        local current = containers[containerIndex]
+        containerIndex = containerIndex + 1
+        local items = current:getItems()
+        for index = 0, items:size() - 1 do
+            if visited >= limit then break end
+            local item = items:get(index)
+            if item then
+                visited = visited + 1
+                callback(item)
+                if instanceof(item, "InventoryContainer")
+                    and item:getModData().BunkerCampaignSealed ~= true then
+                    containers[#containers + 1] = item:getInventory()
+                end
+            end
+        end
+    end
+    return visited
+end
+
+local function applyCarriedItemContamination(args)
+    local player = getSpecificPlayer(0)
+    local itemId = tonumber(args.itemId)
+    if not player or not itemId then return end
+    visitContainer(player:getInventory(), function(item)
+        if item:getID() == itemId then
+            item:getModData()[Constants.CONTAMINATION_MODDATA_KEY] = math.max(0,
+                math.min(100, tonumber(args.value) or 0))
+        end
+    end, Constants.MAX_CARRIED_ITEMS_PER_SCAN)
+end
+
+local function applyWorldCleanup(args)
+    local cell = getCell()
+    if not cell then return end
+    local x1, x2 = math.ceil(tonumber(args.x1) or 0), math.floor(tonumber(args.x2) or -1)
+    local y1, y2 = math.ceil(tonumber(args.y1) or 0), math.floor(tonumber(args.y2) or -1)
+    local z = tonumber(args.z) or 0
+    local removalFraction = tonumber(args.removalFraction) or 0
+    local remaining = Constants.MAX_WORLD_ITEMS_PER_CYCLE
+    for x = x1, x2 do
+        for y = y1, y2 do
+            if remaining <= 0 then break end
+            local square = cell:getGridSquare(x, y, z)
+            if square then
+                local worldObjects = square:getWorldObjects()
+                if worldObjects then
+                    for index = 0, worldObjects:size() - 1 do
+                        if remaining <= 0 then break end
+                        local object = worldObjects:get(index)
+                        local item = object and instanceof(object, "IsoWorldInventoryObject")
+                            and object:getItem() or nil
+                        if item then
+                            cleanLocalItem(item, removalFraction)
+                            remaining = remaining - 1
+                            if instanceof(item, "InventoryContainer") then
+                                remaining = remaining - visitContainer(item:getInventory(), function(nested)
+                                    cleanLocalItem(nested, removalFraction)
+                                end, remaining)
+                            end
+                        end
+                    end
+                end
+                local staticObjects = square:getStaticMovingObjects()
+                if staticObjects then
+                    for index = 0, staticObjects:size() - 1 do
+                        if remaining <= 0 then break end
+                        local object = staticObjects:get(index)
+                        if object and instanceof(object, "IsoDeadBody") then
+                            object:getModData()[Constants.CONTAMINATION_MODDATA_KEY] = 0
+                            remaining = remaining - visitContainer(object:getContainer(), function(item)
+                                cleanLocalItem(item, removalFraction)
+                            end, remaining)
+                        end
+                    end
+                end
+            end
+        end
+        if remaining <= 0 then break end
+    end
+end
+
 local function onCreatePlayer(playerIndex, player)
     Client.status = {inZone=false, exposure=0, protection=0, surfaceContamination=0, gearContamination=0}
     Client.alpha = 0
@@ -64,6 +160,10 @@ local function onServerCommand(module, command, args)
     if command == "exposureStatus" then
         Client.status = args
         applyFilterRemaining(getSpecificPlayer(0), args.filterRemaining, args.filterItemId)
+    elseif command == "itemContamination" then
+        applyCarriedItemContamination(args)
+    elseif command == "worldContaminationCleaned" then
+        applyWorldCleanup(args)
     elseif command == "zoneCommandResult" then
         Client.lastCommandResult = args
         local player = getSpecificPlayer(0)

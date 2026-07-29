@@ -41,6 +41,12 @@ instanceof = function(object, className) return object and object.className == c
 getCell = function()
     return { getGridSquare=function(self, x, y, z) return x == 1 and y == 1 and z == 0 and square or nil end }
 end
+local invalidOwnerSyncs = 0
+syncItemModData = function() invalidOwnerSyncs = invalidOwnerSyncs + 1 end
+local cleanupBroadcasts = 0
+sendServerCommand = function(player, module, command, args)
+    if command == "worldContaminationCleaned" then cleanupBroadcasts = cleanupBroadcasts + 1 end
+end
 
 local ok, cleanedItems, cleanedCorpses = BunkerCampaignToxicMP.Server.cleanWorldInBounds(
     {x1=1,x2=1,y1=1,y2=1,z=0}, 1
@@ -51,5 +57,9 @@ assert(floorData[key] == 0 and nestedData[key] == 0 and corpseItemData[key] == 0
     "all world and corpse inventory contamination must be removed")
 assert(corpseData[key] == 0 and corpse.transmitted == true,
     "corpse surface state must be cleared and transmitted")
+assert(invalidOwnerSyncs == 0,
+    "world cleanup must not call player-relative modData synchronization with a nil owner")
+assert(cleanupBroadcasts == 1,
+    "world cleanup must tell nearby clients to refresh their local floor and corpse copies")
 
 print("BunkerCampaignToxicMP world cleanup tests passed")

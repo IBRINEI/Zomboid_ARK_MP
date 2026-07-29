@@ -313,6 +313,7 @@ end
 
 function ISBunkerManualWash:stop()
     if self.item then self.item:setJobDelta(0) end
+    self.character:resetModelNextFrame()
     ISBaseTimedAction.stop(self)
 end
 
@@ -326,6 +327,7 @@ end
 
 function ISBunkerManualWash:perform()
     if self.item then self.item:setJobDelta(0) end
+    self.character:resetModelNextFrame()
     ISBaseTimedAction.perform(self)
 end
 
@@ -336,6 +338,7 @@ function ISBunkerManualWash:new(character, target, item, value)
     action.item = item
     action.stopOnWalk = true
     action.stopOnRun = true
+    action.forceProgressBar = true
     action.maxTime = math.max(Rules.MANUAL_WASH.minimumDuration, math.floor((tonumber(value) or 0) * 3))
     return action
 end

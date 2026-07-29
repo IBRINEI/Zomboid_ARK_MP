@@ -96,10 +96,10 @@ end
 
 local function syncItem(player, item)
     if not item then return end
-    if type(syncItemModData) == "function" then
+    if player and type(syncItemModData) == "function" then
         pcall(syncItemModData, player, item)
     end
-    if type(syncItemFields) == "function" then
+    if player and type(syncItemFields) == "function" then
         pcall(syncItemFields, player, item)
     end
     if item.syncItemFields then
@@ -115,7 +115,7 @@ local function itemContamination(item)
     return ContaminationModel.clamp(item:getModData()[Constants.CONTAMINATION_MODDATA_KEY])
 end
 
-local function setItemContamination(player, item, value, forceSync)
+local function setItemContamination(player, item, value, forceSync, suppressNetworkSync)
     if not item or not item.getModData then return false end
     value = ContaminationModel.clamp(value)
     local md = item:getModData()
@@ -124,7 +124,8 @@ local function setItemContamination(player, item, value, forceSync)
     md[Constants.CONTAMINATION_MODDATA_KEY] = value
 
     local lastSynced = tonumber(md.BunkerCampaignLastSyncedContamination) or 0
-    if forceSync or math.abs(value - lastSynced) >= Constants.SURFACE_ITEM_SYNC_DELTA then
+    if not suppressNetworkSync
+        and (forceSync or math.abs(value - lastSynced) >= Constants.SURFACE_ITEM_SYNC_DELTA) then
         md.BunkerCampaignLastSyncedContamination = value
         syncItem(player, item)
     end
@@ -451,16 +452,24 @@ function Server.cleanItem(player, item, removalFraction)
     local current = itemContamination(item)
     local cleaned = ContaminationModel.clean(current, removalFraction)
     setItemContamination(player, item, cleaned, true)
+    if player and isServer() then
+        sendServerCommand(player, Constants.NETWORK_MODULE, "itemContamination", {
+            itemId=item:getID(),
+            value=cleaned,
+        })
+    end
     return true, current, cleaned
 end
 
-function Server.cleanContainer(container, removalFraction, limit)
+function Server.cleanContainer(container, removalFraction, limit, suppressNetworkSync)
     local cleaned = 0
     local items = collectContainerItems(container, limit or Constants.MAX_WORLD_ITEMS_PER_CYCLE)
     for _, item in ipairs(items) do
         local current = itemContamination(item)
         local nextValue = ContaminationModel.clean(current, removalFraction)
-        if setItemContamination(nil, item, nextValue, true) then cleaned = cleaned + 1 end
+        if setItemContamination(nil, item, nextValue, true, suppressNetworkSync == true) then
+            cleaned = cleaned + 1
+        end
     end
     return cleaned, #items
 end
@@ -486,13 +495,14 @@ function Server.cleanWorldInBounds(bounds, removalFraction)
                         local item = object and instanceof(object, "IsoWorldInventoryObject") and object:getItem() or nil
                         if item then
                             local current = itemContamination(item)
-                            if setItemContamination(nil, item, ContaminationModel.clean(current, removalFraction), true) then
+                            if setItemContamination(nil, item,
+                                ContaminationModel.clean(current, removalFraction), true, true) then
                                 cleanedItems = cleanedItems + 1
                             end
                             remaining = remaining - 1
                             if instanceof(item, "InventoryContainer") then
                                 local nested = item:getInventory()
-                                local count, scanned = Server.cleanContainer(nested, removalFraction, remaining)
+                                local count, scanned = Server.cleanContainer(nested, removalFraction, remaining, true)
                                 cleanedItems = cleanedItems + count
                                 remaining = remaining - scanned
                             end
@@ -507,7 +517,7 @@ function Server.cleanWorldInBounds(bounds, removalFraction)
                         local object = staticObjects:get(index)
                         if object and instanceof(object, "IsoDeadBody") then
                             local container = object:getContainer()
-                            local count, scanned = Server.cleanContainer(container, removalFraction, remaining)
+                            local count, scanned = Server.cleanContainer(container, removalFraction, remaining, true)
                             cleanedItems = cleanedItems + count
                             remaining = remaining - scanned
                             object:getModData()[Constants.CONTAMINATION_MODDATA_KEY] = 0
@@ -519,6 +529,17 @@ function Server.cleanWorldInBounds(bounds, removalFraction)
             end
         end
         if remaining <= 0 then break end
+    end
+    if isServer() and getOnlinePlayers then
+        local players = getOnlinePlayers()
+        for index = 0, players:size() - 1 do
+            sendServerCommand(players:get(index), Constants.NETWORK_MODULE, "worldContaminationCleaned", {
+                x1=bounds.x1, x2=bounds.x2,
+                y1=bounds.y1, y2=bounds.y2,
+                z=bounds.z,
+                removalFraction=removalFraction,
+            })
+        end
     end
     return true, cleanedItems, cleanedCorpses
 end
