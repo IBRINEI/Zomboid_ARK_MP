@@ -1,10 +1,12 @@
 if isClient() then return end
 
 require "BunkerCampaignToxicMP/Constants"
+require "BunkerCampaignToxicMP/ContaminationModel"
 
 BunkerCampaignToxicMP = BunkerCampaignToxicMP or {}
 
 local Constants = BunkerCampaignToxicMP.Constants
+local ContaminationModel = BunkerCampaignToxicMP.ContaminationModel
 local Server = {
     state = nil,
     zones = {},
@@ -108,6 +110,127 @@ local function syncItem(player, item)
     end
 end
 
+local function itemContamination(item)
+    if not item or not item.getModData then return 0 end
+    return ContaminationModel.clamp(item:getModData()[Constants.CONTAMINATION_MODDATA_KEY])
+end
+
+local function setItemContamination(player, item, value, forceSync)
+    if not item or not item.getModData then return false end
+    value = ContaminationModel.clamp(value)
+    local md = item:getModData()
+    local previous = ContaminationModel.clamp(md[Constants.CONTAMINATION_MODDATA_KEY])
+    if math.abs(previous - value) < 0.0001 then return false end
+    md[Constants.CONTAMINATION_MODDATA_KEY] = value
+
+    local lastSynced = tonumber(md.BunkerCampaignLastSyncedContamination) or 0
+    if forceSync or math.abs(value - lastSynced) >= Constants.SURFACE_ITEM_SYNC_DELTA then
+        md.BunkerCampaignLastSyncedContamination = value
+        syncItem(player, item)
+    end
+    return true
+end
+
+local function collectWornItems(player)
+    local result = {}
+    local worn = player and player.getWornItems and player:getWornItems() or nil
+    if not worn then return result end
+    for index = 0, worn:size() - 1 do
+        local item = worn:getItemByIndex(index)
+        if item then result[#result + 1] = item end
+    end
+    return result
+end
+
+local function collectCarriedItems(player, limit)
+    local result = {}
+    local seen = {}
+    limit = math.max(1, tonumber(limit) or Constants.MAX_CARRIED_ITEMS_PER_SCAN)
+    local root = player and player.getInventory and player:getInventory() or nil
+    if not root or not root.getItems then return result end
+
+    local containers = { root }
+    local containerIndex = 1
+    while containerIndex <= #containers and #result < limit do
+        local container = containers[containerIndex]
+        containerIndex = containerIndex + 1
+        local items = container and container:getItems() or nil
+        if items then
+            for index = 0, items:size() - 1 do
+                if #result >= limit then break end
+                local item = items:get(index)
+                if item and not seen[item] then
+                    seen[item] = true
+                    result[#result + 1] = item
+                    local isContainer = type(instanceof) == "function"
+                        and instanceof(item, "InventoryContainer")
+                        or (type(instanceof) ~= "function" and item.getInventory ~= nil)
+                    if isContainer and item:getModData().BunkerCampaignSealed ~= true then
+                        local nested = item:getInventory()
+                        if nested then containers[#containers + 1] = nested end
+                    end
+                end
+            end
+        end
+    end
+    return result
+end
+
+local function updateSurfaceContamination(player, record, zone, elapsed, scanCarried, carriedElapsed)
+    local surface = ContaminationModel.clamp(record.surfaceContamination)
+    local wornItems = collectWornItems(player)
+    local gearMaximum = 0
+
+    if zone then
+        surface = ContaminationModel.deposit(surface, Constants.SURFACE_BODY_DEPOSIT_PER_SECOND, elapsed)
+        for _, item in ipairs(wornItems) do
+            local nextValue = ContaminationModel.deposit(
+                itemContamination(item),
+                Constants.SURFACE_GEAR_DEPOSIT_PER_SECOND,
+                elapsed
+            )
+            setItemContamination(player, item, nextValue, false)
+            gearMaximum = math.max(gearMaximum, nextValue)
+        end
+        if scanCarried then
+            local wornSet = {}
+            for _, item in ipairs(wornItems) do wornSet[item] = true end
+            for _, item in ipairs(collectCarriedItems(player, Constants.MAX_CARRIED_ITEMS_PER_SCAN)) do
+                if not wornSet[item] then
+                    local nextValue = ContaminationModel.deposit(
+                        itemContamination(item),
+                        Constants.SURFACE_PACKED_ITEM_DEPOSIT_PER_SECOND,
+                        carriedElapsed or elapsed
+                    )
+                    setItemContamination(player, item, nextValue, false)
+                    gearMaximum = math.max(gearMaximum, nextValue)
+                end
+            end
+        end
+    else
+        for _, item in ipairs(wornItems) do
+            gearMaximum = math.max(gearMaximum, itemContamination(item))
+        end
+        if scanCarried then
+            for _, item in ipairs(collectCarriedItems(player, Constants.MAX_CARRIED_ITEMS_PER_SCAN)) do
+                gearMaximum = math.max(gearMaximum, itemContamination(item))
+            end
+        end
+        surface = ContaminationModel.contact(
+            surface,
+            gearMaximum,
+            Constants.SURFACE_CONTACT_FRACTION_PER_SECOND * elapsed
+        )
+    end
+
+    if not scanCarried then
+        gearMaximum = math.max(gearMaximum, ContaminationModel.clamp(record.gearContamination))
+    end
+
+    record.surfaceContamination = surface
+    record.gearContamination = gearMaximum
+end
+
 local function setVisibleFilterCondition(item, remaining)
     if not item or not item.getConditionMax or not item.setCondition then return false end
     local maximum = tonumber(item:getConditionMax()) or 0
@@ -133,17 +256,17 @@ local function kill(player)
     if player.Kill then pcall(player.Kill, player, nil) end
 end
 
-local function updatePlayer(player, elapsed)
+local function updatePlayer(player, elapsed, scanCarried, carriedElapsed)
     if not player then return nil end
     local username = player:getUsername()
     local record = Server.state.players[username]
-    if type(record) ~= "table" then record = { exposure=0 }; Server.state.players[username] = record end
+    if type(record) ~= "table" then record = { exposure=0, surfaceContamination=0 }; Server.state.players[username] = record end
     if player:isDead() then
         record.awaitingRespawn = true
         return nil
     end
     if record.awaitingRespawn then
-        record = { exposure=0 }
+        record = { exposure=0, surfaceContamination=0 }
         Server.state.players[username] = record
         print("[BunkerCampaignToxicMP] exposure reset for respawn player=" .. username)
     end
@@ -194,6 +317,8 @@ local function updatePlayer(player, elapsed)
         record.exposure = math.max(0, record.exposure - Constants.EXPOSURE_DECAY_PER_SECOND * elapsed)
     end
 
+    updateSurfaceContamination(player, record, zone, elapsed, scanCarried, carriedElapsed)
+
     record.inZone = zone ~= nil
     record.protection = level
     return record
@@ -207,7 +332,114 @@ local function sendStatus(player, record)
         protection = record.protection or 0,
         filterRemaining = record.filterRemaining,
         filterItemId = record.filterItemId,
+        surfaceContamination = record.surfaceContamination or 0,
+        gearContamination = record.gearContamination or 0,
+        surfaceClass = ContaminationModel.classify(record.surfaceContamination),
     })
+end
+
+function Server.refreshZones()
+    refreshZones()
+end
+
+function Server.ensureZone(name, bounds)
+    if type(name) ~= "string" or type(bounds) ~= "table" then return false, "invalid_zone" end
+    local candidate = {
+        [name] = {
+            startX=bounds.startX,
+            startY=bounds.startY,
+            endX=bounds.endX,
+            endY=bounds.endY,
+        },
+    }
+    if #sanitizeZones(candidate) ~= 1 then return false, "invalid_zone" end
+    local zones = ModData.getOrCreate(Constants.ZONES_KEY)
+    zones[name] = candidate[name]
+    refreshZones()
+    if isServer() then ModData.transmit(Constants.ZONES_KEY) end
+    return true
+end
+
+function Server.removeZone(name)
+    if type(name) ~= "string" then return false end
+    local zones = ModData.getOrCreate(Constants.ZONES_KEY)
+    zones[name] = nil
+    refreshZones()
+    if isServer() then ModData.transmit(Constants.ZONES_KEY) end
+    return true
+end
+
+function Server.getPlayerRecord(player)
+    if not Server.state or not player then return nil end
+    local username = type(player) == "string" and player or player:getUsername()
+    local record = Server.state.players[username]
+    if type(record) ~= "table" then
+        record = { exposure=0, surfaceContamination=0 }
+        Server.state.players[username] = record
+    end
+    return record
+end
+
+function Server.setPlayerSurfaceContamination(player, value, contaminateGear)
+    local record = Server.getPlayerRecord(player)
+    if not record then return false end
+    value = ContaminationModel.clamp(value)
+    record.surfaceContamination = value
+    local maximum = 0
+    if type(player) ~= "string" and contaminateGear then
+        for _, item in ipairs(collectWornItems(player)) do
+            setItemContamination(player, item, value, true)
+            maximum = math.max(maximum, value)
+        end
+    else
+        maximum = ContaminationModel.clamp(record.gearContamination)
+    end
+    record.gearContamination = maximum
+    if type(player) ~= "string" then sendStatus(player, record) end
+    return true
+end
+
+function Server.applySurfaceContact(player, sourceContamination, fraction)
+    local record = Server.getPlayerRecord(player)
+    if not record then return false end
+    record.surfaceContamination = ContaminationModel.contact(
+        record.surfaceContamination,
+        sourceContamination,
+        fraction
+    )
+    return true
+end
+
+function Server.cleanPlayer(player, bodyRemoval, gearRemoval, onlyMostContaminated)
+    local record = Server.getPlayerRecord(player)
+    if not record or type(player) == "string" then return false, "player_unavailable" end
+
+    record.surfaceContamination = ContaminationModel.clean(record.surfaceContamination, bodyRemoval)
+    local wornItems = collectCarriedItems(player, Constants.MAX_CARRIED_ITEMS_PER_SCAN)
+    if #wornItems == 0 then wornItems = collectWornItems(player) end
+    local selected = nil
+    if onlyMostContaminated then
+        local highest = 0
+        for _, item in ipairs(wornItems) do
+            local value = itemContamination(item)
+            if value > highest then highest = value; selected = item end
+        end
+    end
+
+    local maximum = 0
+    local cleanedItems = 0
+    for _, item in ipairs(wornItems) do
+        local current = itemContamination(item)
+        if not onlyMostContaminated or item == selected then
+            local cleaned = ContaminationModel.clean(current, gearRemoval)
+            if setItemContamination(player, item, cleaned, true) then cleanedItems = cleanedItems + 1 end
+            current = cleaned
+        end
+        maximum = math.max(maximum, current)
+    end
+    record.gearContamination = maximum
+    sendStatus(player, record)
+    return true, cleanedItems
 end
 
 function Server.update()
@@ -218,14 +450,15 @@ function Server.update()
     if elapsed < 0.9 then return end
     Server.lastTickMs = now
     Server.statusAccumulator = Server.statusAccumulator + elapsed
+    local sendNow = Server.statusAccumulator >= Constants.STATUS_INTERVAL_SECONDS
 
     local players = getOnlinePlayers()
     for index = 0, players:size() - 1 do
         local player = players:get(index)
-        local record = updatePlayer(player, elapsed)
-        if Server.statusAccumulator >= Constants.STATUS_INTERVAL_SECONDS then sendStatus(player, record) end
+        local record = updatePlayer(player, elapsed, sendNow, Server.statusAccumulator)
+        if sendNow then sendStatus(player, record) end
     end
-    if Server.statusAccumulator >= Constants.STATUS_INTERVAL_SECONDS then Server.statusAccumulator = 0 end
+    if sendNow then Server.statusAccumulator = 0 end
 end
 
 local function isAdmin(player)
@@ -248,11 +481,11 @@ function Server.onClientCommand(module, command, player, args)
     if command == "requestStatus" then
         local record = player and Server.state.players[player:getUsername()]
         if player and type(record) == "table" and record.awaitingRespawn and not player:isDead() then
-            record = { exposure=0 }
+            record = { exposure=0, surfaceContamination=0 }
             Server.state.players[player:getUsername()] = record
             print("[BunkerCampaignToxicMP] exposure reset on character ready player=" .. player:getUsername())
         end
-        sendStatus(player, record or { exposure=0 })
+        sendStatus(player, record or { exposure=0, surfaceContamination=0 })
         return
     end
     if not isAdmin(player) then
@@ -264,15 +497,13 @@ function Server.onClientCommand(module, command, player, args)
     local zones = ModData.getOrCreate(Constants.ZONES_KEY)
     if command == "addZone" and type(args) == "table" then
         local name = type(args.name) == "string" and args.name or nil
-        local candidate = name and { [name] = { startX=args.startX, startY=args.startY, endX=args.endX, endY=args.endY } } or nil
-        local accepted = candidate and sanitizeZones(candidate) or {}
-        if #accepted ~= 1 then
+        local ok = name and Server.ensureZone(name, args)
+        if not ok then
             commandResult(player, false, command, "invalid_zone")
             return
         end
-        zones[name] = candidate[name]
     elseif command == "removeZone" and type(args) == "table" and type(args.name) == "string" then
-        zones[args.name] = nil
+        Server.removeZone(args.name)
     elseif command ~= "refreshZones" then
         commandResult(player, false, command, "unknown_command")
         return
@@ -290,6 +521,13 @@ function Server.initialize(isNewGame)
     local storedVersion = tonumber(Server.state.version) or 0
     Server.state.version = Constants.STATE_VERSION
     if type(Server.state.players) ~= "table" then Server.state.players = {} end
+    for _, record in pairs(Server.state.players) do
+        if type(record) == "table" then
+            record.exposure = math.max(0, math.min(100, tonumber(record.exposure) or 0))
+            record.surfaceContamination = ContaminationModel.clamp(record.surfaceContamination)
+            record.gearContamination = ContaminationModel.clamp(record.gearContamination)
+        end
+    end
     if storedVersion < Constants.STATE_VERSION then
         for _, record in pairs(Server.state.players) do
             if type(record) == "table" and (tonumber(record.exposure) or 0) >= 100 then
@@ -309,7 +547,7 @@ function Server.onPlayerDeath(player)
     if not Server.state or not player then return end
     local username = player:getUsername()
     local record = Server.state.players[username]
-    if type(record) ~= "table" then record = { exposure=0 }; Server.state.players[username] = record end
+    if type(record) ~= "table" then record = { exposure=0, surfaceContamination=0 }; Server.state.players[username] = record end
     record.awaitingRespawn = true
 end
 

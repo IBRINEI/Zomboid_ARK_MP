@@ -17,12 +17,21 @@ if not BunkerCampaignToxicMP.filterTooltipInstalled then
         local isFilter = fullType == "Base.GasMaskFilter"
         local isMask = BunkerCampaignToxicMP.Constants.PROTECTIVE_MASKS[item:getType()] == true
         local percent = tonumber(item:getModData().percent)
-        if (not isFilter and not isMask) or not percent then
+        local contamination = tonumber(item:getModData()[BunkerCampaignToxicMP.Constants.CONTAMINATION_MODDATA_KEY])
+        local labels = {}
+        if (isFilter or isMask) and percent then
+            percent = math.max(0, math.min(1, percent))
+            labels[#labels + 1] = string.format("Filter charge: %.1f%%", percent * 100)
+        end
+        if contamination and contamination > BunkerCampaignToxicMP.Constants.SURFACE_TRACE then
+            contamination = math.max(0, math.min(100, contamination))
+            labels[#labels + 1] = string.format("Surface contamination: %.1f%%", contamination)
+        end
+        if #labels == 0 then
             return originalRender(self)
         end
 
-        percent = math.max(0, math.min(1, percent))
-        local label = string.format("Filter charge: %.1f%%", percent * 100)
+        local label = table.concat(labels, "\n")
         local previousTooltip = item:getTooltip()
         local core = getCore()
         local showModInfo = core:getOptionShowItemModInfo()

@@ -5,6 +5,7 @@ assert(power.status == "operational", "main generator must satisfy the bootstrap
 assert(power.gridOnline == true, "running generator must expose the main grid")
 assert(power.consumers.ventilation.allocated == true, "ventilation must be allocated before lower-priority loads")
 assert(power.consumers.water.allocated == true, "water must receive power with the main generator online")
+assert(power.consumers.decontamination.requested == false, "decontamination must not consume idle power")
 assert(power.consumers.emergency_lighting.allocated == false, "emergency fixtures must remain dark on the main grid")
 assert(#initial.allocationChanges > 0, "initial allocation must report changes")
 
@@ -30,5 +31,11 @@ BunkerCampaign.PowerSimulation.update(power, 0)
 assert(power.gridOnline == true, "backup generator must restore the grid")
 assert(power.consumers.water.allocated == true, "water must resume after backup power is available")
 assert(power.consumers.emergency_lighting.allocated == false, "emergency lights must turn off after grid restoration")
+
+power.consumers.decontamination.requested = true
+power.generators.main.requested = true
+BunkerCampaign.PowerSimulation.update(power, 0)
+assert(power.consumers.decontamination.allocated == true, "automatic decontamination must receive grid power")
+assert(power.consumers.decontamination.source == "generator", "decontamination must never run from the emergency battery")
 
 print("BunkerCampaign power tests passed")

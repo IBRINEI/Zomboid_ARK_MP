@@ -46,11 +46,12 @@ end
 function RunBunkerCampaignServerTests()
 BunkerCampaign.CampaignState.initialize(true)
 local firstReference = BunkerCampaign.CampaignState.get()
-assert(firstReference.version == 3, "server must initialize versioned state")
+assert(firstReference.version == 4, "server must initialize versioned state")
 assert(#firstReference.auditLog > 0, "initialization must be audited")
 assert(firstReference.bunker.modules.water.status == "offline", "water module must migrate with safe defaults")
 assert(firstReference.bunker.modules.water.adapterOnline == false, "water adapter must start offline")
 assert(firstReference.bunker.modules.power.gridOnline == true, "main generator must bootstrap the bunker grid")
+assert(firstReference.bunker.modules.power.consumers.decontamination.requested == false, "decontamination load must start idle")
 assert(firstReference.bunker.modules.ventilation.operating == true, "ventilation must receive bootstrap power")
 
 local ok = BunkerCampaign.CampaignState.setVentilationEnabled(false, "admin-user")

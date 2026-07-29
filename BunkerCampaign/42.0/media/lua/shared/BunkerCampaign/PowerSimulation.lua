@@ -60,6 +60,7 @@ function PowerSimulation.createDefault()
             control = defaultConsumer("control", true, 0.15, 95, true),
             ventilation = defaultConsumer("ventilation", true, 3.50, 90, false),
             water = defaultConsumer("water", true, 1.50, 80, false),
+            decontamination = defaultConsumer("decontamination", false, 2.50, 75, false),
             main_lighting = defaultConsumer("main_lighting", true, 1.00, 70, false),
         },
     }

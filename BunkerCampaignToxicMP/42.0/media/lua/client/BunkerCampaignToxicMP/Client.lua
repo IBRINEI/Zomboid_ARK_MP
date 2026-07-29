@@ -3,7 +3,7 @@ require "BunkerCampaignToxicMP/Constants"
 BunkerCampaignToxicMP = BunkerCampaignToxicMP or {}
 
 local Constants = BunkerCampaignToxicMP.Constants
-local Client = { status={inZone=false, exposure=0, protection=0}, alpha=0, geigerTicks=0, lastCommandResult=nil }
+local Client = { status={inZone=false, exposure=0, protection=0, surfaceContamination=0, gearContamination=0}, alpha=0, geigerTicks=0, lastCommandResult=nil }
 local overlay = getTexture("media/textures/UI/ToxicOverlay.png")
 
 local function containsPattern(value, patterns)
@@ -51,7 +51,7 @@ local function applyFilterRemaining(player, value, itemId)
 end
 
 local function onCreatePlayer(playerIndex, player)
-    Client.status = {inZone=false, exposure=0, protection=0}
+    Client.status = {inZone=false, exposure=0, protection=0, surfaceContamination=0, gearContamination=0}
     Client.alpha = 0
     if isClient() and player then
         ModData.request(Constants.ZONES_KEY)
@@ -93,12 +93,19 @@ end
 local function draw()
     if Client.status.inZone then Client.alpha = math.min(0.6, Client.alpha + 0.04)
     else Client.alpha = math.max(0, Client.alpha - 0.04) end
-    if Client.alpha <= 0 then return end
-    UIManager.DrawTexture(overlay, 0, 0, getCore():getScreenWidth(), getCore():getScreenHeight(), Client.alpha)
+    if Client.alpha > 0 then
+        UIManager.DrawTexture(overlay, 0, 0, getCore():getScreenWidth(), getCore():getScreenHeight(), Client.alpha)
+    end
     local exposure = math.floor(tonumber(Client.status.exposure) or 0)
+    local surface = tonumber(Client.status.surfaceContamination) or 0
+    local gear = tonumber(Client.status.gearContamination) or 0
     if exposure > 0 then
         getTextManager():DrawStringCentre(UIFont.Medium, getCore():getScreenWidth()/2, 55,
             "TOXIC EXPOSURE: " .. tostring(exposure) .. "%", 1, 0.25, 0.1, 0.95)
+    end
+    if surface > Constants.SURFACE_TRACE or gear > Constants.SURFACE_TRACE then
+        getTextManager():DrawStringCentre(UIFont.Medium, getCore():getScreenWidth()/2, 78,
+            string.format("SURFACE: %.1f%%   GEAR: %.1f%%", surface, gear), 1, 0.65, 0.1, 0.95)
     end
 end
 
