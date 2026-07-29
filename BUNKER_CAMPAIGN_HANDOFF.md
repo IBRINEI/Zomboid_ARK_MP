@@ -164,3 +164,21 @@ These are future design slices, not defects in the accepted foundation:
 Do not restore the original single-player systems wholesale. Any reused feature
 must be separated from story/client authority and adapted to the existing
 server-authoritative state model first.
+
+## Second slice implementation (awaiting dedicated-server acceptance)
+
+Branch: `slice-2-contamination-decon`.
+
+Implemented after the accepted infrastructure tag:
+
+- `BunkerCampaign` 0.4.0 adds the non-battery-backed `decontamination` power consumer and state migration 3 -> 4;
+- `BunkerCampaignToxicMP` 0.4.0 adds server-owned surface contamination for bodies, worn gear and bounded carried inventory scans;
+- item contamination persists in modData and is displayed in English tooltips;
+- `BunkerCampaignIntegration` 0.6.0 adds the NBC mixer, manual/emergency/automatic cycles, clean-water debit from Waterpipes, power pause/resume and persistent active-cycle state;
+- the original Ark room, NBC tablets, reagent locker and map assets are reused without restoring its single-player sequence controller;
+- admin-only temporary QA context actions accelerate travel, contamination, resource setup and cycle completion;
+- the exhaustive test procedure is `BunkerCampaignIntegration/42.0/docs/SECOND_SLICE_TESTING.md`.
+
+This section records code completion and automated regression results only. Do
+not tag the second slice as accepted until the administrator + ordinary-client
+dedicated-server procedure passes and the user explicitly accepts it.
