@@ -1,0 +1,19 @@
+module Base
+{
+    item AntiRadRobe
+    {
+        DisplayCategory = Clothing,
+        DisplayName = Anti-Radiation Robe,
+        ItemType = base:clothing,
+        Icon = Robe_Judge,
+        BloodLocation = Trousers;Shirt,
+        BodyLocation = base:boilersuit,
+        ClothingItem = BlackRobe,
+        FabricType = Cotton,
+        Insulation = 0.50,
+        RunSpeedModifier = 0.9,
+        WindResistance = 0.75,
+        WorldStaticModel = Dress_Long_Ground,
+        Tags = base:noragdoll;base:hazmatsuit,
+    }
+}

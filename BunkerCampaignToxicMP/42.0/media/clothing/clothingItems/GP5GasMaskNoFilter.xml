@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<clothingItem>
+    <m_GUID>ae027cef-3498-418a-acb5-2589eed56901</m_GUID>
+    <m_MaleModel>Skinned\Clothes\GP5GasMaskNoFilter</m_MaleModel>
+    <m_FemaleModel>Skinned\Clothes\GP5GasMaskNoFilter</m_FemaleModel>
+    <textureChoices>Clothes\Sunrise\GP5GasMask</textureChoices>
+	<m_Static>false</m_Static>
+	<m_AllowRandomHue>false</m_AllowRandomHue>
+	<m_AllowRandomTint>false</m_AllowRandomTint>
+	<m_HatCategory>nobeard</m_HatCategory>
+	<m_HatCategory>nohair</m_HatCategory>
+	<m_MasksFolder>media/textures/Clothes/Hat/Masks</m_MasksFolder>
+</clothingItem>

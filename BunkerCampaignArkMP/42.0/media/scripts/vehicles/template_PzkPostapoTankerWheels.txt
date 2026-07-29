@@ -1,0 +1,21 @@
+module Base
+{
+	model Vehicles_pzkRTWheel_double
+	{
+		mesh = vehicles/Vehicles_pzkPostapoTanker|WheelDouble,
+		texture = Vehicles/vehicle_wheel,
+//		shader = vehiclewheel,
+		invertX = FALSE,
+		scale = 0.01,
+	}
+	
+	model Vehicles_pzkFTWheel
+	{
+		mesh = vehicles/Vehicles_pzkPostapoTanker|Wheel,
+		texture = Vehicles/vehicle_wheel,
+//		shader = vehiclewheel,
+		invertX = FALSE,
+		scale = 0.01,
+	}
+	
+}

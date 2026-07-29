@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<clothingItem>
+    <m_GUID>4f2a5514-de2a-4282-a149-24093f400d16</m_GUID>
+    <m_MaleModel>Skinned\Clothes\Exohelm</m_MaleModel>
+    <m_FemaleModel>Skinned\Clothes\Exohelm</m_FemaleModel>
+    <textureChoices>Clothes\Exohelm\Exohelm</textureChoices>
+	<m_Static>false</m_Static>
+	<m_AllowRandomHue>false</m_AllowRandomHue>
+	<m_AllowRandomTint>false</m_AllowRandomTint>
+	<m_HatCategory>nobeard</m_HatCategory>
+	<m_HatCategory>nohair</m_HatCategory>
+	<m_MasksFolder>media/textures/Clothes/Hat/Masks</m_MasksFolder>
+</clothingItem>

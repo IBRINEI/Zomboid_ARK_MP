@@ -1,0 +1,8 @@
+Coloca aqui tus texturas PNG de ropa:
+- CIJL_TShirt.png
+- CIJL_Shirt.png
+- CIJL_Jacket.png
+- CIJL_Pants.png
+
+Los XML de clothing referencian la ruta: Clothes\CIJL\[nombre]
+Eso mapea a: media/textures/Clothes/CIJL/[nombre].png

@@ -1,0 +1,85 @@
+module Bandits {
+    fluid EngineCoolant
+    {
+        ColorReference = Yellow,
+        DisplayName = Fluid_Name_EngineCoolant,
+        Categories
+        {
+            Hazardous,
+        }
+        Properties
+        {
+            ThirstChange = -20.0,
+        }
+        Poison
+        {
+            maxEffect = Deadly,
+            minAmount = 0.3,
+            diluteRatio = 0.1,
+        }
+        BlendWhiteList
+        {
+            whitelist = true,
+            categories
+            {
+                Beverage,
+            }
+        }
+    }
+
+    fluid EngineLubricant
+    {
+        ColorReference = SaddleBrown,
+        DisplayName = Fluid_Name_EngineLubricant,
+        Categories
+        {
+            Hazardous,
+        }
+        Properties
+        {
+            ThirstChange = -2.0,
+        }
+        Poison
+        {
+            maxEffect = Deadly,
+            minAmount = 0.3,
+            diluteRatio = 0.1,
+        }
+        BlendWhiteList
+        {
+            whitelist = true,
+            categories
+            {
+                Beverage,
+            }
+        }
+    }
+
+    fluid NBCSolution
+    {
+        ColorReference = ForestGreen,
+        DisplayName = Fluid_Name_NBCSolution,
+        Categories
+        {
+            Hazardous,
+        }
+        Properties
+        {
+            ThirstChange = -2.0,
+        }
+        Poison
+        {
+            maxEffect = Deadly,
+            minAmount = 0.3,
+            diluteRatio = 0.1,
+        }
+        BlendWhiteList
+        {
+            whitelist = true,
+            categories
+            {
+                Beverage,
+            }
+        }
+    }
+}

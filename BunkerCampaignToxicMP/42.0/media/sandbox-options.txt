@@ -1,0 +1,34 @@
+VERSION = 1,
+
+option ToxicZonesStalker.FilterDurationMultiplier
+{
+	type = double,
+	min = 0.01,
+	max = 10.0,
+	default = 1.0,
+
+	page = ToxicZonesStalker,
+	translation = ToxicZonesStalker_FilterDurationMultiplier,
+}
+
+option ToxicZonesStalker.ToxicDamageMultiplier
+{
+	type = double,
+	min = 0.01,
+	max = 10.0,
+	default = 1.0,
+
+	page = ToxicZonesStalker,
+	translation = ToxicZonesStalker_ToxicDamageMultiplier,
+}
+
+option ToxicZonesStalker.GeigerCounterRange
+{
+	type = integer,
+	min = 1,
+	max = 6,
+	default = 2,
+
+	page = ToxicZonesStalker,
+	translation = ToxicZonesStalker_GeigerCounterRange,
+}

@@ -1,0 +1,24 @@
+module Base
+{
+	vehicle pzkPostapoTanker
+	{
+		template! = pzkPostapoTankerTemplate,
+
+		skin
+		{
+			texture = Vehicles/vehicle_pzkPostapoTankerBlackshell,
+		}
+		skin
+		{
+			texture = Vehicles/vehicle_pzkPostapoTankerBlueshell,
+		}
+		skin
+		{
+			texture = Vehicles/vehicle_pzkPostapoTankerGreenshell,
+		}
+		skin
+		{
+			texture = Vehicles/vehicle_pzkPostapoTankerRedshell,
+		}
+	}
+}

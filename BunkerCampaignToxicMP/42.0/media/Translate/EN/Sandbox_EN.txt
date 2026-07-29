@@ -1,0 +1,12 @@
+Sandbox_EN = {
+	Sandbox_ToxicZonesStalker = "Toxic Zones",
+
+	Sandbox_ToxicZonesStalker_FilterDurationMultiplier = "Filter Duration Multiplier",
+	Sandbox_ToxicZonesStalker_FilterDurationMultiplier_tooltip = "How long gas mask filters last, multiplier for the base duration.",
+
+	Sandbox_ToxicZonesStalker_ToxicDamageMultiplier = "Toxic Damage Multiplier",
+	Sandbox_ToxicZonesStalker_ToxicDamageMultiplier_tooltip = "How lethal toxic zones are, multiplier for the base damage.",
+
+	Sandbox_ToxicZonesStalker_GeigerCounterRange = "Geiger Counter Range",
+	Sandbox_ToxicZonesStalker_GeigerCounterRange_tooltip = "How far a Geiger Counter can detect toxic zones, measured in squares.",
+}

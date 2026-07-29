@@ -1,0 +1,71 @@
+BunkerCampaignArkMP = BunkerCampaignArkMP or {}
+
+local Constants = {
+    STATE_KEY = "BunkerCampaign.ArkMP",
+    ARK_STATE_KEY = "BanditWeekOneTheArk",
+    NETWORK_MODULE = "BunkerCampaignArkMP",
+    STATE_VERSION = 5,
+    SPAWN_VERSION = 2,
+    MAP_ID = "Muldraugh, KY",
+    SPAWN = { x = 9966.5, y = 12622.5, z = -4 },
+    INSPECTION_POINTS = {
+        service = { x = 9969.5, y = 12638.5, z = -5 },
+        deep = { x = 9952.5, y = 12602.5, z = -7 },
+    },
+    BUILD_PROBES = {
+        { name = "spawn", x = 9966, y = 12622, z = -4 },
+        { name = "main-north", x = 9950, y = 12602, z = -4 },
+        { name = "lower-corridor", x = 9969, y = 12638, z = -5 },
+        { name = "deep-service", x = 9952, y = 12602, z = -7 },
+    },
+    LIGHT_SCAN = {
+        x1 = 9918, x2 = 9981,
+        y1 = 12595, y2 = 12652,
+        levels = { -4, -5, -7 },
+    },
+    DARKENED_MAP_LIGHTS = {
+        {x=9973,y=12614,z=-4}, {x=9956,y=12640,z=-4}, {x=9944,y=12627,z=-4},
+        {x=9970,y=12636,z=-4}, {x=9956,y=12650,z=-4}, {x=9951,y=12649,z=-4},
+        {x=9950,y=12626,z=-4}, {x=9969,y=12640,z=-4}, {x=9956,y=12602,z=-4},
+        {x=9951,y=12601,z=-4}, {x=9956,y=12612,z=-4}, {x=9959,y=12624,z=-4},
+        {x=9970,y=12629,z=-4}, {x=9956,y=12623,z=-4}, {x=9925,y=12624,z=-4},
+        {x=9963,y=12640,z=-4}, {x=9970,y=12625,z=-4}, {x=9969,y=12627,z=-4},
+        {x=9959,y=12634,z=-4}, {x=9973,y=12631,z=-4}, {x=9956,y=12627,z=-4},
+        {x=9949,y=12633,z=-4}, {x=9959,y=12616,z=-4}, {x=9970,y=12616,z=-4},
+    },
+    GRID_GENERATORS = {
+        {x=9950, y=12599, z=-6},
+        {x=9950, y=12625, z=-6},
+        {x=9950, y=12650, z=-6},
+        {x=9975, y=12599, z=-6},
+        {x=9975, y=12625, z=-6},
+        {x=9975, y=12650, z=-6},
+    },
+    ROOMS = {
+        "AirVentRoom",
+        "Armory",
+        "BathroomFemale",
+        "BathroomMale",
+        "Bedroom",
+        "Chapel",
+        "Control",
+        "Corridor",
+        "DecontaminationChamber",
+        "Entrance",
+        "Exterior",
+        "Generator",
+        "FoodGarden",
+        "Incinerator",
+        "Infirmary",
+        "InterrogationRoom",
+        "Lab",
+        "Library",
+        "LivingRoom",
+        "MainStorage",
+        "Messhall",
+        "ServiceTunnels",
+    },
+}
+
+BunkerCampaignArkMP.Constants = Constants
+return Constants

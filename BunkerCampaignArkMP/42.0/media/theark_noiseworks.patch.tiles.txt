@@ -1,0 +1,781 @@
+version = 1
+tileset
+{
+    file = floors_rugs_burnt_01
+    size = 8,20
+    id = 35
+    // floors_rugs_burnt_01_0
+    tile
+    {
+        xy = 0,0
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_1
+    tile
+    {
+        xy = 1,0
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_2
+    tile
+    {
+        xy = 2,0
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_3
+    tile
+    {
+        xy = 3,0
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_4
+    tile
+    {
+        xy = 4,0
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_5
+    tile
+    {
+        xy = 5,0
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_6
+    tile
+    {
+        xy = 6,0
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_7
+    tile
+    {
+        xy = 7,0
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_8
+    tile
+    {
+        xy = 0,1
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_9
+    tile
+    {
+        xy = 1,1
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_10
+    tile
+    {
+        xy = 2,1
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_11
+    tile
+    {
+        xy = 3,1
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_12
+    tile
+    {
+        xy = 4,1
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_13
+    tile
+    {
+        xy = 5,1
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_14
+    tile
+    {
+        xy = 6,1
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_15
+    tile
+    {
+        xy = 7,1
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_16
+    tile
+    {
+        xy = 0,2
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_17
+    tile
+    {
+        xy = 1,2
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_18
+    tile
+    {
+        xy = 2,2
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_19
+    tile
+    {
+        xy = 3,2
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_20
+    tile
+    {
+        xy = 4,2
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_21
+    tile
+    {
+        xy = 5,2
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_22
+    tile
+    {
+        xy = 6,2
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_23
+    tile
+    {
+        xy = 7,2
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_24
+    tile
+    {
+        xy = 0,3
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_25
+    tile
+    {
+        xy = 1,3
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_26
+    tile
+    {
+        xy = 2,3
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_27
+    tile
+    {
+        xy = 3,3
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_28
+    tile
+    {
+        xy = 4,3
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_29
+    tile
+    {
+        xy = 5,3
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_30
+    tile
+    {
+        xy = 6,3
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_31
+    tile
+    {
+        xy = 7,3
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_32
+    tile
+    {
+        xy = 0,4
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_33
+    tile
+    {
+        xy = 1,4
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_34
+    tile
+    {
+        xy = 2,4
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_35
+    tile
+    {
+        xy = 3,4
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_36
+    tile
+    {
+        xy = 4,4
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_37
+    tile
+    {
+        xy = 5,4
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_38
+    tile
+    {
+        xy = 6,4
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_39
+    tile
+    {
+        xy = 7,4
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_40
+    tile
+    {
+        xy = 0,5
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_41
+    tile
+    {
+        xy = 1,5
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_42
+    tile
+    {
+        xy = 2,5
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_43
+    tile
+    {
+        xy = 3,5
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_44
+    tile
+    {
+        xy = 4,5
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_45
+    tile
+    {
+        xy = 5,5
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_46
+    tile
+    {
+        xy = 6,5
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_47
+    tile
+    {
+        xy = 7,5
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_48
+    tile
+    {
+        xy = 0,6
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_49
+    tile
+    {
+        xy = 1,6
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_50
+    tile
+    {
+        xy = 2,6
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_51
+    tile
+    {
+        xy = 3,6
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_52
+    tile
+    {
+        xy = 4,6
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_53
+    tile
+    {
+        xy = 5,6
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_54
+    tile
+    {
+        xy = 6,6
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_55
+    tile
+    {
+        xy = 7,6
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_56
+    tile
+    {
+        xy = 0,7
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_57
+    tile
+    {
+        xy = 1,7
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_58
+    tile
+    {
+        xy = 2,7
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_59
+    tile
+    {
+        xy = 3,7
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_60
+    tile
+    {
+        xy = 4,7
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_61
+    tile
+    {
+        xy = 5,7
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_62
+    tile
+    {
+        xy = 6,7
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_63
+    tile
+    {
+        xy = 7,7
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_64
+    tile
+    {
+        xy = 0,8
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_65
+    tile
+    {
+        xy = 1,8
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_66
+    tile
+    {
+        xy = 2,8
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_67
+    tile
+    {
+        xy = 3,8
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_68
+    tile
+    {
+        xy = 4,8
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_69
+    tile
+    {
+        xy = 5,8
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_70
+    tile
+    {
+        xy = 6,8
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_71
+    tile
+    {
+        xy = 7,8
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_72
+    tile
+    {
+        xy = 0,9
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_73
+    tile
+    {
+        xy = 1,9
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_74
+    tile
+    {
+        xy = 2,9
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_75
+    tile
+    {
+        xy = 3,9
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_76
+    tile
+    {
+        xy = 4,9
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_77
+    tile
+    {
+        xy = 5,9
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_78
+    tile
+    {
+        xy = 6,9
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_79
+    tile
+    {
+        xy = 7,9
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_80
+    tile
+    {
+        xy = 0,10
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_81
+    tile
+    {
+        xy = 1,10
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_82
+    tile
+    {
+        xy = 2,10
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_83
+    tile
+    {
+        xy = 3,10
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_84
+    tile
+    {
+        xy = 4,10
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_85
+    tile
+    {
+        xy = 5,10
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_87
+    tile
+    {
+        xy = 7,10
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_88
+    tile
+    {
+        xy = 0,11
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_89
+    tile
+    {
+        xy = 1,11
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_90
+    tile
+    {
+        xy = 2,11
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_91
+    tile
+    {
+        xy = 3,11
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_92
+    tile
+    {
+        xy = 4,11
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_93
+    tile
+    {
+        xy = 5,11
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_96
+    tile
+    {
+        xy = 0,12
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_97
+    tile
+    {
+        xy = 1,12
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_98
+    tile
+    {
+        xy = 2,12
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_99
+    tile
+    {
+        xy = 3,12
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_100
+    tile
+    {
+        xy = 4,12
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_101
+    tile
+    {
+        xy = 5,12
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_104
+    tile
+    {
+        xy = 0,13
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_105
+    tile
+    {
+        xy = 1,13
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_106
+    tile
+    {
+        xy = 2,13
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_107
+    tile
+    {
+        xy = 3,13
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_108
+    tile
+    {
+        xy = 4,13
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_109
+    tile
+    {
+        xy = 5,13
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_112
+    tile
+    {
+        xy = 0,14
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_113
+    tile
+    {
+        xy = 1,14
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_114
+    tile
+    {
+        xy = 2,14
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_115
+    tile
+    {
+        xy = 3,14
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_116
+    tile
+    {
+        xy = 4,14
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_117
+    tile
+    {
+        xy = 5,14
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_118
+    tile
+    {
+        xy = 6,14
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_119
+    tile
+    {
+        xy = 7,14
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_120
+    tile
+    {
+        xy = 0,15
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_121
+    tile
+    {
+        xy = 1,15
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_122
+    tile
+    {
+        xy = 2,15
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_123
+    tile
+    {
+        xy = 3,15
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_124
+    tile
+    {
+        xy = 4,15
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_125
+    tile
+    {
+        xy = 5,15
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_126
+    tile
+    {
+        xy = 6,15
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_127
+    tile
+    {
+        xy = 7,15
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_128
+    tile
+    {
+        xy = 0,16
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_129
+    tile
+    {
+        xy = 1,16
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_130
+    tile
+    {
+        xy = 2,16
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_131
+    tile
+    {
+        xy = 3,16
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_132
+    tile
+    {
+        xy = 4,16
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_133
+    tile
+    {
+        xy = 5,16
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_134
+    tile
+    {
+        xy = 6,16
+        FootstepMaterial = Carpet
+    }
+    // floors_rugs_burnt_01_135
+    tile
+    {
+        xy = 7,16
+        FootstepMaterial = Carpet
+    }
+}

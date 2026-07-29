@@ -1,0 +1,58 @@
+VERSION = 1,
+
+option BWOA.FalloutStarted  = {
+    type = enum, numValues=6, default = 4,
+    page = BWOA, translation = BWOA.FalloutStarted, valueTranslation=BWOA.FalloutStarted,
+}
+option BWOA.FalloutEnds  = {
+    type = enum, numValues=6, default = 3,
+    page = BWOA, translation = BWOA.FalloutEnds, valueTranslation=BWOA.FalloutEnds,
+}
+option BWOA.FalloutCurve  = {
+    type = enum, numValues=5, default = 4,
+    page = BWOA, translation = BWOA.FalloutCurve, valueTranslation=BWOA.FalloutCurve,
+}
+option BWOA.TemperatureDrop  = {
+    type = enum, numValues=5, default = 3,
+    page = BWOA, translation = BWOA.TemperatureDrop, valueTranslation=BWOA.TemperatureDrop,
+}
+
+option BWOA.ArkGeneratorFuelConsumption  = {
+    type = enum, numValues=5, default = 3,
+    page = BWOA, translation = BWOA.ArkGeneratorFuelConsumption, valueTranslation=BWOA.ArkGeneratorFuelConsumption,
+}
+
+option BWOA.ShelterOccurance  = {
+    type = enum, numValues=5, default = 4,
+    page = BWOA, translation = BWOA.ShelterOccurance, valueTranslation=BWOA.ShelterOccurance,
+}
+
+option BWOA.HostileGroupSize  = {
+    type = enum, numValues=6, default = 3,
+    page = BWOA, translation = BWOA.HostileGroupSize, valueTranslation=BWOA.HostileGroupSize,
+}
+
+option BWOA.ResidueScrap  = {
+    type = enum, numValues=5, default = 4,
+    page = BWOA, translation = BWOA.ResidueScrap, valueTranslation=BWOA.ResidueScrap,
+}
+
+option BWOA.SkeletonReanimation  = {
+    type = boolean, default = false,
+    page = BWOA, translation = BWOA.SkeletonReanimation,
+}
+
+option BWOA.AngelProximity = {
+    type = boolean, default = true,
+    page = BWOA, translation = BWOA.AngelProximity,
+}
+
+option BWOA.MemoryRegain = {
+    type = boolean, default = true,
+    page = BWOA, translation = BWOA.MemoryRegain,
+}
+
+option BWOA.RetroRadiation = {
+    type = boolean, default = false,
+    page = BWOA, translation = BWOA.RetroRadiation,
+}

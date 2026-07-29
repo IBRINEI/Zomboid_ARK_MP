@@ -1,0 +1,7 @@
+ItemName_EN = {
+    ItemName_CIJL_TShirt = "CIJL Leather T-Shirt",
+    ItemName_CIJL_Shirt = "CIJL Leather Sweater",
+    ItemName_CIJL_Jacket = "CIJL Leather Jacket",
+    ItemName_CIJL_Pants = "CIJL Leather Pants",
+    ItemName_CIJL_MechLimbs = "CIJL Mechanic Limbs",
+}

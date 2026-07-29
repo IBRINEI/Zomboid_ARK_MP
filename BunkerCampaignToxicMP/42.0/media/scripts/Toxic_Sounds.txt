@@ -1,0 +1,81 @@
+module Base
+{
+	sound GeigerCounter
+	{
+		category = Player,
+		loop = false,
+		clip
+		{
+			file = media/sound/GeigerCounter.wav,
+			distanceMin = 5,
+			distanceMax = 10,
+			volume = 0.2,
+		}
+	}
+
+	sound GeigerCounter2
+	{
+		category = Player,
+		loop = false,
+		clip
+		{
+			file = media/sound/GeigerCounter2.wav,
+			distanceMin = 5,
+			distanceMax = 10,
+			volume = 0.2,
+		}
+	}
+
+	sound GeigerCounter3
+	{
+		category = Player,
+		loop = false,
+		clip
+		{
+			file = media/sound/GeigerCounter3.wav,
+			distanceMin = 5,
+			distanceMax = 10,
+			volume = 0.2,
+		}
+	}
+
+	sound GeigerCounter4
+	{
+		category = Player,
+		loop = false,
+		clip
+		{
+			file = media/sound/GeigerCounter4.wav,
+			distanceMin = 5,
+			distanceMax = 10,
+			volume = 0.2,
+		}
+	}
+
+	sound GeigerCounterWeak
+	{
+		category = Player,
+		loop = false,
+		clip
+		{
+			file = media/sound/GeigerCounterWeak.wav,
+			distanceMin = 5,
+			distanceMax = 10,
+			volume = 0.2,
+		}
+	}
+
+	sound GeigerCounterWeak2
+	{
+		category = Player,
+		loop = false,
+		clip
+		{
+			file = media/sound/GeigerCounterWeak2.wav,
+			distanceMin = 5,
+			distanceMax = 10,
+			volume = 0.2,
+		}
+	}
+
+}

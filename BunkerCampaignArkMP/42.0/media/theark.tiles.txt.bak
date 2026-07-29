@@ -1,0 +1,3192 @@
+version = 1
+tileset
+{
+    file = appliances_com_01_on
+    size = 8,20
+    id = 7
+}
+tileset
+{
+    file = floors_ash_01
+    size = 8,5
+    id = 6
+    // floors_ash_01_0
+    tile
+    {
+        xy = 0,0
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_1
+    tile
+    {
+        xy = 1,0
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_2
+    tile
+    {
+        xy = 2,0
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_3
+    tile
+    {
+        xy = 3,0
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_4
+    tile
+    {
+        xy = 4,0
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_5
+    tile
+    {
+        xy = 5,0
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_6
+    tile
+    {
+        xy = 6,0
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_7
+    tile
+    {
+        xy = 7,0
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_8
+    tile
+    {
+        xy = 0,1
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_9
+    tile
+    {
+        xy = 1,1
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_10
+    tile
+    {
+        xy = 2,1
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_11
+    tile
+    {
+        xy = 3,1
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_12
+    tile
+    {
+        xy = 4,1
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_13
+    tile
+    {
+        xy = 5,1
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_14
+    tile
+    {
+        xy = 6,1
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_15
+    tile
+    {
+        xy = 7,1
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_16
+    tile
+    {
+        xy = 0,2
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_17
+    tile
+    {
+        xy = 1,2
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_18
+    tile
+    {
+        xy = 2,2
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_19
+    tile
+    {
+        xy = 3,2
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_20
+    tile
+    {
+        xy = 4,2
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_21
+    tile
+    {
+        xy = 5,2
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_22
+    tile
+    {
+        xy = 6,2
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_23
+    tile
+    {
+        xy = 7,2
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_24
+    tile
+    {
+        xy = 0,3
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_25
+    tile
+    {
+        xy = 1,3
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_26
+    tile
+    {
+        xy = 2,3
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_27
+    tile
+    {
+        xy = 3,3
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_28
+    tile
+    {
+        xy = 4,3
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_29
+    tile
+    {
+        xy = 5,3
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_30
+    tile
+    {
+        xy = 6,3
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_31
+    tile
+    {
+        xy = 7,3
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_32
+    tile
+    {
+        xy = 0,4
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_33
+    tile
+    {
+        xy = 1,4
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_34
+    tile
+    {
+        xy = 2,4
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_35
+    tile
+    {
+        xy = 3,4
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_36
+    tile
+    {
+        xy = 4,4
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_37
+    tile
+    {
+        xy = 5,4
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_38
+    tile
+    {
+        xy = 6,4
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_ash_01_39
+    tile
+    {
+        xy = 7,4
+        CustomName = Ash
+        IsMoveAble = 
+        MoveType = FloorRug
+        PickUpWeight = 2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+}
+tileset
+{
+    file = floors_rugs_burnt_01
+    size = 8,17
+    id = 10
+    // floors_rugs_burnt_01_0
+    tile
+    {
+        xy = 0,0
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_1
+    tile
+    {
+        xy = 1,0
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_2
+    tile
+    {
+        xy = 2,0
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_3
+    tile
+    {
+        xy = 3,0
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_4
+    tile
+    {
+        xy = 4,0
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_5
+    tile
+    {
+        xy = 5,0
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_6
+    tile
+    {
+        xy = 6,0
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_7
+    tile
+    {
+        xy = 7,0
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_8
+    tile
+    {
+        xy = 0,1
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_9
+    tile
+    {
+        xy = 1,1
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_10
+    tile
+    {
+        xy = 2,1
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_11
+    tile
+    {
+        xy = 3,1
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_12
+    tile
+    {
+        xy = 4,1
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_13
+    tile
+    {
+        xy = 5,1
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_14
+    tile
+    {
+        xy = 6,1
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_15
+    tile
+    {
+        xy = 7,1
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_16
+    tile
+    {
+        xy = 0,2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_17
+    tile
+    {
+        xy = 1,2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_18
+    tile
+    {
+        xy = 2,2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_19
+    tile
+    {
+        xy = 3,2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_20
+    tile
+    {
+        xy = 4,2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_21
+    tile
+    {
+        xy = 5,2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_22
+    tile
+    {
+        xy = 6,2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_23
+    tile
+    {
+        xy = 7,2
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_24
+    tile
+    {
+        xy = 0,3
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_25
+    tile
+    {
+        xy = 1,3
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_26
+    tile
+    {
+        xy = 2,3
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_27
+    tile
+    {
+        xy = 3,3
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_28
+    tile
+    {
+        xy = 4,3
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_29
+    tile
+    {
+        xy = 5,3
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_30
+    tile
+    {
+        xy = 6,3
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_31
+    tile
+    {
+        xy = 7,3
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_32
+    tile
+    {
+        xy = 0,4
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_33
+    tile
+    {
+        xy = 1,4
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_34
+    tile
+    {
+        xy = 2,4
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_35
+    tile
+    {
+        xy = 3,4
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_36
+    tile
+    {
+        xy = 4,4
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_37
+    tile
+    {
+        xy = 5,4
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_38
+    tile
+    {
+        xy = 6,4
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_39
+    tile
+    {
+        xy = 7,4
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_40
+    tile
+    {
+        xy = 0,5
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_41
+    tile
+    {
+        xy = 1,5
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_42
+    tile
+    {
+        xy = 2,5
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_43
+    tile
+    {
+        xy = 3,5
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_44
+    tile
+    {
+        xy = 4,5
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_45
+    tile
+    {
+        xy = 5,5
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_46
+    tile
+    {
+        xy = 6,5
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_47
+    tile
+    {
+        xy = 7,5
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_48
+    tile
+    {
+        xy = 0,6
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_49
+    tile
+    {
+        xy = 1,6
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_50
+    tile
+    {
+        xy = 2,6
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_51
+    tile
+    {
+        xy = 3,6
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_52
+    tile
+    {
+        xy = 4,6
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_53
+    tile
+    {
+        xy = 5,6
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_54
+    tile
+    {
+        xy = 6,6
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_55
+    tile
+    {
+        xy = 7,6
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_56
+    tile
+    {
+        xy = 0,7
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_57
+    tile
+    {
+        xy = 1,7
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_58
+    tile
+    {
+        xy = 2,7
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_59
+    tile
+    {
+        xy = 3,7
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_60
+    tile
+    {
+        xy = 4,7
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_61
+    tile
+    {
+        xy = 5,7
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_62
+    tile
+    {
+        xy = 6,7
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_63
+    tile
+    {
+        xy = 7,7
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_64
+    tile
+    {
+        xy = 0,8
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_65
+    tile
+    {
+        xy = 1,8
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_66
+    tile
+    {
+        xy = 2,8
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_67
+    tile
+    {
+        xy = 3,8
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_68
+    tile
+    {
+        xy = 4,8
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_69
+    tile
+    {
+        xy = 5,8
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_70
+    tile
+    {
+        xy = 6,8
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_71
+    tile
+    {
+        xy = 7,8
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_72
+    tile
+    {
+        xy = 0,9
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_73
+    tile
+    {
+        xy = 1,9
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_74
+    tile
+    {
+        xy = 2,9
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_75
+    tile
+    {
+        xy = 3,9
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_76
+    tile
+    {
+        xy = 4,9
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_77
+    tile
+    {
+        xy = 5,9
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_78
+    tile
+    {
+        xy = 6,9
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_79
+    tile
+    {
+        xy = 7,9
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_80
+    tile
+    {
+        xy = 0,10
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_81
+    tile
+    {
+        xy = 1,10
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_82
+    tile
+    {
+        xy = 2,10
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_83
+    tile
+    {
+        xy = 3,10
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_84
+    tile
+    {
+        xy = 4,10
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_85
+    tile
+    {
+        xy = 5,10
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_86
+    tile
+    {
+        xy = 6,10
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_87
+    tile
+    {
+        xy = 7,10
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_88
+    tile
+    {
+        xy = 0,11
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_89
+    tile
+    {
+        xy = 1,11
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_90
+    tile
+    {
+        xy = 2,11
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_91
+    tile
+    {
+        xy = 3,11
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_92
+    tile
+    {
+        xy = 4,11
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_93
+    tile
+    {
+        xy = 5,11
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_94
+    tile
+    {
+        xy = 6,11
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_95
+    tile
+    {
+        xy = 7,11
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_96
+    tile
+    {
+        xy = 0,12
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_97
+    tile
+    {
+        xy = 1,12
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_98
+    tile
+    {
+        xy = 2,12
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_99
+    tile
+    {
+        xy = 3,12
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_100
+    tile
+    {
+        xy = 4,12
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_101
+    tile
+    {
+        xy = 5,12
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_102
+    tile
+    {
+        xy = 6,12
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_103
+    tile
+    {
+        xy = 7,12
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_104
+    tile
+    {
+        xy = 0,13
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_105
+    tile
+    {
+        xy = 1,13
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_106
+    tile
+    {
+        xy = 2,13
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_107
+    tile
+    {
+        xy = 3,13
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_108
+    tile
+    {
+        xy = 4,13
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_109
+    tile
+    {
+        xy = 5,13
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_110
+    tile
+    {
+        xy = 6,13
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_111
+    tile
+    {
+        xy = 7,13
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_112
+    tile
+    {
+        xy = 0,14
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_113
+    tile
+    {
+        xy = 1,14
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_114
+    tile
+    {
+        xy = 2,14
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_115
+    tile
+    {
+        xy = 3,14
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_116
+    tile
+    {
+        xy = 4,14
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_117
+    tile
+    {
+        xy = 5,14
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_118
+    tile
+    {
+        xy = 6,14
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_119
+    tile
+    {
+        xy = 7,14
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_120
+    tile
+    {
+        xy = 0,15
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_121
+    tile
+    {
+        xy = 1,15
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_122
+    tile
+    {
+        xy = 2,15
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_123
+    tile
+    {
+        xy = 3,15
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_124
+    tile
+    {
+        xy = 4,15
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_125
+    tile
+    {
+        xy = 5,15
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_126
+    tile
+    {
+        xy = 6,15
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_127
+    tile
+    {
+        xy = 7,15
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_128
+    tile
+    {
+        xy = 0,16
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_129
+    tile
+    {
+        xy = 1,16
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_130
+    tile
+    {
+        xy = 2,16
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_131
+    tile
+    {
+        xy = 3,16
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_132
+    tile
+    {
+        xy = 4,16
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_133
+    tile
+    {
+        xy = 5,16
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_134
+    tile
+    {
+        xy = 6,16
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+    // floors_rugs_burnt_01_135
+    tile
+    {
+        xy = 7,16
+        RenderLayer = Floor
+        attachedFloor = 
+        solidfloor = 
+    }
+}
+tileset
+{
+    file = industry_02_on
+    size = 8,34
+    id = 9
+}
+tileset
+{
+    file = industry_burnt_02
+    size = 8,34
+    id = 12
+    // industry_burnt_02_0
+    tile
+    {
+        xy = 0,0
+        attachedCeiling = 
+    }
+    // industry_burnt_02_1
+    tile
+    {
+        xy = 1,0
+        attachedCeiling = 
+    }
+    // industry_burnt_02_2
+    tile
+    {
+        xy = 2,0
+        attachedCeiling = 
+    }
+    // industry_burnt_02_3
+    tile
+    {
+        xy = 3,0
+        attachedCeiling = 
+    }
+    // industry_burnt_02_4
+    tile
+    {
+        xy = 4,0
+        attachedCeiling = 
+    }
+    // industry_burnt_02_5
+    tile
+    {
+        xy = 5,0
+        attachedCeiling = 
+    }
+    // industry_burnt_02_6
+    tile
+    {
+        xy = 6,0
+        attachedCeiling = 
+    }
+    // industry_burnt_02_8
+    tile
+    {
+        xy = 0,1
+        BlocksPlacement = 
+        attachedW = 
+    }
+    // industry_burnt_02_9
+    tile
+    {
+        xy = 1,1
+        BlocksPlacement = 
+        attachedN = 
+    }
+    // industry_burnt_02_10
+    tile
+    {
+        xy = 2,1
+        BlocksPlacement = 
+        attachedE = 
+    }
+    // industry_burnt_02_11
+    tile
+    {
+        xy = 3,1
+        BlocksPlacement = 
+        attachedS = 
+    }
+    // industry_burnt_02_12
+    tile
+    {
+        xy = 4,1
+        attachedN = 
+    }
+    // industry_burnt_02_13
+    tile
+    {
+        xy = 5,1
+        attachedW = 
+    }
+    // industry_burnt_02_14
+    tile
+    {
+        xy = 6,1
+        attachedS = 
+    }
+    // industry_burnt_02_15
+    tile
+    {
+        xy = 7,1
+        attachedE = 
+    }
+    // industry_burnt_02_16
+    tile
+    {
+        xy = 0,2
+        BlocksPlacement = 
+        attachedW = 
+    }
+    // industry_burnt_02_17
+    tile
+    {
+        xy = 1,2
+        BlocksPlacement = 
+        attachedN = 
+    }
+    // industry_burnt_02_18
+    tile
+    {
+        xy = 2,2
+        BlocksPlacement = 
+        attachedE = 
+    }
+    // industry_burnt_02_19
+    tile
+    {
+        xy = 3,2
+        BlocksPlacement = 
+        attachedS = 
+    }
+    // industry_burnt_02_24
+    tile
+    {
+        xy = 0,3
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_25
+    tile
+    {
+        xy = 1,3
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_26
+    tile
+    {
+        xy = 2,3
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_27
+    tile
+    {
+        xy = 3,3
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_28
+    tile
+    {
+        xy = 4,3
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_29
+    tile
+    {
+        xy = 5,3
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_30
+    tile
+    {
+        xy = 6,3
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_31
+    tile
+    {
+        xy = 7,3
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_32
+    tile
+    {
+        xy = 0,4
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_33
+    tile
+    {
+        xy = 1,4
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_34
+    tile
+    {
+        xy = 2,4
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_35
+    tile
+    {
+        xy = 3,4
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_36
+    tile
+    {
+        xy = 4,4
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_37
+    tile
+    {
+        xy = 5,4
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_38
+    tile
+    {
+        xy = 6,4
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_39
+    tile
+    {
+        xy = 7,4
+        BlocksPlacement = 
+    }
+    // industry_burnt_02_40
+    tile
+    {
+        xy = 0,5
+        BlocksPlacement = 
+        solidtrans = 
+    }
+    // industry_burnt_02_41
+    tile
+    {
+        xy = 1,5
+        BlocksPlacement = 
+        solidtrans = 
+    }
+    // industry_burnt_02_42
+    tile
+    {
+        xy = 2,5
+        BlocksPlacement = 
+        solidtrans = 
+    }
+    // industry_burnt_02_43
+    tile
+    {
+        xy = 3,5
+        BlocksPlacement = 
+        solidtrans = 
+    }
+    // industry_burnt_02_44
+    tile
+    {
+        xy = 4,5
+        BlocksPlacement = 
+        solidtrans = 
+    }
+    // industry_burnt_02_45
+    tile
+    {
+        xy = 5,5
+        BlocksPlacement = 
+        solidtrans = 
+    }
+    // industry_burnt_02_46
+    tile
+    {
+        xy = 6,5
+        BlocksPlacement = 
+        solidtrans = 
+    }
+    // industry_burnt_02_47
+    tile
+    {
+        xy = 7,5
+        BlocksPlacement = 
+        solidtrans = 
+    }
+    // industry_burnt_02_48
+    tile
+    {
+        xy = 0,6
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_49
+    tile
+    {
+        xy = 1,6
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_50
+    tile
+    {
+        xy = 2,6
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_51
+    tile
+    {
+        xy = 3,6
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_52
+    tile
+    {
+        xy = 4,6
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_53
+    tile
+    {
+        xy = 5,6
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_54
+    tile
+    {
+        xy = 6,6
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_55
+    tile
+    {
+        xy = 7,6
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_62
+    tile
+    {
+        xy = 6,7
+        BlocksPlacement = 
+        solidtrans = 
+    }
+    // industry_burnt_02_63
+    tile
+    {
+        xy = 7,7
+        BlocksPlacement = 
+        solidtrans = 
+    }
+    // industry_burnt_02_64
+    tile
+    {
+        xy = 0,8
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_65
+    tile
+    {
+        xy = 1,8
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_66
+    tile
+    {
+        xy = 2,8
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_67
+    tile
+    {
+        xy = 3,8
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_68
+    tile
+    {
+        xy = 4,8
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_69
+    tile
+    {
+        xy = 5,8
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_70
+    tile
+    {
+        xy = 6,8
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_71
+    tile
+    {
+        xy = 7,8
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_72
+    tile
+    {
+        xy = 0,9
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_73
+    tile
+    {
+        xy = 1,9
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_74
+    tile
+    {
+        xy = 2,9
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_75
+    tile
+    {
+        xy = 3,9
+        BlocksPlacement = 
+        solid = 
+    }
+    // industry_burnt_02_76
+    tile
+    {
+        xy = 4,9
+        solid = 
+    }
+    // industry_burnt_02_77
+    tile
+    {
+        xy = 5,9
+        solid = 
+    }
+    // industry_burnt_02_78
+    tile
+    {
+        xy = 6,9
+        solid = 
+    }
+    // industry_burnt_02_79
+    tile
+    {
+        xy = 7,9
+        solid = 
+    }
+    // industry_burnt_02_80
+    tile
+    {
+        xy = 0,10
+        solidtrans = 
+    }
+    // industry_burnt_02_81
+    tile
+    {
+        xy = 1,10
+        solidtrans = 
+    }
+    // industry_burnt_02_82
+    tile
+    {
+        xy = 2,10
+        solidtrans = 
+    }
+    // industry_burnt_02_83
+    tile
+    {
+        xy = 3,10
+        solidtrans = 
+    }
+    // industry_burnt_02_84
+    tile
+    {
+        xy = 4,10
+        WallNWTrans = 
+        wall = 
+    }
+    // industry_burnt_02_85
+    tile
+    {
+        xy = 5,10
+        solidtrans = 
+    }
+    // industry_burnt_02_86
+    tile
+    {
+        xy = 6,10
+        solidtrans = 
+    }
+    // industry_burnt_02_87
+    tile
+    {
+        xy = 7,10
+        solidtrans = 
+    }
+    // industry_burnt_02_264
+    tile
+    {
+        xy = 0,33
+        BlocksPlacement = 
+        Surface = 30
+        solidtrans = 
+    }
+    // industry_burnt_02_265
+    tile
+    {
+        xy = 1,33
+        BlocksPlacement = 
+        Surface = 30
+        solidtrans = 
+    }
+    // industry_burnt_02_266
+    tile
+    {
+        xy = 2,33
+        BlocksPlacement = 
+        Surface = 30
+        solidtrans = 
+    }
+    // industry_burnt_02_267
+    tile
+    {
+        xy = 3,33
+        BlocksPlacement = 
+        Surface = 30
+        solidtrans = 
+    }
+    // industry_burnt_02_268
+    tile
+    {
+        xy = 4,33
+        BlocksPlacement = 
+        solidtrans = 
+    }
+    // industry_burnt_02_269
+    tile
+    {
+        xy = 5,33
+        BlocksPlacement = 
+        solidtrans = 
+    }
+    // industry_burnt_02_270
+    tile
+    {
+        xy = 6,33
+        BlocksPlacement = 
+        solidtrans = 
+    }
+    // industry_burnt_02_271
+    tile
+    {
+        xy = 7,33
+        BlocksPlacement = 
+        solidtrans = 
+    }
+}
+tileset
+{
+    file = recreational_burnt_01
+    size = 8,12
+    id = 11
+    // recreational_burnt_01_0
+    tile
+    {
+        xy = 0,0
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 40
+        solidtrans = 
+    }
+    // recreational_burnt_01_1
+    tile
+    {
+        xy = 1,0
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 40
+        solidtrans = 
+    }
+    // recreational_burnt_01_2
+    tile
+    {
+        xy = 2,0
+        BlocksPlacement = 
+        IsLow = 
+        Surface = 34
+        solidtrans = 
+    }
+    // recreational_burnt_01_3
+    tile
+    {
+        xy = 3,0
+        BlocksPlacement = 
+        IsLow = 
+        Surface = 34
+        solidtrans = 
+    }
+    // recreational_burnt_01_4
+    tile
+    {
+        xy = 4,0
+        IsTable = 
+    }
+    // recreational_burnt_01_5
+    tile
+    {
+        xy = 5,0
+        IsTable = 
+    }
+    // recreational_burnt_01_6
+    tile
+    {
+        xy = 6,0
+        BlocksPlacement = 
+        IsLow = 
+        Surface = 34
+        solidtrans = 
+    }
+    // recreational_burnt_01_7
+    tile
+    {
+        xy = 7,0
+        BlocksPlacement = 
+        IsLow = 
+        Surface = 34
+        solidtrans = 
+    }
+    // recreational_burnt_01_8
+    tile
+    {
+        xy = 0,1
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 40
+        solidtrans = 
+    }
+    // recreational_burnt_01_9
+    tile
+    {
+        xy = 1,1
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 40
+        solidtrans = 
+    }
+    // recreational_burnt_01_10
+    tile
+    {
+        xy = 2,1
+        IsLow = 
+        ItemHeight = 20
+    }
+    // recreational_burnt_01_11
+    tile
+    {
+        xy = 3,1
+        IsLow = 
+        ItemHeight = 20
+    }
+    // recreational_burnt_01_12
+    tile
+    {
+        xy = 4,1
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 40
+        solidtrans = 
+    }
+    // recreational_burnt_01_13
+    tile
+    {
+        xy = 5,1
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 40
+        solidtrans = 
+    }
+    // recreational_burnt_01_14
+    tile
+    {
+        xy = 6,1
+        IsLow = 
+        ItemHeight = 20
+    }
+    // recreational_burnt_01_15
+    tile
+    {
+        xy = 7,1
+        IsLow = 
+        ItemHeight = 20
+    }
+    // recreational_burnt_01_16
+    tile
+    {
+        xy = 0,2
+        BlocksPlacement = 
+        IsLow = 
+        solid = 
+    }
+    // recreational_burnt_01_17
+    tile
+    {
+        xy = 1,2
+        BlocksPlacement = 
+        IsLow = 
+        solid = 
+    }
+    // recreational_burnt_01_18
+    tile
+    {
+        xy = 2,2
+        BlocksPlacement = 
+        IsLow = 
+        solid = 
+    }
+    // recreational_burnt_01_19
+    tile
+    {
+        xy = 3,2
+        BlocksPlacement = 
+        IsLow = 
+        solid = 
+    }
+    // recreational_burnt_01_20
+    tile
+    {
+        xy = 4,2
+        BlocksPlacement = 
+        IsLow = 
+        solid = 
+    }
+    // recreational_burnt_01_21
+    tile
+    {
+        xy = 5,2
+        BlocksPlacement = 
+        IsLow = 
+        solid = 
+    }
+    // recreational_burnt_01_22
+    tile
+    {
+        xy = 6,2
+        BlocksPlacement = 
+        IsLow = 
+        solid = 
+    }
+    // recreational_burnt_01_23
+    tile
+    {
+        xy = 7,2
+        BlocksPlacement = 
+        IsLow = 
+        solid = 
+    }
+    // recreational_burnt_01_24
+    tile
+    {
+        xy = 0,3
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 34
+        solidtrans = 
+    }
+    // recreational_burnt_01_25
+    tile
+    {
+        xy = 1,3
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 34
+        solidtrans = 
+    }
+    // recreational_burnt_01_26
+    tile
+    {
+        xy = 2,3
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 34
+        solidtrans = 
+    }
+    // recreational_burnt_01_27
+    tile
+    {
+        xy = 3,3
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 34
+        solidtrans = 
+    }
+    // recreational_burnt_01_40
+    tile
+    {
+        xy = 0,5
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 44
+        solidtrans = 
+    }
+    // recreational_burnt_01_41
+    tile
+    {
+        xy = 1,5
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 44
+        solidtrans = 
+    }
+    // recreational_burnt_01_42
+    tile
+    {
+        xy = 2,5
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 44
+        solidtrans = 
+    }
+    // recreational_burnt_01_43
+    tile
+    {
+        xy = 3,5
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 44
+        solidtrans = 
+    }
+    // recreational_burnt_01_44
+    tile
+    {
+        xy = 4,5
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 44
+        solidtrans = 
+    }
+    // recreational_burnt_01_45
+    tile
+    {
+        xy = 5,5
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 44
+        solidtrans = 
+    }
+    // recreational_burnt_01_48
+    tile
+    {
+        xy = 0,6
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 44
+        solidtrans = 
+    }
+    // recreational_burnt_01_49
+    tile
+    {
+        xy = 1,6
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 44
+        solidtrans = 
+    }
+    // recreational_burnt_01_50
+    tile
+    {
+        xy = 2,6
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 44
+        solidtrans = 
+    }
+    // recreational_burnt_01_51
+    tile
+    {
+        xy = 3,6
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 44
+        solidtrans = 
+    }
+    // recreational_burnt_01_52
+    tile
+    {
+        xy = 4,6
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 44
+        solidtrans = 
+    }
+    // recreational_burnt_01_53
+    tile
+    {
+        xy = 5,6
+        BlocksPlacement = 
+        IsLow = 
+        ItemHeight = 44
+        solidtrans = 
+    }
+    // recreational_burnt_01_56
+    tile
+    {
+        xy = 0,7
+        solidtrans = 
+    }
+    // recreational_burnt_01_59
+    tile
+    {
+        xy = 3,7
+        solidtrans = 
+    }
+    // recreational_burnt_01_64
+    tile
+    {
+        xy = 0,8
+        solidtrans = 
+    }
+    // recreational_burnt_01_67
+    tile
+    {
+        xy = 3,8
+        solidtrans = 
+    }
+    // recreational_burnt_01_76
+    tile
+    {
+        xy = 4,9
+        solidtrans = 
+    }
+    // recreational_burnt_01_77
+    tile
+    {
+        xy = 5,9
+        solidtrans = 
+    }
+    // recreational_burnt_01_78
+    tile
+    {
+        xy = 6,9
+        solidtrans = 
+    }
+    // recreational_burnt_01_79
+    tile
+    {
+        xy = 7,9
+        solidtrans = 
+    }
+    // recreational_burnt_01_80
+    tile
+    {
+        xy = 0,10
+        solidtrans = 
+    }
+    // recreational_burnt_01_81
+    tile
+    {
+        xy = 1,10
+        solidtrans = 
+    }
+    // recreational_burnt_01_82
+    tile
+    {
+        xy = 2,10
+        solidtrans = 
+    }
+    // recreational_burnt_01_83
+    tile
+    {
+        xy = 3,10
+        solidtrans = 
+    }
+    // recreational_burnt_01_88
+    tile
+    {
+        xy = 0,11
+        RenderLayer = Floor
+        solidfloor = 
+    }
+    // recreational_burnt_01_89
+    tile
+    {
+        xy = 1,11
+        RenderLayer = Floor
+        solidfloor = 
+    }
+    // recreational_burnt_01_90
+    tile
+    {
+        xy = 2,11
+        RenderLayer = Floor
+        solidfloor = 
+    }
+    // recreational_burnt_01_91
+    tile
+    {
+        xy = 3,11
+        RenderLayer = Floor
+        solidfloor = 
+    }
+    // recreational_burnt_01_92
+    tile
+    {
+        xy = 4,11
+        RenderLayer = Floor
+        solidfloor = 
+    }
+    // recreational_burnt_01_93
+    tile
+    {
+        xy = 5,11
+        RenderLayer = Floor
+        solidfloor = 
+    }
+    // recreational_burnt_01_94
+    tile
+    {
+        xy = 6,11
+        RenderLayer = Floor
+        solidfloor = 
+    }
+}
+tileset
+{
+    file = security_01_on
+    size = 8,1
+    id = 8
+}
+tileset
+{
+    file = theark_01
+    size = 8,4
+    id = 1
+    // theark_01_0
+    tile
+    {
+        xy = 0,0
+        BlocksPlacement = 
+        GroupName = ElectricBox
+        Material = Electric
+        Material2 = MetalScrap
+        solid = 
+    }
+    // theark_01_1
+    tile
+    {
+        xy = 1,0
+        BlocksPlacement = 
+        GroupName = ElectricBox
+        Material = Electric
+        Material2 = MetalScrap
+        solid = 
+    }
+    // theark_01_2
+    tile
+    {
+        xy = 2,0
+        BlocksPlacement = 
+        GroupName = ElectricBox
+        Material = Electric
+        Material2 = MetalScrap
+        solid = 
+    }
+    // theark_01_3
+    tile
+    {
+        xy = 3,0
+        BlocksPlacement = 
+        GroupName = ElectricBox
+        Material = Electric
+        Material2 = MetalScrap
+        solid = 
+    }
+    // theark_01_4
+    tile
+    {
+        xy = 4,0
+        BlocksPlacement = 
+        GroupName = ElectricBox
+        Material = Electric
+        Material2 = MetalScrap
+        solid = 
+    }
+    // theark_01_5
+    tile
+    {
+        xy = 5,0
+        BlocksPlacement = 
+        CustomName = AirVent
+        Material = MetalScrap
+        solid = 
+    }
+    // theark_01_6
+    tile
+    {
+        xy = 6,0
+        BlocksPlacement = 
+        CustomName = AirVent
+        Material = MetalScrap
+        solid = 
+    }
+    // theark_01_7
+    tile
+    {
+        xy = 7,0
+        BlocksPlacement = 
+        CustomName = FuelIntake
+        Material = MetalScrap
+        solid = 
+    }
+    // theark_01_8
+    tile
+    {
+        xy = 0,1
+        BlocksPlacement = 
+        ContainerCapacity = 50
+        CustomName = Incinerator
+        GroupName = Incinerator
+        IsTrashCan = 
+        Material = MetalPlates
+        Material2 = MetalScrap
+        container = campfire
+        solid = 
+    }
+    // theark_01_9
+    tile
+    {
+        xy = 1,1
+        BlocksPlacement = 
+        ContainerCapacity = 50
+        CustomName = Incinerator
+        GroupName = Incinerator
+        IsTrashCan = 
+        Material = MetalPlates
+        Material2 = MetalScrap
+        container = campfire
+        solid = 
+    }
+    // theark_01_10
+    tile
+    {
+        xy = 2,1
+        BlocksPlacement = 
+        ContainerCapacity = 50
+        CustomName = Incinerator
+        GroupName = Incinerator
+        IsTrashCan = 
+        Material = MetalPlates
+        Material2 = MetalScrap
+        container = campfire
+        solid = 
+    }
+    // theark_01_11
+    tile
+    {
+        xy = 3,1
+        BlocksPlacement = 
+        ContainerCapacity = 50
+        CustomName = Incinerator
+        GroupName = Incinerator
+        IsTrashCan = 
+        Material = MetalPlates
+        Material2 = MetalScrap
+        container = campfire
+        solid = 
+    }
+    // theark_01_12
+    tile
+    {
+        xy = 4,1
+        BlocksPlacement = 
+        ContainerCapacity = 50
+        CustomName = Incinerator
+        GroupName = Incinerator
+        IsTrashCan = 
+        Material = MetalPlates
+        Material2 = MetalScrap
+        container = campfire
+        solid = 
+    }
+    // theark_01_13
+    tile
+    {
+        xy = 5,1
+        BlocksPlacement = 
+        CustomItem = BanditsGenerator_Silent
+        CustomName = Generator
+        GeneratorSound = OldGenerator
+        GroupName = Silent
+    }
+    // theark_01_14
+    tile
+    {
+        xy = 6,1
+        CustomName = AutoLock
+        GroupName = AdvancedCybernetics
+        LightRadius = 1
+        attachedN = 
+        lightR = 8
+        lightswitch = 
+    }
+    // theark_01_15
+    tile
+    {
+        xy = 7,1
+        CustomName = AutoLock
+        GroupName = AdvancedCybernetics
+        LightRadius = 1
+        attachedN = 
+        lightB = 8
+        lightswitch = 
+    }
+    // theark_01_20
+    tile
+    {
+        xy = 4,2
+        BlocksPlacement = 
+        CustomName = Noah
+        GroupName = AdvancedCybernetics
+        LightRadius = 1
+        Material = Electric
+        lightB = 4
+        lightG = 4
+        lightR = 8
+        lightswitch = 
+        solid = 
+    }
+    // theark_01_24
+    tile
+    {
+        xy = 0,3
+        BlocksPlacement = 
+        CustomName = Station
+        GroupName = Filter
+        IsLow = 
+        solidtrans = 
+    }
+    // theark_01_25
+    tile
+    {
+        xy = 1,3
+        WallN = 
+        wall = 
+    }
+    // theark_01_26
+    tile
+    {
+        xy = 2,3
+        CustomName = Window
+        Facing = N
+        GlassRemovedOffset = 2
+        GroupName = Chute
+        IsClosedState = 
+        IsMoveAble = 
+        MaterialType = Metal
+        MoveType = Window
+        OpenTileOffset = 2
+        PickUpTool = Crowbar
+        PickUpWeight = 200
+        PlaceTool = Crowbar
+        SmashedTileOffset = 2
+        windowN = 
+    }
+    // theark_01_27
+    tile
+    {
+        xy = 3,3
+        CustomName = Window
+        Facing = N
+        GroupName = Chute
+        IsMoveAble = 
+        MaterialType = Metal
+        MoveType = Window
+        PickUpTool = Crowbar
+        PickUpWeight = 200
+        PlaceTool = Crowbar
+    }
+    // theark_01_28
+    tile
+    {
+        xy = 4,3
+        CustomName = Window
+        Facing = N
+        GroupName = Chute
+        IsMoveAble = 
+        MaterialType = Metal
+        MoveType = Window
+        PickUpTool = Crowbar
+        PickUpWeight = 200
+        PlaceTool = Crowbar
+    }
+}
+tileset
+{
+    file = theark_01_on
+    size = 8,4
+    id = 2
+    // theark_01_on_0
+    tile
+    {
+        xy = 0,0
+        LightRadius = 2
+        lightB = 50
+        lightG = 100
+        lightR = 70
+        lightswitch = 
+    }
+    // theark_01_on_1
+    tile
+    {
+        xy = 1,0
+        LightRadius = 2
+        lightB = 60
+        lightG = 100
+        lightR = 80
+        lightswitch = 
+    }
+    // theark_01_on_2
+    tile
+    {
+        xy = 2,0
+        LightRadius = 2
+        lightB = 80
+        lightG = 90
+        lightR = 100
+        lightswitch = 
+    }
+    // theark_01_on_3
+    tile
+    {
+        xy = 3,0
+        LightRadius = 2
+        lightB = 10
+        lightG = 30
+        lightR = 80
+        lightswitch = 
+    }
+    // theark_01_on_4
+    tile
+    {
+        xy = 4,0
+        LightRadius = 2
+        lightB = 10
+        lightG = 100
+        lightR = 100
+        lightswitch = 
+    }
+}
+tileset
+{
+    file = theark_02
+    size = 8,8
+    id = 3
+    // theark_02_0
+    tile
+    {
+        xy = 0,0
+        CustomName = Lava
+        IsLow = 
+        LightRadius = 2
+        PhysicsShape = Floor
+        RenderLayer = Floor
+        exterior = 
+        lightR = 255
+        lightswitch = 
+        solidfloor = 
+    }
+    // theark_02_1
+    tile
+    {
+        xy = 1,0
+        CustomName = Lava
+        IsLow = 
+        LightRadius = 2
+        PhysicsShape = Floor
+        RenderLayer = Floor
+        exterior = 
+        lightR = 255
+        lightswitch = 
+        solidfloor = 
+    }
+    // theark_02_2
+    tile
+    {
+        xy = 2,0
+        CustomName = Lava
+        IsLow = 
+        LightRadius = 2
+        PhysicsShape = Floor
+        RenderLayer = Floor
+        exterior = 
+        lightR = 255
+        lightswitch = 
+        solidfloor = 
+    }
+    // theark_02_3
+    tile
+    {
+        xy = 3,0
+        CustomName = Lava
+        IsLow = 
+        LightRadius = 2
+        PhysicsShape = Floor
+        RenderLayer = Floor
+        exterior = 
+        lightR = 255
+        lightswitch = 
+        solidfloor = 
+    }
+    // theark_02_4
+    tile
+    {
+        xy = 4,0
+        CustomName = Lava
+        IsLow = 
+        LightRadius = 2
+        PhysicsShape = Floor
+        RenderLayer = Floor
+        exterior = 
+        lightR = 255
+        lightswitch = 
+        solidfloor = 
+    }
+    // theark_02_5
+    tile
+    {
+        xy = 5,0
+        CustomName = Waste
+        IsLow = 
+        Movement = HedgeLow
+        PhysicsShape = Floor
+        alwaysDraw = 
+        forceRender = 
+    }
+    // theark_02_8
+    tile
+    {
+        xy = 0,1
+        CustomName = Lava
+        IsLow = 
+        LightRadius = 2
+        PhysicsShape = Floor
+        RenderLayer = Floor
+        exterior = 
+        lightR = 255
+        lightswitch = 
+        solidfloor = 
+    }
+    // theark_02_9
+    tile
+    {
+        xy = 1,1
+        CustomName = Lava
+        IsLow = 
+        LightRadius = 2
+        PhysicsShape = Floor
+        RenderLayer = Floor
+        exterior = 
+        lightR = 255
+        lightswitch = 
+        solidfloor = 
+    }
+    // theark_02_10
+    tile
+    {
+        xy = 2,1
+        CustomName = Lava
+        IsLow = 
+        LightRadius = 2
+        PhysicsShape = Floor
+        RenderLayer = Floor
+        exterior = 
+        lightR = 255
+        lightswitch = 
+        solidfloor = 
+    }
+    // theark_02_11
+    tile
+    {
+        xy = 3,1
+        CustomName = Lava
+        IsLow = 
+        LightRadius = 2
+        PhysicsShape = Floor
+        RenderLayer = Floor
+        exterior = 
+        lightR = 255
+        lightswitch = 
+        solidfloor = 
+    }
+}
+tileset
+{
+    file = theark_02_on
+    size = 8,8
+    id = 4
+}
+tileset
+{
+    file = theark_03
+    size = 8,14
+    id = 13
+    // theark_03_16
+    tile
+    {
+        xy = 0,2
+        CustomName = Flag
+        Facing = S
+        GroupName = Council
+        IsHigh = 
+        IsMoveAble = 
+        MoveType = WallObject
+        PickUpWeight = 30
+        WallOverlay = 
+        attachedN = 
+    }
+    // theark_03_33
+    tile
+    {
+        xy = 1,4
+        BlocksPlacement = 
+        CanScrap = 
+        CustomName = Clock
+        Facing = W
+        GroupName = Standing
+        IsMoveAble = 
+        Material = Wood
+        PickUpWeight = 75
+        solidtrans = 
+    }
+    // theark_03_34
+    tile
+    {
+        xy = 2,4
+        BlocksPlacement = 
+        CanScrap = 
+        CustomName = Clock
+        Facing = N
+        GroupName = Standing
+        IsMoveAble = 
+        Material = Wood
+        PickUpWeight = 75
+        solidtrans = 
+    }
+}
+tileset
+{
+    file = theark_04
+    size = 8,16
+    id = 14
+    // theark_04_10
+    tile
+    {
+        xy = 2,1
+        BedType = badBed
+        BlocksPlacement = 
+        CustomName = Bed
+        GroupName = Blood
+        IsLow = 
+        Surface = 26
+        bed = 
+        solidtrans = 
+    }
+    // theark_04_11
+    tile
+    {
+        xy = 3,1
+        BedType = badBed
+        BlocksPlacement = 
+        CustomName = Bed
+        GroupName = Blood
+        IsLow = 
+        Surface = 26
+        bed = 
+        solidtrans = 
+    }
+    // theark_04_94
+    tile
+    {
+        xy = 6,11
+        solidtrans = 
+    }
+    // theark_04_95
+    tile
+    {
+        xy = 7,11
+        solidtrans = 
+    }
+}

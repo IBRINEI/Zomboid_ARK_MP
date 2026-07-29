@@ -1,0 +1,1405 @@
+module Base
+{
+
+	item CS2aGasMask
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = CS-2a Gas Mask,
+			ClothingItem = CS2aGasMask,
+			BodyLocation = base:maskeyes,
+			Icon = CS2aMask,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			WorldStaticModel = SteelMask,
+		}
+
+	item CS2aGasMaskNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = CS-2a Gas Mask (No Filter),
+			ClothingItem = CS2aGasMaskNoFilter,
+			BodyLocation = base:maskeyes,
+			Icon = CS2aMaskNoFilter,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = SteelMaskNoFilter,
+		}
+
+	item Exohelm
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Exohelm,
+			ClothingItem = Exohelm,
+			BodyLocation = base:hat,
+			Icon = Exohelm,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.30,
+			WaterResistance = 0.2,
+			Weight = 0.4,
+			WorldStaticModel = Exohelm,
+		}
+
+	item ExohelmBandit
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Exohelm (Bandit),
+			ClothingItem = ExohelmBandit,
+			BodyLocation = base:hat,
+			Icon = ExohelmBandit,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.30,
+			WaterResistance = 0.2,
+			Weight = 0.4,
+			WorldStaticModel = ExohelmBandit,
+		}
+
+	item ExohelmCS
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Exohelm (Clear Sky),
+			ClothingItem = ExohelmCS,
+			BodyLocation = base:hat,
+			Icon = ExohelmCS,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.30,
+			WaterResistance = 0.2,
+			Weight = 0.4,
+			WorldStaticModel = ExohelmCS,
+		}
+
+	item ExohelmDuty
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Exohelm (Duty),
+			ClothingItem = ExohelmDuty,
+			BodyLocation = base:hat,
+			Icon = ExohelmDuty,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.30,
+			WaterResistance = 0.2,
+			Weight = 0.4,
+			WorldStaticModel = ExohelmDuty,
+		}
+
+	item ExohelmEcologists
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Exohelm (Ecologists),
+			ClothingItem = ExohelmEcologists,
+			BodyLocation = base:hat,
+			Icon = Exohelm,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = Exohelm,
+		}
+
+	item ExohelmFreedom
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Exohelm (Freedom),
+			ClothingItem = ExohelmFreedom,
+			BodyLocation = base:hat,
+			Icon = ExohelmFreedom,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.30,
+			WaterResistance = 0.2,
+			Weight = 0.4,
+			WorldStaticModel = ExohelmFreedom,
+		}
+
+	item ExohelmLoner
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Exohelm (Loner),
+			ClothingItem = ExohelmLoner,
+			BodyLocation = base:hat,
+			Icon = Exohelm,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = ExohelmLoner,
+		}
+
+	item ExohelmMercs
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Exohelm (Mercenaries),
+			ClothingItem = ExohelmMercs,
+			BodyLocation = base:hat,
+			Icon = ExohelmMercs,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.30,
+			WaterResistance = 0.2,
+			Weight = 0.4,
+			WorldStaticModel = ExohelmMercs,
+		}
+
+	item ExohelmMilitary
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Exohelm (Military),
+			ClothingItem = ExohelmMilitary,
+			BodyLocation = base:hat,
+			Icon = ExohelmMilitary,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.30,
+			WaterResistance = 0.2,
+			Weight = 0.4,
+			WorldStaticModel = ExohelmMilitary,
+		}
+
+	item ExohelmMonolith
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Exohelm (Monolith),
+			ClothingItem = ExohelmMonolith,
+			BodyLocation = base:hat,
+			Icon = ExohelmMonolith,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.30,
+			WaterResistance = 0.2,
+			Weight = 0.4,
+			WorldStaticModel = ExohelmMonolith,
+		}
+
+	item FaceMask
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Face Mask (Black),
+			ClothingItem = FaceMask,
+			BodyLocation = Stalker:FaceMask,
+			Icon = FaceMask,
+			CanHaveHoles = false,
+			Weight = 0.2,
+			Insulation = 0.2,
+	        WindResistance = 0.2,
+			WorldStaticModel = FaceMaskGround,
+		}
+
+	item GP10Z
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = GP10z Gas Mask,
+			ClothingItem = GP10Z,
+			BodyLocation = base:maskeyes,
+			Icon = GP10Z,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			WorldStaticModel = GP10Z,
+			Weight = 0.2,
+		}
+
+	item GP10ZNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = GP10z Gas Mask (No Filter),
+			ClothingItem = GP10ZNoFilter,
+			BodyLocation = base:maskeyes,
+			Icon = GP10ZNoFilter,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = GP10ZNoFilter,
+		}
+
+	item GP5GasMask
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = GP5 Gas Mask,
+			ClothingItem = GP5GasMask,
+			BodyLocation = base:maskeyes,
+			Icon = GP5GasMask,
+			CanHaveHoles = false,
+	        BloodLocation = Head,
+	        Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			WorldStaticModel = GP5GasMaskGround,
+		}
+
+	item GP5GasMaskNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = GP5 Gas Mask (No Filter),
+			ClothingItem = GP5GasMaskNoFilter,
+			BodyLocation = base:maskeyes,
+			Icon = GP5GasMaskNoFilter,
+			CanHaveHoles = false,
+	        BloodLocation = Head,
+	        Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			WorldStaticModel = GP5GasMaskNoFilterGround,
+		}
+
+	item M40GasMask
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = M40 Gas Mask,
+			ClothingItem = M40GasMask,
+			BodyLocation = base:maskeyes,
+			Icon = M40GasMask,
+			CanHaveHoles = false,
+	        BloodLocation = Head,
+	        Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			WorldStaticModel = M40GasMaskGround,
+		}
+
+	item M40GasMaskNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = M40 Gas Mask (No Filter),
+			ClothingItem = M40GasMaskNoFilter,
+			BodyLocation = base:maskeyes,
+			Icon = M40GasMaskNoFilter,
+			CanHaveHoles = false,
+	        BloodLocation = Head,
+	        Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			WorldStaticModel = M40GasMaskNoFilterGround,
+		}
+
+	item PBF1
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask,
+			ClothingItem = PBF1,
+			BodyLocation = base:maskeyes,
+			Icon = PBF1,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			WorldStaticModel = PBF1,
+		}
+
+	item PBF1CS
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask (Clear Sky),
+			ClothingItem = PBF1CS,
+			BodyLocation = base:maskeyes,
+			Icon = PBF1CS,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			WorldStaticModel = PBF1CS,
+		}
+
+	item PBF1CSNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask (Clear Sky) (No Filter),
+			ClothingItem = PBF1CSNoFilter,
+			BodyLocation = base:maskeyes,
+			Icon = PBF1CSNoFilter,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = PBF1CSNoFilter,
+		}
+
+	item PBF1Duty
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask (Duty),
+			ClothingItem = PBF1Duty,
+			BodyLocation = base:maskeyes,
+			Icon = PBF1Duty,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			WorldStaticModel = PBF1Duty,
+		}
+
+	item PBF1DutyNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask (Duty) (No Filter),
+			ClothingItem = PBF1DutyNoFilter,
+			BodyLocation = base:maskeyes,
+			Icon = PBF1DutyNoFilter,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = PBF1DutyNoFilter,
+		}
+
+	item PBF1Freedom
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask (Freedom),
+			ClothingItem = PBF1Freedom,
+			BodyLocation = base:maskeyes,
+			Icon = PBF1Freedom,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			WorldStaticModel = PBF1Freedom,
+		}
+
+	item PBF1FreedomNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask (Freedom) (No Filter),
+			ClothingItem = PBF1FreedomNoFilter,
+			BodyLocation = base:maskeyes,
+			Icon = PBF1FreedomNoFilter,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = PBF1FreedomNoFilter,
+		}
+
+	item PBF1NoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask (No Filter),
+			ClothingItem = PBF1NoFilter,
+			BodyLocation = base:maskeyes,
+			Icon = PBF1NoFilter,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = PBF1NoFilter,
+		}
+
+	item PBF2
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask,
+			ClothingItem = PBF2,
+			BodyLocation = base:maskeyes,
+			Icon = PBF2,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			WorldStaticModel = PBF2,
+		}
+
+	item PBF2CS
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask (Clear Sky),
+			ClothingItem = PBF2CS,
+			BodyLocation = base:maskeyes,
+			Icon = PBF2CS,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			WorldStaticModel = PBF2CS,
+		}
+
+	item PBF2CSNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask (Clear Sky) (No Filter),
+			ClothingItem = PBF2CSNoFilter,
+			BodyLocation = base:maskeyes,
+			Icon = PBF2CSNoFilter,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = PBF2CSNoFilter,
+		}
+
+	item PBF2Duty
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask (Duty),
+			ClothingItem = PBF2Duty,
+			BodyLocation = base:maskeyes,
+			Icon = PBF2Duty,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			WorldStaticModel = PBF2Duty,
+		}
+
+	item PBF2DutyNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask (Duty) (No Filter),
+			ClothingItem = PBF2DutyNoFilter,
+			BodyLocation = base:maskeyes,
+			Icon = PBF2DutyNoFilter,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = PBF2DutyNoFilter,
+		}
+
+	item PBF2Freedom
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask (Freedom),
+			ClothingItem = PBF2Freedom,
+			BodyLocation = base:maskeyes,
+			Icon = PBF2Freedom,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			WorldStaticModel = PBF2Freedom,
+		}
+
+	item PBF2FreedomNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask (Freedom) (No Filter),
+			ClothingItem = PBF2FreedomNoFilter,
+			BodyLocation = base:maskeyes,
+			Icon = PBF2FreedomNoFilter,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = PBF2FreedomNoFilter,
+		}
+
+	item PBF2NoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PBF Gas Mask (No Filter),
+			ClothingItem = PBF2NoFilter,
+			BodyLocation = base:maskeyes,
+			Icon = PBF2NoFilter,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = PBF2NoFilter,
+		}
+
+	item PPM88
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PPM-88 Gas Mask,
+			ClothingItem = PPM88,
+			BodyLocation = base:maskeyes,
+			Icon = PPM88,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			Weight = 0.2,
+			WorldStaticModel = PPM88,
+		}
+
+	item PPM88NoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = PPM-88 Gas Mask (No Filter),
+			ClothingItem = PPM88NoFilter,
+			BodyLocation = base:maskeyes,
+			Icon = PPM88NoFilter,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = PPM88NoFilter,
+		}
+
+	item RespiratorCS
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Respirator (Clear Sky),
+			ClothingItem = RespiratorCS,
+			BodyLocation = base:mask,
+			Icon = RespiratorCS,
+			CanHaveHoles = false,
+			Weight = 0.2,
+			WorldStaticModel = RespiratorCS,
+		}
+
+	item RespiratorCSNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Respirator (Clear Sky) (No Filter),
+			ClothingItem = RespiratorCSNoFilter,
+			BodyLocation = base:mask,
+			Icon = RespiratorCSNoFilter,
+			CanHaveHoles = false,
+			Weight = 0.2,
+			WorldStaticModel = RespiratorCSNoFilter,
+		}
+
+	item RespiratorDuty
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Respirator (Duty),
+			ClothingItem = RespiratorDuty,
+			BodyLocation = base:mask,
+			Icon = RespiratorDuty,
+			CanHaveHoles = false,
+			Weight = 0.2,
+			WorldStaticModel = RespiratorDuty,
+		}
+
+	item RespiratorDutyNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Respirator (Duty) (No Filter),
+			ClothingItem = RespiratorDutyNoFilter,
+			BodyLocation = base:mask,
+			Icon = RespiratorDutyNoFilter,
+			CanHaveHoles = false,
+			Weight = 0.2,
+			WorldStaticModel = RespiratorDutyNoFilter,
+		}
+
+	item RespiratorFreedom
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Respirator (Freedom),
+			ClothingItem = RespiratorFreedom,
+			BodyLocation = base:mask,
+			Icon = RespiratorFreedom,
+			CanHaveHoles = false,
+			Weight = 0.2,
+			WorldStaticModel = RespiratorFreedom,
+		}
+
+	item RespiratorFreedomNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Respirator (Freedom) (No Filter),
+			ClothingItem = RespiratorFreedomNoFilter,
+			BodyLocation = base:mask,
+			Icon = RespiratorFreedomNoFilter,
+			CanHaveHoles = false,
+			Weight = 0.2,
+			WorldStaticModel = RespiratorFreedomNoFilter,
+		}
+
+	item RespiratorGold
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Respirator,
+			ClothingItem = RespiratorGold,
+			BodyLocation = base:mask,
+			Icon = Respirator,
+			CanHaveHoles = false,
+			Weight = 0.2,
+			WorldStaticModel = RespiratorGold,
+		}
+
+	item RespiratorGoldNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Respirator (No Filter),
+			ClothingItem = RespiratorGoldNoFilter,
+			BodyLocation = base:mask,
+			Icon = RespiratorNoFilter,
+			CanHaveHoles = false,
+			Weight = 0.2,
+			WorldStaticModel = RespiratorGoldNoFilter,
+		}
+
+	item RespiratorMonolith
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Respirator (Monolith),
+			ClothingItem = RespiratorMonolith,
+			BodyLocation = base:mask,
+			Icon = RespiratorMonolith,
+			CanHaveHoles = false,
+			Weight = 0.2,
+			WorldStaticModel = RespiratorMonolith,
+		}
+
+	item RespiratorMonolithNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Respirator (Monolith) (No Filter),
+			ClothingItem = RespiratorMonolithNoFilter,
+			BodyLocation = base:mask,
+			Icon = RespiratorMonolithNoFilter,
+			CanHaveHoles = false,
+			Weight = 0.2,
+			WorldStaticModel = RespiratorMonolithNoFilter,
+		}
+
+	item RespiratorSilver
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Respirator,
+			ClothingItem = RespiratorSilver,
+			BodyLocation = base:mask,
+			Icon = RespiratorSilver,
+			CanHaveHoles = false,
+			Weight = 0.2,
+			WorldStaticModel = RespiratorSilver,
+		}
+
+	item RespiratorSilverNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Respirator (No Filter),
+			ClothingItem = RespiratorSilverNoFilter,
+			BodyLocation = base:mask,
+			Icon = RespiratorSilverNoFilter,
+			CanHaveHoles = false,
+			Weight = 0.2,
+			WorldStaticModel = RespiratorSilverNoFilter,
+		}
+
+	item SEVAHelm
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = SSP-99 Screen Helmet,
+			ClothingItem = SEVAHelm,
+			BodyLocation = base:hat,
+			Icon = SEVAHelm,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.40,
+			WaterResistance = 0.2,
+			Weight = 0.3,
+			WorldStaticModel = SEVAHelm,
+		}
+
+	item SEVAHelmBandit
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = SSP-99 Screen Helmet (Bandit),
+			ClothingItem = SEVAHelmBandit,
+			BodyLocation = base:hat,
+			Icon = SEVAHelmBandit,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.40,
+			WaterResistance = 0.2,
+			Weight = 0.3,
+			WorldStaticModel = SEVAHelmBandit,
+		}
+
+	item SEVAHelmCS
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = SSP-99 Screen Helmet (Clear Sky),
+			ClothingItem = SEVAHelmCS,
+			BodyLocation = base:hat,
+			Icon = SEVAHelmCS,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.40,
+			WaterResistance = 0.2,
+			Weight = 0.3,
+			WorldStaticModel = SEVAHelmCS,
+		}
+
+	item SEVAHelmDuty
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = SSP-99 Screen Helmet (Duty),
+			ClothingItem = SEVAHelmDuty,
+			BodyLocation = base:hat,
+			Icon = SEVAHelmDuty,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.40,
+			WaterResistance = 0.2,
+			Weight = 0.3,
+			WorldStaticModel = SEVAHelmDuty,
+		}
+
+	item SEVAHelmEcologist
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = SSP-99 Screen Helmet (Ecologists),
+			ClothingItem = SEVAHelmEcologist,
+			BodyLocation = base:hat,
+			Icon = SEVAHelmEcologist,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.40,
+			WaterResistance = 0.2,
+			Weight = 0.3,
+			WorldStaticModel = SEVAHelmEcologist,
+		}
+
+	item SEVAHelmFreedom
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = SSP-99 Screen Helmet (Freedom),
+			ClothingItem = SEVAHelmFreedom,
+			BodyLocation = base:hat,
+			Icon = SEVAHelmFreedom,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.40,
+			WaterResistance = 0.2,
+			Weight = 0.3,
+			WorldStaticModel = SEVAHelmFreedom,
+		}
+
+	item SEVAHelmMercs
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = SSP-99 Screen Helmet (Mercenaries),
+			ClothingItem = SEVAHelmMercs,
+			BodyLocation = base:hat,
+			Icon = SEVAHelmMercs,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.40,
+			WaterResistance = 0.2,
+			Weight = 0.3,
+			WorldStaticModel = SEVAHelmMercs,
+		}
+
+	item SEVAHelmMonolith
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = SSP-99 Screen Helmet (Monolith),
+			ClothingItem = SEVAHelmMonolith,
+			BodyLocation = base:hat,
+			Icon = SEVAHelmMonolith,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.40,
+			WaterResistance = 0.2,
+			Weight = 0.3,
+			WorldStaticModel = SEVAHelmMonolith,
+		}
+
+	item SEVAHelmMonolithGreen
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = SSP-99 Screen Helmet (Monolith),
+			ClothingItem = SEVAHelmMonolithGreen,
+			BodyLocation = base:hat,
+			Icon = SEVAHelmMonolithGreen,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.40,
+			WaterResistance = 0.2,
+			Weight = 0.3,
+			WorldStaticModel = SEVAHelmMonolithGreen,
+		}
+
+	item SovietPMG
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Soviet PMG Gas Mask,
+			ClothingItem = SovietPMG,
+			BodyLocation = base:maskeyes,
+			Icon = SovietPMG,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			Insulation = 0.75,
+	        WindResistance = 0.60,
+	        WaterResistance = 1.0,
+			WorldStaticModel = SovietPMG,
+		}
+
+	item SovietPMGNoFilter
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Soviet PMG Gas Mask (No Filter),
+			ClothingItem = SovietPMGNoFilter,
+			BodyLocation = base:maskeyes,
+			Icon = SovietPMGNoFilter,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = SovietPMGNoFilter,
+		}
+
+	item Sphere08HelmetCS
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Sphere 08 Helmet (Clear Sky),
+			ClothingItem = Sphere08HelmetCS,
+			BodyLocation = base:hat,
+			Icon = Sphere08CS,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = Sphere08HelmetCS,
+		}
+
+	item Sphere08HelmetDuty
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Sphere 08 Helmet (Duty),
+			ClothingItem = Sphere08HelmetDuty,
+			BodyLocation = base:hat,
+			Icon = Sphere08Duty,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = Sphere08HelmetDuty,
+		}
+
+	item Sphere08HelmetFreedom
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Sphere 08 Helmet (Freedom),
+			ClothingItem = Sphere08HelmetFreedom,
+			BodyLocation = base:hat,
+			Icon = Sphere08Freedom,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = Sphere08HelmetFreedom,
+		}
+
+	item Sphere08HelmetMercs
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Sphere 08 Helmet (Mercenaries),
+			ClothingItem = Sphere08HelmetMercs,
+			BodyLocation = base:hat,
+			Icon = Sphere08HelmetMercs,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = Sphere08HelmetMercs,
+		}
+
+	item Sphere08HelmetMilitary
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Sphere 08 Helmet,
+			ClothingItem = Sphere08HelmetMilitary,
+			BodyLocation = base:hat,
+			Icon = Sphere08Military,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = Sphere08HelmetMilitary,
+		}
+
+	item Sphere08HelmetMonolith
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Sphere 08 Helmet (Monolith),
+			ClothingItem = Sphere08HelmetMonolith,
+			BodyLocation = base:hat,
+			Icon = Sphere08Monolith,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = Sphere08HelmetMonolith,
+		}
+
+	item SphereM12Helmet
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Sphere M12 Helmet,
+			ClothingItem = SphereM12Helmet,
+			BodyLocation = base:hat,
+			Icon = SphereM12Helmet,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = SphereM12Helmet,
+		}
+
+	item SphereM12HelmetCS
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Sphere M12 Helmet (Clear Sky),
+			ClothingItem = SphereM12HelmetCS,
+			BodyLocation = base:hat,
+			Icon = SphereM12HelmetCS,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = SphereM12HelmetCS,
+		}
+
+	item SphereM12HelmetDuty
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Sphere M12 Helmet (Duty),
+			ClothingItem = SphereM12HelmetDuty,
+			BodyLocation = base:hat,
+			Icon = SphereM12HelmetDuty,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = SphereM12HelmetDuty,
+		}
+
+	item SphereM12HelmetFreedom
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Sphere M12 Helmet (Freedom),
+			ClothingItem = SphereM12HelmetFreedom,
+			BodyLocation = base:hat,
+			Icon = SphereM12HelmetFreedom,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = SphereM12HelmetFreedom,
+		}
+
+	item SphereM12HelmetMercs
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Sphere M12 Helmet (Mercenaries),
+			ClothingItem = SphereM12HelmetMercs,
+			BodyLocation = base:hat,
+			Icon = SphereM12HelmetMercs,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = SphereM12HelmetMercs,
+		}
+
+	item SphereM12HelmetMonolith
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Sphere M12 Helmet (Monolith),
+			ClothingItem = SphereM12HelmetMonolith,
+			BodyLocation = base:hat,
+			Icon = SphereM12HelmetMonolith,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = SphereM12HelmetMonolith,
+		}
+
+	item SteelHelmMask
+		{
+		    DisplayCategory = Accessory,
+			ItemType = base:clothing,
+			DisplayName = Steel Helmet,
+			ClothingItem = SteelHelmMask,
+			BodyLocation = base:hat,
+			Icon = SteelHelmetMask,
+			CanHaveHoles = false,
+			BloodLocation = Head,
+			BiteDefense = 100,
+			ScratchDefense = 100,
+			ChanceToFall = 10,
+			Insulation = 0.25,
+			WaterResistance = 0.2,
+			WorldStaticModel = SteelHelmMask,
+		}
+
+	item ExohelmBanditNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Exohelm (Bandit) (No Filter),		ClothingItem = ExohelmBanditNoFilter,		BodyLocation = base:hat,		Icon = ExohelmBandit,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.30,		WaterResistance = 0.2,		Weight = 0.4,		WorldStaticModel = ExohelmBandit,	}
+
+	item ExohelmCSNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Exohelm (Clear Sky) (No Filter),		ClothingItem = ExohelmCSNoFilter,		BodyLocation = base:hat,		Icon = ExohelmCS,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.30,		WaterResistance = 0.2,		Weight = 0.4,		WorldStaticModel = ExohelmCS,	}
+
+	item ExohelmDutyNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Exohelm (Duty) (No Filter),		ClothingItem = ExohelmDutyNoFilter,		BodyLocation = base:hat,		Icon = ExohelmDuty,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.30,		WaterResistance = 0.2,		Weight = 0.4,		WorldStaticModel = ExohelmDuty,	}
+
+	item ExohelmEcologistsNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Exohelm (Ecologists) (No Filter),		ClothingItem = ExohelmEcologistsNoFilter,		BodyLocation = base:hat,		Icon = Exohelm,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.25,		WaterResistance = 0.2,		WorldStaticModel = Exohelm,	}
+
+	item ExohelmFreedomNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Exohelm (Freedom) (No Filter),		ClothingItem = ExohelmFreedomNoFilter,		BodyLocation = base:hat,		Icon = ExohelmFreedom,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.30,		WaterResistance = 0.2,		Weight = 0.4,		WorldStaticModel = ExohelmFreedom,	}
+
+	item ExohelmLonerNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Exohelm (Loner) (No Filter),		ClothingItem = ExohelmLonerNoFilter,		BodyLocation = base:hat,		Icon = Exohelm,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.25,		WaterResistance = 0.2,		WorldStaticModel = ExohelmLoner,	}
+
+	item ExohelmMercsNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Exohelm (Mercenaries) (No Filter),		ClothingItem = ExohelmMercsNoFilter,		BodyLocation = base:hat,		Icon = ExohelmMercs,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.30,		WaterResistance = 0.2,		Weight = 0.4,		WorldStaticModel = ExohelmMercs,	}
+
+	item ExohelmMilitaryNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Exohelm (Military) (No Filter),		ClothingItem = ExohelmMilitaryNoFilter,		BodyLocation = base:hat,		Icon = ExohelmMilitary,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.30,		WaterResistance = 0.2,		Weight = 0.4,		WorldStaticModel = ExohelmMilitary,	}
+
+	item ExohelmMonolithNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Exohelm (Monolith) (No Filter),		ClothingItem = ExohelmMonolithNoFilter,		BodyLocation = base:hat,		Icon = ExohelmMonolith,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.30,		WaterResistance = 0.2,		Weight = 0.4,		WorldStaticModel = ExohelmMonolith,	}
+
+	item ExohelmNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Exohelm (No Filter),		ClothingItem = ExohelmNoFilter,		BodyLocation = base:hat,		Icon = Exohelm,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.30,		WaterResistance = 0.2,		Weight = 0.4,		WorldStaticModel = Exohelm,	}
+
+	item SEVAHelmBanditNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = SSP-99 Screen Helmet (Bandit) (No Filter),		ClothingItem = SEVAHelmBanditNoFilter,		BodyLocation = base:hat,		Icon = SEVAHelmBandit,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.40,		WaterResistance = 0.2,		Weight = 0.3,		WorldStaticModel = SEVAHelmBandit,	}
+
+	item SEVAHelmCSNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = SSP-99 Screen Helmet (Clear Sky) (No Filter),		ClothingItem = SEVAHelmCSNoFilter,		BodyLocation = base:hat,		Icon = SEVAHelmCS,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.40,		WaterResistance = 0.2,		Weight = 0.3,		WorldStaticModel = SEVAHelmCS,	}
+
+	item SEVAHelmDutyNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = SSP-99 Screen Helmet (Duty) (No Filter),		ClothingItem = SEVAHelmDutyNoFilter,		BodyLocation = base:hat,		Icon = SEVAHelmDuty,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.40,		WaterResistance = 0.2,		Weight = 0.3,		WorldStaticModel = SEVAHelmDuty,	}
+
+	item SEVAHelmEcologistNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = SSP-99 Screen Helmet (Ecologists) (No Filter),		ClothingItem = SEVAHelmEcologistNoFilter,		BodyLocation = base:hat,		Icon = SEVAHelmEcologist,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.40,		WaterResistance = 0.2,		Weight = 0.3,		WorldStaticModel = SEVAHelmEcologist,	}
+
+	item SEVAHelmFreedomNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = SSP-99 Screen Helmet (Freedom) (No Filter),		ClothingItem = SEVAHelmFreedomNoFilter,		BodyLocation = base:hat,		Icon = SEVAHelmFreedom,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.40,		WaterResistance = 0.2,		Weight = 0.3,		WorldStaticModel = SEVAHelmFreedom,	}
+
+	item SEVAHelmMercsNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = SSP-99 Screen Helmet (Mercenaries) (No Filter),		ClothingItem = SEVAHelmMercsNoFilter,		BodyLocation = base:hat,		Icon = SEVAHelmMercs,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.40,		WaterResistance = 0.2,		Weight = 0.3,		WorldStaticModel = SEVAHelmMercs,	}
+
+	item SEVAHelmMonolithGreenNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = SSP-99 Screen Helmet (Monolith) (No Filter),		ClothingItem = SEVAHelmMonolithGreenNoFilter,		BodyLocation = base:hat,		Icon = SEVAHelmMonolithGreen,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.40,		WaterResistance = 0.2,		Weight = 0.3,		WorldStaticModel = SEVAHelmMonolithGreen,	}
+
+	item SEVAHelmMonolithNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = SSP-99 Screen Helmet (Monolith) (No Filter),		ClothingItem = SEVAHelmMonolithNoFilter,		BodyLocation = base:hat,		Icon = SEVAHelmMonolith,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.40,		WaterResistance = 0.2,		Weight = 0.3,		WorldStaticModel = SEVAHelmMonolith,	}
+
+	item SEVAHelmNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = SSP-99 Screen Helmet (No Filter),		ClothingItem = SEVAHelmNoFilter,		BodyLocation = base:hat,		Icon = SEVAHelm,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.40,		WaterResistance = 0.2,		Weight = 0.3,		WorldStaticModel = SEVAHelm,	}
+
+	item Sphere08HelmetCSNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Sphere 08 Helmet (Clear Sky) (No Filter),		ClothingItem = Sphere08HelmetCSNoFilter,		BodyLocation = base:hat,		Icon = Sphere08CS,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.25,		WaterResistance = 0.2,		WorldStaticModel = Sphere08HelmetCS,	}
+
+	item Sphere08HelmetDutyNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Sphere 08 Helmet (Duty) (No Filter),		ClothingItem = Sphere08HelmetDutyNoFilter,		BodyLocation = base:hat,		Icon = Sphere08Duty,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.25,		WaterResistance = 0.2,		WorldStaticModel = Sphere08HelmetDuty,	}
+
+	item Sphere08HelmetFreedomNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Sphere 08 Helmet (Freedom) (No Filter),		ClothingItem = Sphere08HelmetFreedomNoFilter,		BodyLocation = base:hat,		Icon = Sphere08Freedom,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.25,		WaterResistance = 0.2,		WorldStaticModel = Sphere08HelmetFreedom,	}
+
+	item Sphere08HelmetMercsNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Sphere 08 Helmet (Mercenaries) (No Filter),		ClothingItem = Sphere08HelmetMercsNoFilter,		BodyLocation = base:hat,		Icon = Sphere08HelmetMercs,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.25,		WaterResistance = 0.2,		WorldStaticModel = Sphere08HelmetMercs,	}
+
+	item Sphere08HelmetMilitaryNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Sphere 08 Helmet (No Filter),		ClothingItem = Sphere08HelmetMilitaryNoFilter,		BodyLocation = base:hat,		Icon = Sphere08Military,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.25,		WaterResistance = 0.2,		WorldStaticModel = Sphere08HelmetMilitary,	}
+
+	item Sphere08HelmetMonolithNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Sphere 08 Helmet (Monolith) (No Filter),		ClothingItem = Sphere08HelmetMonolithNoFilter,		BodyLocation = base:hat,		Icon = Sphere08Monolith,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.25,		WaterResistance = 0.2,		WorldStaticModel = Sphere08HelmetMonolith,	}
+
+	item SphereM12HelmetCSNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Sphere M12 Helmet (Clear Sky) (No Filter),		ClothingItem = SphereM12HelmetCSNoFilter,		BodyLocation = base:hat,		Icon = SphereM12HelmetCS,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.25,		WaterResistance = 0.2,		WorldStaticModel = SphereM12HelmetCS,	}
+
+	item SphereM12HelmetDutyNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Sphere M12 Helmet (Duty) (No Filter),		ClothingItem = SphereM12HelmetDutyNoFilter,		BodyLocation = base:hat,		Icon = SphereM12HelmetDuty,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.25,		WaterResistance = 0.2,		WorldStaticModel = SphereM12HelmetDuty,	}
+
+	item SphereM12HelmetFreedomNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Sphere M12 Helmet (Freedom) (No Filter),		ClothingItem = SphereM12HelmetFreedomNoFilter,		BodyLocation = base:hat,		Icon = SphereM12HelmetFreedom,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.25,		WaterResistance = 0.2,		WorldStaticModel = SphereM12HelmetFreedom,	}
+
+	item SphereM12HelmetMercsNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Sphere M12 Helmet (Mercenaries) (No Filter),		ClothingItem = SphereM12HelmetMercsNoFilter,		BodyLocation = base:hat,		Icon = SphereM12HelmetMercs,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.25,		WaterResistance = 0.2,		WorldStaticModel = SphereM12HelmetMercs,	}
+
+	item SphereM12HelmetMonolithNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Sphere M12 Helmet (Monolith) (No Filter),		ClothingItem = SphereM12HelmetMonolithNoFilter,		BodyLocation = base:hat,		Icon = SphereM12HelmetMonolith,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.25,		WaterResistance = 0.2,		WorldStaticModel = SphereM12HelmetMonolith,	}
+
+	item SphereM12HelmetNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Sphere M12 Helmet (No Filter),		ClothingItem = SphereM12HelmetNoFilter,		BodyLocation = base:hat,		Icon = SphereM12Helmet,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.25,		WaterResistance = 0.2,		WorldStaticModel = SphereM12Helmet,	}
+
+	item SteelHelmMaskNoFilter	{		DisplayCategory = Accessory,		ItemType = base:clothing,		DisplayName = Steel Helmet (No Filter),		ClothingItem = SteelHelmMaskNoFilter,		BodyLocation = base:hat,		Icon = SteelHelmetMask,		CanHaveHoles = false,		BloodLocation = Head,		BiteDefense = 100,		ScratchDefense = 100,		ChanceToFall = 10,		Insulation = 0.25,		WaterResistance = 0.2,		WorldStaticModel = SteelHelmMask,	}
+
+
+	item CIJL_TShirt
+	{
+		DisplayCategory = Clothing,
+		ItemType = base:clothing,
+		DisplayName = CIJL Leather T-Shirt,
+		ClothingItem = CIJL_TShirt,
+		BodyLocation = base:tshirt,
+		Icon = CIJL_TShirt,
+		BloodLocation = Shirt,
+		BiteDefense = 100,
+		ScratchDefense = 100,
+		BulletDefense = 100,
+		Insulation = 1.0,
+		WindResistance = 1.0,
+		WaterResistance = 1.0,
+		FabricType = Leather,
+		Weight = 1,
+	}
+
+	item CIJL_Shirt
+	{
+		DisplayCategory = Clothing,
+		ItemType = base:clothing,
+		DisplayName = CIJL Leather Sweater,
+		ClothingItem = CIJL_Shirt,
+		BodyLocation = base:sweater,
+		Icon = CIJL_Shirt,
+		BloodLocation = Jumper,
+		BiteDefense = 100,
+		ScratchDefense = 100,
+		BulletDefense = 100,
+		NeckProtectionModifier = 0.5,
+		Insulation = 1.0,
+		WindResistance = 1.0,
+		WaterResistance = 1.0,
+		FabricType = Leather,
+		Weight = 1.5,
+	}
+
+	item CIJL_Jacket
+	{
+		DisplayCategory = Clothing,
+		ItemType = base:clothing,
+		DisplayName = CIJL Leather Jacket,
+		ClothingItem = CIJL_Jacket,
+		BodyLocation = base:jacket,
+		Icon = CIJL_Jacket,
+		BloodLocation = Jacket,
+		BiteDefense = 100,
+		ScratchDefense = 100,
+		BulletDefense = 100,
+		NeckProtectionModifier = 1.0,
+		Insulation = 1.0,
+		WindResistance = 1.0,
+		WaterResistance = 1.0,
+		FabricType = Leather,
+		Weight = 2,
+	}
+
+	item CIJL_Pants
+	{
+		DisplayCategory = Clothing,
+		ItemType = base:clothing,
+		DisplayName = CIJL Leather Pants,
+		ClothingItem = CIJL_Pants,
+		BodyLocation = base:pants,
+		Icon = CIJL_Pants,
+		BloodLocation = Trousers,
+		BiteDefense = 100,
+		ScratchDefense = 100,
+		BulletDefense = 100,
+		Insulation = 1.0,
+		WindResistance = 1.0,
+		WaterResistance = 1.0,
+		FabricType = Leather,
+		Weight = 1.5,
+	}
+
+	item CIJL_MechLimbs
+	{
+		DisplayCategory = Clothing,
+		ItemType = base:clothing,
+		DisplayName = CIJL Mechanic Limbs,
+		ClothingItem = CIJL_MechLimbs,
+		BodyLocation = base:jacket,
+		Icon = CIJL_MechLimbs,
+		BloodLocation = Jacket,
+		BiteDefense = 100,
+		ScratchDefense = 100,
+		BulletDefense = 100,
+		NeckProtectionModifier = 0.0,
+		Insulation = 0.5,
+		WindResistance = 1.0,
+		WaterResistance = 1.0,
+		FabricType = Leather,
+		Weight = 3,
+	}
+
+}

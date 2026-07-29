@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<clothingItem>
+	<m_MaleModel>static\clothes\Hat_DevilHorns</m_MaleModel>
+	<m_FemaleModel>static\clothes\Hat_DevilHorns</m_FemaleModel>
+	<m_GUID>69713dea-a90b-4407-a6ea-dd9173499376</m_GUID>
+	<m_Static>true</m_Static>
+	<m_AllowRandomHue>true</m_AllowRandomHue>
+	<m_AllowRandomTint>true</m_AllowRandomTint>
+	<m_AttachBone>Bip01_Head</m_AttachBone>
+	<m_MasksFolder>media/textures/Clothes/Hat/Masks</m_MasksFolder>
+	<textureChoices>clothes\hat\Hat_DevilHorns</textureChoices>
+</clothingItem>

@@ -1,0 +1,9 @@
+module Bandits{
+
+    model Item_LabSyringe 
+    {
+        mesh = WorldItems/Item_LabSyringe,
+        texture = WorldItems/Item_LabSyringe,
+        scale = 1.2,
+    }
+}

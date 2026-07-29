@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<clothingItem>
+    <m_GUID>83d501a1-79f1-403e-b5dc-e1e42fe94f99</m_GUID>
+    <m_MaleModel>Skinned\Clothes\PPM88NoFilter</m_MaleModel>
+    <m_FemaleModel>Skinned\Clothes\PPM88NoFilter</m_FemaleModel>
+    <textureChoices>Clothes\PPM88\PPM88</textureChoices>
+	<m_Static>false</m_Static>
+	<m_AllowRandomHue>false</m_AllowRandomHue>
+	<m_AllowRandomTint>false</m_AllowRandomTint>
+	<m_HatCategory>nobeard</m_HatCategory>
+	<m_MasksFolder>media/textures/Clothes/Hat/Masks</m_MasksFolder>
+</clothingItem>

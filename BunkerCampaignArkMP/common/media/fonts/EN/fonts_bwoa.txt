@@ -1,0 +1,7 @@
+VERSION = 1,
+
+font C64
+{
+	fnt = C64.fnt,
+	img = C64_0.png,
+}

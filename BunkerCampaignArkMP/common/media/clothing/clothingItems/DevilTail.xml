@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<clothingItem>
+	<m_MaleModel>skinned\clothes\DevilTail_bob</m_MaleModel>
+	<m_FemaleModel>skinned\clothes\DevilTail_kate</m_FemaleModel>
+	<m_GUID>805b6d4b-72a2-40a7-9d4c-843a3cd9057a</m_GUID>
+	<m_Static>false</m_Static>
+	<m_AllowRandomHue>true</m_AllowRandomHue>
+	<m_AllowRandomTint>true</m_AllowRandomTint>
+	<m_AttachBone></m_AttachBone>
+	<textureChoices>DevilTail</textureChoices>
+</clothingItem>

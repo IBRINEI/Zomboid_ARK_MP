@@ -1,0 +1,23 @@
+# Stable cross-platform handling for authored source and documentation.
+*.lua text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.txt text eol=lf
+*.info text eol=lf
+*.xml text eol=lf
+*.java text eol=lf
+
+# Project Zomboid and media formats must never be line-ending normalized.
+*.class binary
+*.pack binary
+*.tiles binary
+*.pzby binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.fbx binary
+*.x binary
+*.X binary
+*.wav binary
+*.mp3 binary
+*.ogg binary

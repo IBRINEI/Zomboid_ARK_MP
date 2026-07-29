@@ -1,0 +1,1700 @@
+module Base
+{
+
+    craftRecipe PutFilterInPpm88
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PPM88NoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PPM88,
+        }
+    }
+
+    craftRecipe RemoveFilterFromPpm88
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PPM88] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PPM88NoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInGp10z
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.GP10ZNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.GP10Z,
+        }
+    }
+
+    craftRecipe RemoveFilterFromGp10z
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.GP10Z] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.GP10ZNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSovietPmg
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SovietPMGNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SovietPMG,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSovietPmg
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SovietPMG] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SovietPMGNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInPbf1
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF1NoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF1,
+        }
+    }
+
+    craftRecipe RemoveFilterFromPbf1
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF1] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF1NoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInPbf1Cs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF1CSNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF1CS,
+        }
+    }
+
+    craftRecipe RemoveFilterFromPbf1Cs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF1CS] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF1CSNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInPbf1Duty
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF1DutyNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF1Duty,
+        }
+    }
+
+    craftRecipe RemoveFilterFromPbf1Duty
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF1Duty] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF1DutyNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInPbf1Freedom
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF1FreedomNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF1Freedom,
+        }
+    }
+
+    craftRecipe RemoveFilterFromPbf1Freedom
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF1Freedom] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF1FreedomNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInPbf2
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF2NoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF2,
+        }
+    }
+
+    craftRecipe RemoveFilterFromPbf2
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF2] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF2NoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInPbf2Cs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF2CSNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF2CS,
+        }
+    }
+
+    craftRecipe RemoveFilterFromPbf2Cs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF2CS] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF2CSNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInPbf2Duty
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF2DutyNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF2Duty,
+        }
+    }
+
+    craftRecipe RemoveFilterFromPbf2Duty
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF2Duty] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF2DutyNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInPbf2Freedom
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF2FreedomNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF2Freedom,
+        }
+    }
+
+    craftRecipe RemoveFilterFromPbf2Freedom
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.PBF2Freedom] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.PBF2FreedomNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInRespiratorGold
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.RespiratorGoldNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.RespiratorGold,
+        }
+    }
+
+    craftRecipe RemoveFilterFromRespiratorGold
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.RespiratorGold] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.RespiratorGoldNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInRespiratorSilver
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.RespiratorSilverNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.RespiratorSilver,
+        }
+    }
+
+    craftRecipe RemoveFilterFromRespiratorSilver
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.RespiratorSilver] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.RespiratorSilverNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInRespiratorDuty
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.RespiratorDutyNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.RespiratorDuty,
+        }
+    }
+
+    craftRecipe RemoveFilterFromRespiratorDuty
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.RespiratorDuty] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.RespiratorDutyNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInRespiratorFreedom
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.RespiratorFreedomNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.RespiratorFreedom,
+        }
+    }
+
+    craftRecipe RemoveFilterFromRespiratorFreedom
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.RespiratorFreedom] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.RespiratorFreedomNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInRespiratorMonolith
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.RespiratorMonolithNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.RespiratorMonolith,
+        }
+    }
+
+    craftRecipe RemoveFilterFromRespiratorMonolith
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.RespiratorMonolith] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.RespiratorMonolithNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInRespiratorCs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.RespiratorCSNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.RespiratorCS,
+        }
+    }
+
+    craftRecipe RemoveFilterFromRespiratorCs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.RespiratorCS] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.RespiratorCSNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSphereM12Helmet
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SphereM12HelmetNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SphereM12Helmet,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSphereM12Helmet
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SphereM12Helmet] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SphereM12HelmetNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSphereM12HelmetCs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SphereM12HelmetCSNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SphereM12HelmetCS,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSphereM12HelmetCs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SphereM12HelmetCS] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SphereM12HelmetCSNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSphereM12HelmetDuty
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SphereM12HelmetDutyNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SphereM12HelmetDuty,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSphereM12HelmetDuty
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SphereM12HelmetDuty] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SphereM12HelmetDutyNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSphereM12HelmetFreedom
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SphereM12HelmetFreedomNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SphereM12HelmetFreedom,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSphereM12HelmetFreedom
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SphereM12HelmetFreedom] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SphereM12HelmetFreedomNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSphereM12HelmetMercs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SphereM12HelmetMercsNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SphereM12HelmetMercs,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSphereM12HelmetMercs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SphereM12HelmetMercs] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SphereM12HelmetMercsNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSphereM12HelmetMonolith
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SphereM12HelmetMonolithNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SphereM12HelmetMonolith,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSphereM12HelmetMonolith
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SphereM12HelmetMonolith] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SphereM12HelmetMonolithNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInExohelm
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.Exohelm,
+        }
+    }
+
+    craftRecipe RemoveFilterFromExohelm
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.Exohelm] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInExohelmBandit
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmBanditNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmBandit,
+        }
+    }
+
+    craftRecipe RemoveFilterFromExohelmBandit
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmBandit] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmBanditNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInExohelmCs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmCSNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmCS,
+        }
+    }
+
+    craftRecipe RemoveFilterFromExohelmCs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmCS] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmCSNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInExohelmDuty
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmDutyNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmDuty,
+        }
+    }
+
+    craftRecipe RemoveFilterFromExohelmDuty
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmDuty] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmDutyNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInExohelmEcologists
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmEcologistsNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmEcologists,
+        }
+    }
+
+    craftRecipe RemoveFilterFromExohelmEcologists
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmEcologists] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmEcologistsNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInExohelmFreedom
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmFreedomNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmFreedom,
+        }
+    }
+
+    craftRecipe RemoveFilterFromExohelmFreedom
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmFreedom] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmFreedomNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInExohelmLoner
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmLonerNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmLoner,
+        }
+    }
+
+    craftRecipe RemoveFilterFromExohelmLoner
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmLoner] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmLonerNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInExohelmMercs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmMercsNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmMercs,
+        }
+    }
+
+    craftRecipe RemoveFilterFromExohelmMercs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmMercs] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmMercsNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInExohelmMilitary
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmMilitaryNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmMilitary,
+        }
+    }
+
+    craftRecipe RemoveFilterFromExohelmMilitary
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmMilitary] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmMilitaryNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInExohelmMonolith
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmMonolithNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmMonolith,
+        }
+    }
+
+    craftRecipe RemoveFilterFromExohelmMonolith
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.ExohelmMonolith] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.ExohelmMonolithNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSevaHelm
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelm,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSevaHelm
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelm] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSevaHelmBandit
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmBanditNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmBandit,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSevaHelmBandit
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmBandit] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmBanditNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSevaHelmCs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmCSNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmCS,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSevaHelmCs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmCS] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmCSNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSevaHelmDuty
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmDutyNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmDuty,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSevaHelmDuty
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmDuty] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmDutyNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSevaHelmEcologist
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmEcologistNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmEcologist,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSevaHelmEcologist
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmEcologist] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmEcologistNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSevaHelmFreedom
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmFreedomNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmFreedom,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSevaHelmFreedom
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmFreedom] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmFreedomNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSevaHelmMercs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmMercsNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmMercs,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSevaHelmMercs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmMercs] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmMercsNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSevaHelmMonolithGreen
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmMonolithGreenNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmMonolithGreen,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSevaHelmMonolithGreen
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmMonolithGreen] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmMonolithGreenNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSevaHelmMonolith
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmMonolithNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmMonolith,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSevaHelmMonolith
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SEVAHelmMonolith] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SEVAHelmMonolithNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSphere08HelmetMercs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.Sphere08HelmetMercsNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.Sphere08HelmetMercs,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSphere08HelmetMercs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.Sphere08HelmetMercs] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.Sphere08HelmetMercsNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSphere08HelmetMilitary
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.Sphere08HelmetMilitaryNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.Sphere08HelmetMilitary,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSphere08HelmetMilitary
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.Sphere08HelmetMilitary] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.Sphere08HelmetMilitaryNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSphere08HelmetCs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.Sphere08HelmetCSNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.Sphere08HelmetCS,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSphere08HelmetCs
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.Sphere08HelmetCS] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.Sphere08HelmetCSNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSphere08HelmetDuty
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.Sphere08HelmetDutyNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.Sphere08HelmetDuty,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSphere08HelmetDuty
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.Sphere08HelmetDuty] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.Sphere08HelmetDutyNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSphere08HelmetFreedom
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.Sphere08HelmetFreedomNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.Sphere08HelmetFreedom,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSphere08HelmetFreedom
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.Sphere08HelmetFreedom] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.Sphere08HelmetFreedomNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSphere08HelmetMonolith
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.Sphere08HelmetMonolithNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.Sphere08HelmetMonolith,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSphere08HelmetMonolith
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.Sphere08HelmetMonolith] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.Sphere08HelmetMonolithNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe PutFilterInSteelHelmMask
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SteelHelmMaskNoFilter] mode:destroy,
+            item 1 [Base.GasMaskFilter] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SteelHelmMask,
+        }
+    }
+
+    craftRecipe RemoveFilterFromSteelHelmMask
+    {
+        time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+        inputs
+        {
+            item 1 [Base.SteelHelmMask] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.SteelHelmMaskNoFilter,
+            item 1 Base.GasMaskFilter,
+        }
+    }
+
+    craftRecipe CraftGeigerCounter
+    {
+        time = 80,
+        inputs
+        {
+            item 4 [Base.ElectronicsScrap] mode:destroy,
+            item 4 [Radio.ElectricWire] mode:destroy,
+            item 1 [Base.MotionSensor] mode:destroy,
+            item 1 [Base.LightBulb] mode:destroy,
+            item 1 [Base.LightBulbGreen] mode:destroy,
+            item 1 tags[base:screwdriver] mode:keep flags[NoBrokenItems],
+        }
+        outputs
+        {
+            item 1 Base.ContaminantDetector,
+        }
+    }
+
+    craftRecipe ConvertGasMask
+    {
+        time = 10,
+        inputs
+        {
+            item 1 [Base.Hat_GasMask] mode:destroy,
+        }
+        outputs
+        {
+            item 1 Base.CS2aGasMask,
+        }
+    }
+
+
+    craftRecipe PutFilterInCs2aGasMask
+        {
+            time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+            inputs
+            {
+                item 1 [Base.CS2aGasMaskNoFilter] mode:destroy,
+                item 1 [Base.GasMaskFilter] mode:destroy,
+            }
+            outputs
+            {
+                item 1 Base.CS2aGasMask,
+            }
+        }
+
+    craftRecipe PutFilterInGp5GasMask
+        {
+            time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+            inputs
+            {
+                item 1 [Base.GP5GasMaskNoFilter] mode:destroy,
+                item 1 [Base.GasMaskFilter] mode:destroy,
+            }
+            outputs
+            {
+                item 1 Base.GP5GasMask,
+            }
+        }
+
+    craftRecipe PutFilterInM40GasMask
+        {
+            time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+            inputs
+            {
+                item 1 [Base.M40GasMaskNoFilter] mode:destroy,
+                item 1 [Base.GasMaskFilter] mode:destroy,
+            }
+            outputs
+            {
+                item 1 Base.M40GasMask,
+            }
+        }
+
+    craftRecipe RemoveFilterFromCs2aGasMask
+        {
+            time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+            inputs
+            {
+                item 1 [Base.CS2aGasMask] mode:destroy,
+            }
+            outputs
+            {
+                item 1 Base.CS2aGasMaskNoFilter,
+                item 1 Base.GasMaskFilter,
+            }
+        }
+
+    craftRecipe RemoveFilterFromGp5GasMask
+        {
+            time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+            inputs
+            {
+                item 1 [Base.GP5GasMask] mode:destroy,
+            }
+            outputs
+            {
+                item 1 Base.GP5GasMaskNoFilter,
+                item 1 Base.GasMaskFilter,
+            }
+        }
+
+    craftRecipe RemoveFilterFromM40GasMask
+        {
+            time = 70,
+
+        OnCreate = BunkerCampaignToxicMP.OnCreateFilterRecipe,
+            inputs
+            {
+                item 1 [Base.M40GasMask] mode:destroy,
+            }
+            outputs
+            {
+                item 1 Base.M40GasMaskNoFilter,
+                item 1 Base.GasMaskFilter,
+            }
+        }
+
+}

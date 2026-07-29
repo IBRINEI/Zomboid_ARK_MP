@@ -1,0 +1,37 @@
+tileGeometry
+{
+    VERSION = 2,
+
+    tileset
+    {
+        name = floors_rugs_burnt_01,
+
+        /* floors_rugs_01_0 */
+        tile
+        {
+            xy = 0x0,
+
+            box
+            {
+                translate = 0x0x0,
+                rotate = 0x0x0,
+                min = -5000x0x-5000,
+                max = 5000x30x5000,
+            }
+        }
+
+        /* floors_rugs_burnt_01_72 */
+        tile
+        {
+            xy = 0x9,
+
+            polygon
+            {
+                translate = 78x120x-78,
+                rotate = -899999x0x0,
+                plane = XZ,
+                points = -5000x-5000 5000x-5000 5000x5000 -5000x5000,
+            }
+        }
+    }
+}

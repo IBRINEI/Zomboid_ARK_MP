@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<clothingItem>
+    <m_GUID>895c6b81-4c73-46bf-948e-382886a6a535</m_GUID>
+    <m_MaleModel>Skinned\Clothes\SovietPMGNoFilter</m_MaleModel>
+    <m_FemaleModel>Skinned\Clothes\SovietPMGNoFilter</m_FemaleModel>
+    <textureChoices>Clothes\SovietPMG\SovietPMG</textureChoices>
+	<m_Static>false</m_Static>
+	<m_AllowRandomHue>false</m_AllowRandomHue>
+	<m_AllowRandomTint>false</m_AllowRandomTint>
+	<m_HatCategory>nobeard</m_HatCategory>
+	<m_MasksFolder>media/textures/Clothes/Hat/Masks</m_MasksFolder>
+</clothingItem>

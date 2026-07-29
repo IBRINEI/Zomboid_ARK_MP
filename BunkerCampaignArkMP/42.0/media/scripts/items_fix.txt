@@ -1,0 +1,424 @@
+module Base
+{
+
+    item Oxygen_Tank
+    {
+        DisplayCategory = Accessory,
+        ItemType = base:drainable,
+        Weight = 5.0,
+        WeightEmpty = 5.0,
+        Icon = OxygenTank,
+        UseDelta = 0.005,
+        UseWhileEquipped = false,
+        cantBeConsolided = true,
+        KeepOnDeplete = true,
+        WorldStaticModel = Oxygen_Tank_Ground,
+        Tags = base:hasmetal;base:oxygentank;base:smeltableironsmall,
+    }
+
+    item CannedBolognese_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item CannedCarrots_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item CannedChili_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item CannedCornedBeef_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item CannedCorn_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item CannedFruitCocktail_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item CannedMilk_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item CannedMushroomSoup_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item CannedPeaches_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item CannedPeas_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item CannedPineapple_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item CannedPotato_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item CannedSardines_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 1.5,
+        Icon = Parcel_Small_Food,
+        WorldStaticModel = Parcel_Food_Small,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item CannedTomato_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item Dogfood_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item TinnedBeans_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item TinnedSoup_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:normal,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+        WorldStaticModel = Parcel_Food_Medium,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item TunaTin_Box
+    {
+        DisplayCategory = Food,
+        ItemType = base:normal,
+        Weight = 1.5,
+        Icon = Parcel_Small_Food,
+        WorldStaticModel = Parcel_Food_Small,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        DoubleClickRecipe = OpenBoxOfCannedFood,
+    }
+
+    item CandyPackage
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 0.6,
+        Icon = CandyPackagei,
+        CantEat = true,
+        Packaged = true,
+        Calories = 500.0,
+        Carbohydrates = 125.0,
+        Lipids = 2.5,
+        Proteins = 0.0,
+        StaticModel = CandyPackage,
+        WorldStaticModel = CandyPackage,
+        DoubleClickRecipe = OpenCandyPackage,
+    }
+
+    item BeerPack
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 1.8,
+        Icon = SixPack_Bottles,
+        WorldStaticModel = BeerBottleSixpack,
+        Tags = base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenPackOfBeer,
+    }
+
+    item BeerCanPack
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 1.8,
+        Icon = SixPack_Cans,
+        WorldStaticModel = BeerCanSixpack,
+        Tags = base:hasmetal;base:ignorezombiedensity,
+        CantEat = true,
+        DoubleClickRecipe = OpenPackOfBeer,
+    }
+
+    item BeerBottleOpen
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 0.4,
+        Icon = BeerBottle,
+        EatType = Bourbon,
+        StaticModel = BeerBottle,
+        WorldStaticModel = BeerBottleGround,
+        FillFromDispenserSound = GetWaterFromDispenserGlass,
+        FillFromLakeSound = GetWaterFromLakeBottle,
+        FillFromTapSound = GetWaterFromTapGlass,
+        FillFromToiletSound = GetWaterFromToilet,
+        Tags = base:glass;base:glassbottlesmall,
+        component FluidContainer
+        {
+            ContainerName = BottleBeer,
+            Capacity = 0.3,
+            Opened = false,
+            CustomDrinkSound = DrinkingFromBottleGlass,
+            Fluids
+            {
+                fluid = Beer:1.0,
+            }
+        }
+        component Durability
+        {
+            Material = Glass_Light,
+            MaxHitPoints = 1.0,
+        }
+    }
+
+    item BeerImportedOpen
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 0.4,
+        Icon = BeerImported,
+        Packaged = true,
+        StaticModel = BeerBottleImported,
+        WorldStaticModel = BeerBottle,
+        Tooltip = Tooltip_item_BottleOpener,
+        FillFromDispenserSound = GetWaterFromDispenserGlass,
+        FillFromLakeSound = GetWaterFromLakeBottle,
+        FillFromTapSound = GetWaterFromTapGlass,
+        FillFromToiletSound = GetWaterFromToilet,
+        Tags = base:glass;base:glassbottle,
+        component FluidContainer
+        {
+            ContainerName = BottleBeer,
+            Capacity = 0.3,
+            Opened = false,
+            CustomDrinkSound = DrinkingFromBottleGlass,
+            Fluids
+            {
+                fluid = Beer:1.0,
+            }
+        }
+        component Durability
+        {
+            Material = Glass_Light,
+            MaxHitPoints = 1.0,
+        }
+    }
+    
+    item WineOpen
+    {
+        EatType = Bottle,
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 0.3,
+        Icon = Wine,
+        IconFluidMask = Wine_Mask,
+        FillFromDispenserSound = GetWaterFromDispenserGlass,
+        FillFromLakeSound = GetWaterFromLakeBottle,
+        FillFromTapSound = GetWaterFromTapGlass,
+        FillFromToiletSound = GetWaterFromToilet,
+        StaticModel = WhiteWineBottle,
+        WorldStaticModel = WineWhiteGround,
+        Tags = base:glass;base:glassbottle,
+        component FluidContainer
+        {
+            ContainerName = BottleGlass,
+            Capacity = 1.0,
+            InitialPercentMin = 0.05,
+            InitialPercentMax = 0.85,
+            CustomDrinkSound = DrinkingFromBottleGlass,
+            Fluids
+            {
+                fluid = Wine:1.0,
+            }
+        }
+    }
+
+    item Wine2Open
+    {
+        EatType = Bottle,
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 0.3,
+        Icon = Wine2,
+        IconFluidMask = Wine_Mask,
+        FillFromDispenserSound = GetWaterFromDispenserGlass,
+        FillFromLakeSound = GetWaterFromLakeBottle,
+        FillFromTapSound = GetWaterFromTapGlass,
+        FillFromToiletSound = GetWaterFromToilet,
+        StaticModel = RedWineBottle,
+        WorldStaticModel = WineRedGround,
+        Tags = base:glass;base:glassbottle,
+        component FluidContainer
+        {
+            ContainerName = BottleGlass,
+            Capacity = 1.0,
+            InitialPercentMin = 0.05,
+            InitialPercentMax = 0.85,
+            CustomDrinkSound = DrinkingFromBottleGlass,
+            Fluids
+            {
+                fluid = Wine:1.0,
+            }
+        }
+    }
+
+    item WineAged
+    {
+        EatType = Bottle,
+        DisplayCategory = Food,
+        ItemType = base:food,
+        Weight = 1.0,
+        Icon = WineAged,
+        StaticModel = RedWineBottle,
+        WorldStaticModel = WineRedGround,
+        Tooltip = Tooltip_item_Corkscrew,
+        FillFromDispenserSound = GetWaterFromDispenserGlass,
+        FillFromLakeSound = GetWaterFromLakeBottle,
+        FillFromTapSound = GetWaterFromTapGlass,
+        FillFromToiletSound = GetWaterFromToilet,
+        Tags = base:glass;base:glassbottle,
+        component FluidContainer
+        {
+            ContainerName = BottleGlass,
+            Opened = false,
+            Capacity = 1.0,
+            CustomDrinkSound = DrinkingFromBottleGlass,
+            Fluids
+            {
+                fluid = Wine:1.0,
+            }
+        }
+    }
+}

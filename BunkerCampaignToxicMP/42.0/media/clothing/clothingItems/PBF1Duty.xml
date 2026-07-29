@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<clothingItem>
+    <m_GUID>96a8c86b-e3d4-4f1d-afa3-7db0781fed9d</m_GUID>
+    <m_MaleModel>Skinned\Clothes\PBF</m_MaleModel>
+    <m_FemaleModel>Skinned\Clothes\PBF</m_FemaleModel>
+    <textureChoices>Clothes\PBF\PBF1Duty</textureChoices>
+	<m_Static>false</m_Static>
+	<m_AllowRandomHue>false</m_AllowRandomHue>
+	<m_AllowRandomTint>false</m_AllowRandomTint>
+	<m_HatCategory>nobeard</m_HatCategory>
+	<m_MasksFolder>media/textures/Clothes/Head/Masks</m_MasksFolder>
+</clothingItem>

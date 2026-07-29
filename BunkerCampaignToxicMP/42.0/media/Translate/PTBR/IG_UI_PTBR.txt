@@ -1,0 +1,7 @@
+IGUI_PTBR = {
+    IGUI_AdminPanel_ToxicZone = "Zona Tóxica",
+
+	IGUI_ToxicZone_AddZone = "Adicionar Zona",
+	IGUI_ToxicZone_Title = "ZONA TÓXICA",
+	IGUI_ToxicZone_RemoveConfirm = "Você quer mesmo remover a zona tóxica \"%1\"?"
+}

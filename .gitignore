@@ -1,0 +1,23 @@
+# This repository owns only the local Bunker Campaign project.
+/*
+!/.gitignore
+!/.gitattributes
+!/BUNKER_CAMPAIGN_HANDOFF.md
+!/BunkerCampaign/
+!/BunkerCampaign/**
+!/BunkerCampaignArkMP/
+!/BunkerCampaignArkMP/**
+!/BunkerCampaignIntegration/
+!/BunkerCampaignIntegration/**
+!/BunkerCampaignToxicMP/
+!/BunkerCampaignToxicMP/**
+
+# Original The Ark assets retained only as a local recovery source. They are
+# not scanned by the game and are reproducible from the read-only Workshop mod.
+/BunkerCampaignArkMP/_disabled_original_assets/
+
+# Generated or transient files inside the tracked local mods.
+**/*.log
+**/*.tmp
+**/.DS_Store
+**/Thumbs.db

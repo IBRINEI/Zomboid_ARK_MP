@@ -1,0 +1,371 @@
+module Bandits {
+
+    item Milk
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Milk_Ground,
+        Weight = 0.2,
+        Icon = Milk,
+    }
+
+    item BeerBottleOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = BeerBottleGround,
+        Weight = 0.4,
+        Icon = BeerBottle,
+    }
+
+    item BeerImportedOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = BeerBottleGround,
+        Weight = 0.4,
+        Icon = BeerImported,
+    }
+
+    item BeerCan
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = BeerCan_Ground,
+        Weight = 0.3,
+        Icon = BeerCan,
+    }
+
+    item Brandy
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = BrandyBottle,
+        Weight = 0.5,
+        Icon = Brandy,
+    }
+
+    item Champagne
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Champagne,
+        Weight = 1.0,
+        Icon = Champagne,
+    }
+
+    item Cider
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = CiderBottle,
+        Weight = 1.0,
+        Icon = Cider,
+    }
+
+    item CoffeeLiquer
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = CoffeeLiquerBottle,
+        Weight = 1.0,
+        Icon = CoffeeLiquer,
+    }
+
+    item Curacao
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = CuracaoBottle,
+        Weight = 1.0,
+        Icon = Curacao,
+    }
+
+    item Gin
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = GinBottle,
+        Weight = 1.0,
+        Icon = Gin,
+    }
+
+    item Grenadine
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = GrenadineBottle,
+        Weight = 1.0,
+        Icon = Grenadine,
+    }
+
+    item Port
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = PortBottle,
+        Weight = 1.0,
+        Icon = Port,
+    }
+
+    item Rum
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = RumBottle,
+        Weight = 1.0,
+        Icon = Rum,
+    }
+
+    item Scotch
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = ScotchBottle,
+        Weight = 1.0,
+        Icon = Scotch,
+    }
+    
+    item Sherry
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = SherryBottle,
+        Weight = 1.0,
+        Icon = Sherry,
+    }
+
+    item Tequila
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = TequilaBottle,
+        Weight = 1.0,
+        Icon = Tequila,
+    }
+
+    item Vermouth
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = VermouthBottle,
+        Weight = 1.0,
+        Icon = Vermouth,
+    }
+
+    item Whiskey
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = WhiskeyBottle,
+        Weight = 1.0,
+        Icon = Whiskey,
+    }
+
+    item Wine
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = WineWhiteGround,
+        Weight = 1.0,
+        Icon = Wine,
+    }
+
+    item Wine2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = WineRedGround,
+        Weight = 1.0,
+        Icon = Wine2,
+    }
+
+    item WineOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = WineWhiteGround,
+        Weight = 1.0,
+        Icon = Wine,
+    }
+
+    item Wine2Open
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = WineRedGround,
+        Weight = 1.0,
+        Icon = Wine2,
+    }
+
+    item WineAged
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = WineRedGround,
+        Weight = 1.0,
+        Icon = WineAged,
+    }
+
+    item JuiceBox
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = JuiceBox_Grape,
+        Weight = 1.0,
+        Icon = JuiceBox,
+    }
+
+    item JuiceBoxApple
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = JuiceBox_Apple,
+        Weight = 1.0,
+        Icon = JuiceBox_Apple,
+    }
+
+    item JuiceBoxFruitpunch
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = JuiceBox_FruitPunch,,
+        Weight = 1.0,
+        Icon = JuiceBox_FruitPunch,
+    }
+
+    item JuiceBoxOrange
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = JuiceBox_Orange,
+        Weight = 1.0,
+        Icon = JuiceBox_Orange,
+    }
+
+    item JuiceCranberry
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = JuiceBottle_Cranberry,
+        Weight = 1.0,
+        Icon = JuiceCranberry,
+    }
+
+    item JuiceGrape
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = JuiceBottle_GrapeJuice,
+        Weight = 1.0,
+        Icon = JuiceGrape,
+    }
+
+    item JuiceLemon
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = JuiceBottle_Lemonade,
+        Weight = 1.0,
+        Icon = JuiceLemonade,
+    }
+
+    item JuiceOrange
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = JuiceBottle_OrangeJuice,
+        Weight = 1.0,
+        Icon = JuiceOrange,
+    }
+
+    item JuiceTomato
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = JuiceBottle_Tomato,
+        Weight = 1.0,
+        Icon = JuiceTomato,
+    }
+
+    item Pop
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = PopCanDiet,
+        Weight = 0.3,
+        Icon = Pop,
+    }
+
+    item Pop2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = PopCanRed,
+        Weight = 0.3,
+        Icon = Pop2,
+    }
+
+    item Pop3
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = PopCanFizz,
+        Weight = 0.3,
+        Icon = Pop3,
+    }
+
+    item PopBottle
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = PopBottleWorld,
+        Weight = 0.3,
+        Icon = PopBottle,
+    }
+
+    item PopBottleRare
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = PopBottleWorld,
+        Weight = 0.3,
+        Icon = PopBottleRare,
+    }
+
+    item SodaCan
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = PopCanGeneric,
+        Weight = 0.3,
+        Icon = PopCan_Generic,
+    }
+
+    item WaterBottle
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = WaterBottleFull,
+        Weight = 0.3,
+        Icon = WaterBottle,
+    }
+
+    item SimpleSyrup
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = WhiskeyBottleGround,
+        Weight = 0.3,
+        Icon = SimpleSyrup,
+    }
+
+    item MilkBottle
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = MilkBottle,
+        Weight = 0.3,
+        Icon = MilkBottle,
+    }
+}

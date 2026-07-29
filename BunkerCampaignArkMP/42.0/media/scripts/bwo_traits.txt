@@ -1,0 +1,24 @@
+module Bandits
+{
+    character_trait_definition BWOA:goodmemory
+    {
+        IsProfessionTrait = false,
+        DisabledInMultiplayer = false,
+        CharacterTrait = BWOA:goodmemory,
+        Cost = 1,
+        UIName = UI_trait_goodmemory,
+        UIDescription = UI_trait_goodmemoryDesc,
+        MutuallyExclusiveTraits = BWOA:badmemory,
+    }
+
+    character_trait_definition BWOA:badmemory
+    {
+        IsProfessionTrait = false,
+        DisabledInMultiplayer = false,
+        CharacterTrait = BWOA:badmemory,
+        Cost = -1,
+        UIName = UI_trait_badmemory,
+        UIDescription = UI_trait_badmemoryDesc,
+        MutuallyExclusiveTraits = BWOA:goodmemory,
+    }
+}

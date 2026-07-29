@@ -1,0 +1,43 @@
+module Base
+{
+	model ContaminantDetector
+	{
+		mesh = WorldItems/ContaminantDetector,
+		scale = 0.4,
+	}
+
+	item ContaminantDetector
+	{
+		DisplayCategory = Tool,
+		Weight = 0.3,
+		ItemType = base:normal,
+		DisplayName = Geiger Counter,
+		Icon = ContaminantDetector,
+		WorldStaticModel = ContaminantDetector,
+	}
+
+	item RadiationMag
+	{
+		DisplayCategory = Literature,
+		Weight = 0.1,
+		ItemType = base:normal,
+		DisplayName = How To Detect Radiation,
+		Icon = RadiationMag,
+		ReplaceOnUse = RadiationMag,
+		StaticModel = Magazine,
+		WorldStaticModel = MagazineOpenGround,
+	}
+
+	item GasMaskFilter
+	{
+		DisplayCategory = Tool,
+		Weight = 0.1,
+		ItemType = base:normal,
+		DisplayName = Gas Mask Filter,
+		Icon = GasMaskFilter,
+		MetalValue = 2,
+		SurvivalGear = TRUE,
+		Medical = TRUE,
+		WorldStaticModel = GasMaskFilter,
+	}
+}

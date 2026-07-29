@@ -1,0 +1,7395 @@
+module Bandits {
+
+    item CannedBolognese_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item CannedCarrots_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item CannedChili_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item CannedCornedBeef_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item CannedCorn_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item CannedFruitCocktail_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item CannedMilk_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item CannedMushroomSoup_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item CannedPeaches_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item CannedPeas_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item CannedPineapple_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item CannedPotato_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item CannedSardines_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Small,
+        Weight = 1.5,
+        Icon = Parcel_Small_Food,
+    }
+
+    item CannedTomato_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item Dogfood_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item TinnedBeans_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item TinnedSoup_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Medium,
+        Weight = 4.0,
+        Icon = Parcel_Medium_Food,
+    }
+
+    item TunaTin_Box
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        WeaponSprite = Parcel_Food_Small,
+        Weight = 1.5,
+        Icon = Parcel_Small_Food,
+    }
+
+    item PanFriedVegetablesForged
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PanFriedVegetablesForged,
+        WeaponSprite = PanFriedVegetablesForged,
+        Weight = 1.0,
+        Icon = FryingPan_Forged_Stirfry,
+    }
+
+    item TestHotDrink
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TestHotDrink,
+        WeaponSprite = MugWhite,
+        Weight = 0.5,
+        Icon = MugWhiteFull,
+    }
+
+    item RedRadish
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RedRadish,
+        WeaponSprite = RedRadish_Ground,
+        Weight = 0.1,
+        Icon = Radish,
+    }
+
+    item Strewberrie
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Strewberrie,
+        WeaponSprite = Strawberry_Ground,
+        Weight = 0.1,
+        Icon = BerryStraw,
+    }
+
+    item Tomato
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Tomato,
+        WeaponSprite = Tomato_Ground,
+        Weight = 0.2,
+        Icon = Tomato,
+    }
+
+    item Potato
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Potato,
+        WeaponSprite = Potato_Ground,
+        Weight = 0.2,
+        Icon = Potato,
+    }
+
+    item Cabbage
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cabbage,
+        WeaponSprite = Cabbage_Ground,
+        Weight = 0.2,
+        Icon = Cabbage,
+    }
+
+    item Bacon
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Bacon,
+        WeaponSprite = BaconStrip_Hand,
+        Weight = 0.3,
+        Icon = Bacon,
+    }
+
+    item BaconRashers
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BaconRashers,
+        WeaponSprite = BaconStrip_Hand,
+        Weight = 0.1,
+        Icon = TZ_BaconRashers,
+    }
+
+    item BaconBits
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BaconBits,
+        WeaponSprite = BaconBits_Ground,
+        Weight = 0.025,
+        Icon = TZ_BaconBits,
+    }
+
+    item MayonnaiseFull
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MayonnaiseFull,
+        WeaponSprite = MayoJar,
+        Weight = 0.5,
+        Icon = TZ_MayonnaiseFull,
+    }
+
+    item RemouladeFull
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RemouladeFull,
+        WeaponSprite = RemouladeJar,
+        Weight = 0.5,
+        Icon = TZ_RemouladeFull,
+    }
+
+    item BarleySheaf
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BarleySheaf,
+        WeaponSprite = BarleySheaf,
+        Weight = 1.0,
+        Icon = Barley,
+    }
+
+    item BarleySheafDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BarleySheafDried,
+        WeaponSprite = BarleySheafDried,
+        Weight = 1.0,
+        Icon = Barley,
+    }
+
+    item Flax
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Flax,
+        WeaponSprite = FlaxBundle,
+        Weight = 0.2,
+        Icon = Flax_Harvested,
+    }
+
+    item FlaxRippled
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FlaxRippled,
+        WeaponSprite = FlaxRippled,
+        Weight = 0.2,
+        Icon = Flax_Rippled,
+    }
+
+    item FlaxSeed
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FlaxSeed,
+        WeaponSprite = FlaxSeeds,
+        Weight = 0.02,
+        Icon = Flax_Seeds,
+    }
+
+    item HempBundle
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HempBundle,
+        WeaponSprite = HempBundle,
+        Weight = 1.0,
+        Icon = IndustrialHemp,
+    }
+
+    item HempBundleDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HempBundleDried,
+        WeaponSprite = HempBundleDried,
+        Weight = 1.0,
+        Icon = IndustrialHemp_Dried,
+    }
+
+    item Hops
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Hops,
+        WeaponSprite = Hops,
+        Weight = 0.3,
+        Icon = Hops,
+    }
+
+    item HopsDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HopsDried,
+        WeaponSprite = HopsDried,
+        Weight = 0.3,
+        Icon = Hops_Dried,
+    }
+
+    item RyeSheaf
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RyeSheaf,
+        WeaponSprite = RyeSheaf,
+        Weight = 1.0,
+        Icon = RyeWheat,
+    }
+
+    item RyeSheafDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RyeSheafDried,
+        WeaponSprite = RyeSheafDried,
+        Weight = 1.0,
+        Icon = RyeWheat,
+    }
+
+    item SeedPaste
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SeedPaste,
+        WeaponSprite = FlaxSeedPasteBlob,
+        Weight = 0.2,
+        Icon = Flax_Paste,
+    }
+
+    item SeedPasteBowl
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SeedPasteBowl,
+        WeaponSprite = FlaxBowlPaste,
+        Weight = 0.3,
+        Icon = Flax_PasteBowl,
+    }
+
+    item SunflowerHead
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SunflowerHead,
+        WeaponSprite = SunflowerHead,
+        Weight = 0.2,
+        Icon = SunflowerHead,
+    }
+
+    item SunflowerHeadDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SunflowerHeadDried,
+        WeaponSprite = SunflowerHeadDried,
+        Weight = 0.2,
+        Icon = SunflowerHead_Dried,
+    }
+
+    item Tobacco
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Tobacco,
+        WeaponSprite = TobaccoLeaf,
+        Weight = 0.2,
+        Icon = Tobacco,
+    }
+
+    item WheatSheaf
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WheatSheaf,
+        WeaponSprite = WheatSheaf,
+        Weight = 1.0,
+        Icon = WheatBundle,
+    }
+
+    item WheatSheafDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WheatSheafDried,
+        WeaponSprite = WheatSheafDried,
+        Weight = 1.0,
+        Icon = WheatBundle,
+    }
+
+    item SugarBeetPulpPot
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SugarBeetPulpPot,
+        WeaponSprite = CookingPotRice_Ground,
+        Weight = 3.0,
+        Icon = PotFull,
+    }
+
+    item SugarBeetSyrupPot
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SugarBeetSyrupPot,
+        WeaponSprite = CookingPotGround_Fluid,
+        Weight = 3.0,
+        Icon = PotFull,
+    }
+
+    item SugarBeetSugarPot
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SugarBeetSugarPot,
+        WeaponSprite = CookingPotGround_Fluid,
+        Weight = 3.0,
+        Icon = PotFull,
+    }
+
+    item HayTuft
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HayTuft,
+        WeaponSprite = HayTuft,
+        Weight = 0.1,
+        Icon = Haytuft,
+    }
+
+    item GrassTuft
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = GrassTuft,
+        WeaponSprite = GrassTuft,
+        Weight = 0.1,
+        Icon = Grasstuft,
+    }
+
+    item Animal_Brain
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Animal_Brain,
+        WeaponSprite = AnimalBrain,
+        Weight = 0.1,
+        Icon = BrainLarge,
+    }
+
+    item Animal_Brain_Small
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Animal_Brain_Small,
+        WeaponSprite = AnimalBrain_Small,
+        Weight = 0.1,
+        Icon = BrainSmall,
+    }
+
+    item Cow_Head_Angus
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cow_Head_Angus,
+        WeaponSprite = Cow_Head_Black,
+        Weight = 2.0,
+        Icon = Head_CowFemale_Black,
+    }
+
+    item Bull_Head_Angus
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Bull_Head_Angus,
+        WeaponSprite = Bull_Head_Black,
+        Weight = 2.0,
+        Icon = Head_CowMale_Black,
+    }
+
+    item Calf_Head_Angus
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Calf_Head_Angus,
+        WeaponSprite = CowCalf_Head_Black,
+        Weight = 1.2,
+        Icon = Head_CowCalf_Black,
+    }
+
+    item Cow_Head_Simmental
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cow_Head_Simmental,
+        WeaponSprite = Cow_Head_Brown,
+        Weight = 2.0,
+        Icon = Head_CowFemale_Brown,
+    }
+
+    item Bull_Head_Simmental
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Bull_Head_Simmental,
+        WeaponSprite = Bull_Head_Brown,
+        Weight = 2.0,
+        Icon = Head_CowMale_Brown,
+    }
+
+    item Calf_Head_Simmental
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Calf_Head_Simmental,
+        WeaponSprite = CowCalf_Head_Brown,
+        Weight = 1.2,
+        Icon = Head_CowCalf_Brown,
+    }
+
+    item Cow_Head_Holstein
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cow_Head_Holstein,
+        WeaponSprite = Cow_Head_White,
+        Weight = 2.0,
+        Icon = Head_CowFemale_BlackWhite,
+    }
+
+    item Bull_Head_Holstein
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Bull_Head_Holstein,
+        WeaponSprite = Bull_Head_White,
+        Weight = 2.0,
+        Icon = Head_CowMale_BlackWhite,
+    }
+
+    item Calf_Head_Holstein
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Calf_Head_Holstein,
+        WeaponSprite = CowCalf_Head_White,
+        Weight = 1.2,
+        Icon = Head_CowCalf_BlackWhite,
+    }
+
+    item Sheep_Ewe_Head_White
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Sheep_Ewe_Head_White,
+        WeaponSprite = Sheep_EweHead_White,
+        Weight = 1.3,
+        Icon = Head_Sheep_White,
+    }
+
+    item Sheep_Ram_Head_White
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Sheep_Ram_Head_White,
+        WeaponSprite = Sheep_RamHead_White,
+        Weight = 1.3,
+        Icon = Head_Sheep_White,
+    }
+
+    item Sheep_Lamb_Head_White
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Sheep_Lamb_Head_White,
+        WeaponSprite = Sheep_LambHead_White,
+        Weight = 0.8,
+        Icon = Head_SheepLamb_White,
+    }
+
+    item Sheep_Ewe_Head_Black
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Sheep_Ewe_Head_Black,
+        WeaponSprite = Sheep_EweHead_Black,
+        Weight = 1.3,
+        Icon = Head_Sheep_Black,
+    }
+
+    item Sheep_Ram_Head_Black
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Sheep_Ram_Head_Black,
+        WeaponSprite = Sheep_RamHead_Black,
+        Weight = 1.3,
+        Icon = Head_Sheep_Black,
+    }
+
+    item Sheep_Lamb_Head_Black
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Sheep_Lamb_Head_Black,
+        WeaponSprite = Sheep_LambHead_Black,
+        Weight = 0.8,
+        Icon = Head_SheepLamb_Black,
+    }
+
+    item Pig_Sow_Head_Pink
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pig_Sow_Head_Pink,
+        WeaponSprite = FarmPig_SowHead_Pink,
+        Weight = 1.4,
+        Icon = Head_PigFemale_Pink,
+    }
+
+    item Pig_Boar_Head_Pink
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pig_Boar_Head_Pink,
+        WeaponSprite = FarmPig_BoarHead_Pink,
+        Weight = 1.4,
+        Icon = Head_PigMale_Pink,
+    }
+
+    item Pig_Piglet_Head_Pink
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pig_Piglet_Head_Pink,
+        WeaponSprite = FarmPig_PigletHead_Pink,
+        Weight = 0.8,
+        Icon = Head_PigPiglet_Pink,
+    }
+
+    item Pig_Sow_Head_Black
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pig_Sow_Head_Black,
+        WeaponSprite = FarmPig_SowHead_Black,
+        Weight = 1.4,
+        Icon = Head_PigFemale_Black,
+    }
+
+    item Pig_Boar_Head_Black
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pig_Boar_Head_Black,
+        WeaponSprite = FarmPig_BoarHead_Black,
+        Weight = 1.4,
+        Icon = Head_PigMale_Black,
+    }
+
+    item Pig_Piglet_Head_Black
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pig_Piglet_Head_Black,
+        WeaponSprite = FarmPig_PigletHead_Black,
+        Weight = 0.8,
+        Icon = Head_PigPiglet_Black,
+    }
+
+    item ChickenFeather
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ChickenFeather,
+        WeaponSprite = Chicken_Feather,
+        Weight = 0.001,
+        Icon = Feather_Chicken,
+    }
+
+    item Chicken_Chick_Head
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chicken_Chick_Head,
+        WeaponSprite = Chicken_ChickHead,
+        Weight = 0.4,
+        Icon = Head_Chicken_Chick,
+    }
+
+    item Chicken_Hen_Brown_Head
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chicken_Hen_Brown_Head,
+        WeaponSprite = Chicken_Head_Brown,
+        Weight = 0.4,
+        Icon = Head_Chicken_Hen,
+    }
+
+    item Chicken_Hen_White_Head
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chicken_Hen_White_Head,
+        WeaponSprite = Chicken_Head_White,
+        Weight = 0.4,
+        Icon = Head_ChickenWhite_Hen,
+    }
+
+    item Chicken_Rooster_Head_Brown
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chicken_Rooster_Head_Brown,
+        WeaponSprite = Chicken_CockerelHead_Brown,
+        Weight = 0.2,
+        Icon = Head_Chicken_Rooster,
+    }
+
+    item Chicken_Rooster_Head_White
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chicken_Rooster_Head_White,
+        WeaponSprite = Chicken_CockerelHead_White,
+        Weight = 0.2,
+        Icon = Head_ChickenWhite_Rooster,
+    }
+
+    item TurkeyFeather
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TurkeyFeather,
+        WeaponSprite = Turkey_Feather,
+        Weight = 0.001,
+        Icon = Feather_Turkey,
+    }
+
+    item Turkey_Hen_Head
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Turkey_Hen_Head,
+        WeaponSprite = Turkey_Hen_Head,
+        Weight = 1.0,
+        Icon = Head_Turkey,
+    }
+
+    item Turkey_Gobbler_Head
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Turkey_Gobbler_Head,
+        WeaponSprite = TurkeyHead,
+        Weight = 1.0,
+        Icon = Head_Turkey,
+    }
+
+    item Turkey_Poult_Head
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Turkey_Poult_Head,
+        WeaponSprite = Turkey_PoultHead,
+        Weight = 1.0,
+        Icon = Head_Turkey_Poult,
+    }
+
+    item TurkeyEgg
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TurkeyEgg,
+        WeaponSprite = Egg_Turkey,
+        Weight = 0.1,
+        Icon = Egg_Turkey,
+    }
+
+    item Raccoon_Sow_Head
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Raccoon_Sow_Head,
+        WeaponSprite = Raccoon_Head,
+        Weight = 1.0,
+        Icon = Head_Raccoon,
+    }
+
+    item Raccoon_Boar_Head
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Raccoon_Boar_Head,
+        WeaponSprite = Raccoon_Head,
+        Weight = 1.0,
+        Icon = Head_Raccoon,
+    }
+
+    item Raccoon_Kit_Head
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Raccoon_Kit_Head,
+        WeaponSprite = RaccoonKit_Head,
+        Weight = 0.5,
+        Icon = Head_Raccoon,
+    }
+
+    item Rabbit_Head_Appalachian
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Rabbit_Head_Appalachian,
+        WeaponSprite = Rabbit_Head_Appalachian,
+        Weight = 1.0,
+        Icon = Head_Rabbit_Brown,
+    }
+
+    item Rabbit_Kitten_Head_Appalachian
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Rabbit_Kitten_Head_Appalachian,
+        WeaponSprite = Rabbit_KittenHead_Appalachian,
+        Weight = 0.5,
+        Icon = Head_Rabbit_Brown_Kit,
+    }
+
+    item Rabbit_Head_CottonTail
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Rabbit_Head_CottonTail,
+        WeaponSprite = Rabbit_Head_CottonTail,
+        Weight = 1.0,
+        Icon = Head_Rabbit_Grey,
+    }
+
+    item Rabbit_Kitten_Head_CottonTail
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Rabbit_Kitten_Head_CottonTail,
+        WeaponSprite = Rabbit_KittenHead_CottonTail,
+        Weight = 0.5,
+        Icon = Head_Rabbit_Grey_Kit,
+    }
+
+    item Rabbit_Head_Swamp
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Rabbit_Head_Swamp,
+        WeaponSprite = Rabbit_Head_Swamp,
+        Weight = 1.0,
+        Icon = Head_Rabbit_Grey,
+    }
+
+    item Rabbit_Kitten_Head_Swamp
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Rabbit_Kitten_Head_Swamp,
+        WeaponSprite = Rabbit_KittenHead_Swamp,
+        Weight = 0.5,
+        Icon = Head_Rabbit_Grey_Kit,
+    }
+
+    item Deer_Doe_Head
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Deer_Doe_Head,
+        WeaponSprite = DeerDoe_Head,
+        Weight = 1.5,
+        Icon = Head_DeerFemale,
+    }
+
+    item Deer_Buck_Head
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Deer_Buck_Head,
+        WeaponSprite = DeerStag_Head,
+        Weight = 1.5,
+        Icon = Head_DeerMale,
+    }
+
+    item Deer_Fawn_Head
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Deer_Fawn_Head,
+        WeaponSprite = DeerFawn_Head,
+        Weight = 1.0,
+        Icon = Head_DeerFawn,
+    }
+
+    item Dung_Turkey
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dung_Turkey,
+        WeaponSprite = Dung_Turkey,
+        Weight = 0.01,
+        Icon = Dung_Turkey,
+    }
+
+    item Dung_Chicken
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dung_Chicken,
+        WeaponSprite = Dung_Chicken,
+        Weight = 0.01,
+        Icon = Dung_Chicken,
+    }
+
+    item Dung_Cow
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dung_Cow,
+        WeaponSprite = Dung_Cow,
+        Weight = 1.0,
+        Icon = Dung_Cow,
+    }
+
+    item Dung_Deer
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dung_Deer,
+        WeaponSprite = Dung_Deer,
+        Weight = 0.5,
+        Icon = Dung_Deer,
+    }
+
+    item Dung_Mouse
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dung_Mouse,
+        WeaponSprite = Dung_Mouse,
+        Weight = 0.01,
+        Icon = Dung_Mouse,
+    }
+
+    item Dung_Pig
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dung_Pig,
+        WeaponSprite = Dung_Pig,
+        Weight = 0.7,
+        Icon = Dung_Pig,
+    }
+
+    item Dung_Rabbit
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dung_Rabbit,
+        WeaponSprite = Dung_Rabbit,
+        Weight = 0.1,
+        Icon = Dung_Rabbit,
+    }
+
+    item Dung_Raccoon
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dung_Raccoon,
+        WeaponSprite = Dung_Raccoon,
+        Weight = 0.1,
+        Icon = Dung_Rabbit,
+    }
+
+    item Dung_Rat
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dung_Rat,
+        WeaponSprite = Dung_Rat,
+        Weight = 0.01,
+        Icon = Dung_Rat,
+    }
+
+    item Dung_Sheep
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dung_Sheep,
+        WeaponSprite = Dung_Sheep,
+        Weight = 0.5,
+        Icon = Dung_Sheep,
+    }
+
+    item CorpseAnimal
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CorpseAnimal,
+        WeaponSprite = CorpseAnimal,
+        Weight = 0.1,
+        Icon = CowBlack_Calf,
+    }
+
+    item CannedBellPepper
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedBellPepper,
+        WeaponSprite = JarFoodBellPeppers_Ground,
+        Weight = 0.8,
+        Icon = JarBrown,
+    }
+
+    item CannedBroccoli
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedBroccoli,
+        WeaponSprite = JarFoodBroccoli_Ground,
+        Weight = 0.8,
+        Icon = JarGreen,
+    }
+
+    item CannedCabbage
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedCabbage,
+        WeaponSprite = JarFoodCabbage_Ground,
+        Weight = 0.8,
+        Icon = JarGreen,
+    }
+
+    item CannedCarrots
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedCarrots,
+        WeaponSprite = JarFoodCarrots_Ground,
+        Weight = 0.8,
+        Icon = JarBrown,
+    }
+
+    item CannedEggplant
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedEggplant,
+        WeaponSprite = JarFoodEggplants_Ground,
+        Weight = 0.8,
+        Icon = JamPurple,
+    }
+
+    item CannedLeek
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedLeek,
+        WeaponSprite = JarFoodLeeks_Ground,
+        Weight = 0.8,
+        Icon = JarWhite,
+    }
+
+    item CannedPotato
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedPotato,
+        WeaponSprite = JarFoodPotatoes_Ground,
+        Weight = 0.8,
+        Icon = JarWhite,
+    }
+
+    item CannedRedRadish
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedRedRadish,
+        WeaponSprite = JarFoodRadish_Ground,
+        Weight = 0.8,
+        Icon = JarBrown,
+    }
+
+    item CannedTomato
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedTomato,
+        WeaponSprite = JarFoodTomatoes_Ground,
+        Weight = 0.8,
+        Icon = JarBrown,
+    }
+
+    item CannedBellPepper_Open
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedBellPepper_Open,
+        WeaponSprite = JarFoodRed_Open,
+        Weight = 0.8,
+        Icon = JarBrown,
+    }
+
+    item CannedBroccoli_Open
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedBroccoli_Open,
+        WeaponSprite = JarFoodGreen_Open,
+        Weight = 0.8,
+        Icon = JarGreen,
+    }
+
+    item CannedCabbage_Open
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedCabbage_Open,
+        WeaponSprite = JarFoodGreen_Open,
+        Weight = 0.8,
+        Icon = JarGreen,
+    }
+
+    item CannedCarrots_Open
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedCarrots_Open,
+        WeaponSprite = JarFoodOrange_Open,
+        Weight = 0.8,
+        Icon = JarBrown,
+    }
+
+    item CannedEggplant_Open
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedEggplant_Open,
+        WeaponSprite = JarFoodPurple_Open,
+        Weight = 0.8,
+        Icon = JamPurple,
+    }
+
+    item CannedLeek_Open
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedLeek_Open,
+        WeaponSprite = JarFoodGreen_Open,
+        Weight = 0.8,
+        Icon = JarWhite,
+    }
+
+    item CannedPotato_Open
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedPotato_Open,
+        WeaponSprite = JarFoodBrown_Open,
+        Weight = 0.8,
+        Icon = JarWhite,
+    }
+
+    item CannedRedRadish_Open
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedRedRadish_Open,
+        WeaponSprite = JarFoodRed_Open,
+        Weight = 0.8,
+        Icon = JarBrown,
+    }
+
+    item CannedTomato_Open
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedTomato_Open,
+        WeaponSprite = JarFoodRed_Open,
+        Weight = 0.8,
+        Icon = JarBrown,
+    }
+
+    item Roses
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Roses,
+        WeaponSprite = Roses,
+        Weight = 0.1,
+        Icon = Bouquet_Rose,
+    }
+
+    item RosePetalsDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RosePetalsDried,
+        WeaponSprite = RosePetals,
+        Weight = 0.1,
+        Icon = Petals_Rose,
+    }
+
+    item Poppies
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Poppies,
+        WeaponSprite = Poppies,
+        Weight = 0.1,
+        Icon = Bouquet_Poppy,
+    }
+
+    item PoppySeed
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PoppySeed,
+        WeaponSprite = PoppySeed,
+        Weight = 0.1,
+        Icon = PoppySeeds,
+    }
+
+    item PoppyPods
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PoppyPods,
+        WeaponSprite = PoppyPods,
+        Weight = 0.1,
+        Icon = PoppyPods,
+    }
+
+    item PoppyPodsDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PoppyPodsDried,
+        WeaponSprite = PoppyPods,
+        Weight = 0.1,
+        Icon = PoppyPods,
+    }
+
+    item Lavender
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Lavender,
+        WeaponSprite = Lavender,
+        Weight = 0.1,
+        Icon = Bouquet_Lavender,
+    }
+
+    item LavenderPetalsDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = LavenderPetalsDried,
+        WeaponSprite = LavenderPetals,
+        Weight = 0.1,
+        Icon = Petals_Lavender,
+    }
+
+    item BarleySeed
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BarleySeed,
+        WeaponSprite = WheatGrains,
+        Weight = 0.02,
+        Icon = WheatGrains,
+    }
+
+    item PumpkinSeed
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PumpkinSeed,
+        WeaponSprite = PumpkinSeed,
+        Weight = 0.1,
+        Icon = PumpkinSeeds,
+    }
+
+    item RyeSeed
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RyeSeed,
+        WeaponSprite = WheatGrains,
+        Weight = 0.02,
+        Icon = WheatGrains,
+    }
+
+    item CornSeed
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CornSeed,
+        WeaponSprite = DriedSoyBeans,
+        Weight = 0.02,
+        Icon = DriedCorn,
+    }
+
+    item SoybeansSeed
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SoybeansSeed,
+        WeaponSprite = DriedSoyBeans,
+        Weight = 0.02,
+        Icon = DriedSoyBeans,
+    }
+
+    item GreenpeasSeed
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = GreenpeasSeed,
+        WeaponSprite = DriedPeas,
+        Weight = 0.02,
+        Icon = DriedPeas,
+    }
+
+    item WheatSeed
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WheatSeed,
+        WeaponSprite = WheatGrains,
+        Weight = 0.02,
+        Icon = WheatGrains,
+    }
+
+    item CilantroSeed
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CilantroSeed,
+        WeaponSprite = Seeds_Generic,
+        Weight = 0.02,
+        Icon = Seeds_Generic,
+    }
+
+    item Chum
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chum,
+        WeaponSprite = Chum,
+        Weight = 0.5,
+        Icon = chumball,
+    }
+
+    item Baguette
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Baguette,
+        WeaponSprite = Baguette_Ground,
+        Weight = 0.3,
+        Icon = Baguette,
+    }
+
+    item Biscuit
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Biscuit,
+        WeaponSprite = Biscuit_Ground,
+        Weight = 0.1,
+        Icon = Biscuit,
+    }
+
+    item Bread
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Bread,
+        WeaponSprite = Bread,
+        Weight = 0.3,
+        Icon = Bread,
+    }
+
+    item BreadSlices
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BreadSlices,
+        WeaponSprite = BreadSlices,
+        Weight = 0.1,
+        Icon = BreadSlices,
+    }
+
+    item BunsHamburger
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BunsHamburger,
+        WeaponSprite = Buns_Hamburger,
+        Weight = 0.4,
+        Icon = BunsHamburger,
+    }
+
+    item BunsHamburger_single
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BunsHamburger_single,
+        WeaponSprite = Buns_Hamburger_Single,
+        Weight = 0.1,
+        Icon = BunsHamburger_single,
+    }
+
+    item BunsHotdog
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BunsHotdog,
+        WeaponSprite = Buns_Hotdog,
+        Weight = 0.3,
+        Icon = BunsHotdog,
+    }
+
+    item BunsHotdog_single
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BunsHotdog_single,
+        WeaponSprite = Buns_Hotdog_Single,
+        Weight = 0.1,
+        Icon = BunsHotdog_single,
+    }
+
+    item CinnamonRoll
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CinnamonRoll,
+        WeaponSprite = CinnamonRoll_Ground,
+        Weight = 0.1,
+        Icon = CinnamonRoll,
+    }
+
+    item Cornbread
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cornbread,
+        WeaponSprite = Cornbread_Ground,
+        Weight = 0.1,
+        Icon = Cornbread,
+    }
+
+    item CrispyRiceSquare
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CrispyRiceSquare,
+        WeaponSprite = CrispyRiceSquare,
+        Weight = 0.2,
+        Icon = CrispyRiceSquare,
+    }
+
+    item Croissant
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Croissant,
+        WeaponSprite = Croissant_Ground,
+        Weight = 0.1,
+        Icon = Croissant,
+    }
+
+    item Danish
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Danish,
+        WeaponSprite = Danish,
+        Weight = 0.1,
+        Icon = Danish,
+    }
+
+    item LemonBar
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = LemonBar,
+        WeaponSprite = LemonBar,
+        Weight = 0.1,
+        Icon = LemonBar,
+    }
+
+    item Painauchocolat
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Painauchocolat,
+        WeaponSprite = Painauchocolat_Ground,
+        Weight = 0.1,
+        Icon = Painauchocolat,
+    }
+
+    item CakeBlackForest
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CakeBlackForest,
+        WeaponSprite = BlackForestCake_Ground,
+        Weight = 0.2,
+        Icon = CakeBlackForest,
+    }
+
+    item CakeCarrot
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CakeCarrot,
+        WeaponSprite = CarrotCake_Ground,
+        Weight = 0.2,
+        Icon = CakeCarrot,
+    }
+
+    item CakeCheeseCake
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CakeCheeseCake,
+        WeaponSprite = CheeseCake_Ground,
+        Weight = 0.2,
+        Icon = CakeCheesecake,
+    }
+
+    item CakeChocolate
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CakeChocolate,
+        WeaponSprite = ChocolateCake_Ground,
+        Weight = 0.2,
+        Icon = CakeChocolate,
+    }
+
+    item CakeRedVelvet
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CakeRedVelvet,
+        WeaponSprite = RedVelvetCake_Ground,
+        Weight = 0.2,
+        Icon = CakeRedVelvet,
+    }
+
+    item CakeSlice
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CakeSlice,
+        WeaponSprite = CakeSlice,
+        Weight = 0.2,
+        Icon = CakeSlice,
+    }
+
+    item CakeStrawberryShortcake
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CakeStrawberryShortcake,
+        WeaponSprite = StrawberryShortcake_Ground,
+        Weight = 0.2,
+        Icon = CakeStrawberryShortcake,
+    }
+
+    item CookieChocolateChip
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CookieChocolateChip,
+        WeaponSprite = Cookie_Hand,
+        Weight = 0.1,
+        Icon = CookieChocolateChip,
+    }
+
+    item CookieJelly
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CookieJelly,
+        WeaponSprite = CookieJelly,
+        Weight = 0.1,
+        Icon = CookieJelly,
+    }
+
+    item CookiesChocolate
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CookiesChocolate,
+        WeaponSprite = Cookie_Chocolate_Hand,
+        Weight = 0.1,
+        Icon = CookiesChocolate,
+    }
+
+    item CookiesOatmeal
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CookiesOatmeal,
+        WeaponSprite = Cookie_Oatmeal_Hand,
+        Weight = 0.1,
+        Icon = CookiesOatmeal,
+    }
+
+    item CookiesShortbread
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CookiesShortbread,
+        WeaponSprite = Cookie_Shortbread_Hand,
+        Weight = 0.1,
+        Icon = CookiesShortbread,
+    }
+
+    item CookiesSugar
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CookiesSugar,
+        WeaponSprite = CookiesSugar_Hand,
+        Weight = 0.1,
+        Icon = CookiesSugar,
+    }
+
+    item DoughnutChocolate
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DoughnutChocolate,
+        WeaponSprite = Doughnut_Chocolate_Ground,
+        Weight = 0.1,
+        Icon = DoughnutChocolate,
+    }
+
+    item DoughnutFrosted
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DoughnutFrosted,
+        WeaponSprite = Doughnut_Frosted_Ground,
+        Weight = 0.1,
+        Icon = DoughnutFrosted,
+    }
+
+    item DoughnutJelly
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DoughnutJelly,
+        WeaponSprite = Doughnut_Jelly_Ground,
+        Weight = 0.1,
+        Icon = DoughnutJelly,
+    }
+
+    item DoughnutPlain
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DoughnutPlain,
+        WeaponSprite = Doughnut_Ground,
+        Weight = 0.1,
+        Icon = DoughnutPlain,
+    }
+
+    item MuffinFruit
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MuffinFruit,
+        WeaponSprite = MuffinFruit_Ground,
+        Weight = 0.1,
+        Icon = MuffinFruit,
+    }
+
+    item MuffinGeneric
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MuffinGeneric,
+        WeaponSprite = MuffinGeneric_Ground,
+        Weight = 0.1,
+        Icon = MuffinGeneric,
+    }
+
+    item Pie
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pie,
+        WeaponSprite = PieSlice,
+        Weight = 0.5,
+        Icon = Pie,
+    }
+
+    item PieApple
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PieApple,
+        WeaponSprite = PieApple_Ground,
+        Weight = 0.5,
+        Icon = Pie_Apple,
+    }
+
+    item PieBlueberry
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PieBlueberry,
+        WeaponSprite = PieBlueberry_Ground,
+        Weight = 0.5,
+        Icon = Pie_Blueberry,
+    }
+
+    item PieKeyLime
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PieKeyLime,
+        WeaponSprite = Pie_Keylime_Ground,
+        Weight = 0.5,
+        Icon = Pie_Keylime,
+    }
+
+    item PieLemonMeringue
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PieLemonMeringue,
+        WeaponSprite = PieLemonmeringue_Ground,
+        Weight = 0.5,
+        Icon = Pie_Lemonmeringue,
+    }
+
+    item PiePumpkin
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PiePumpkin,
+        WeaponSprite = PiePumpkin,
+        Weight = 0.5,
+        Icon = PiePumpkin,
+    }
+
+    item BaguetteDough
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BaguetteDough,
+        WeaponSprite = BaguetteDough,
+        Weight = 0.3,
+        Icon = Doughnut_Baguette,
+    }
+
+    item BakingTray_Muffin
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BakingTray_Muffin,
+        WeaponSprite = MuffinTray_Batter,
+        Weight = 1.5,
+        Icon = Muffintray_Batter,
+    }
+
+    item BakingTray_Muffin_Recipe
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BakingTray_Muffin_Recipe,
+        WeaponSprite = MuffinTray_Batter,
+        Weight = 1.5,
+        Icon = Muffintray_Batter,
+    }
+
+    item BreadDough
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BreadDough,
+        WeaponSprite = BreadDough,
+        Weight = 0.3,
+        Icon = Dough,
+    }
+
+    item CakePrep
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CakePrep,
+        WeaponSprite = CakePreparation,
+        Weight = 0.5,
+        Icon = Cake,
+    }
+
+    item CakeRaw
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CakeRaw,
+        WeaponSprite = Cake,
+        Weight = 0.5,
+        Icon = Cake,
+    }
+
+    item CookieChocolateChipDough
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CookieChocolateChipDough,
+        WeaponSprite = BakingTray_Cookies,
+        Weight = 1.9,
+        Icon = BakingTray_CookiesBaked,
+    }
+
+    item CookiesChocolateDough
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CookiesChocolateDough,
+        WeaponSprite = BakingTray_Cookies,
+        Weight = 1.9,
+        Icon = BakingTray_CookiesBaked,
+    }
+
+    item CookiesOatmealDough
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CookiesOatmealDough,
+        WeaponSprite = BakingTray_Cookies,
+        Weight = 1.9,
+        Icon = BakingTray_CookiesBaked,
+    }
+
+    item CookiesShortbreadDough
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CookiesShortbreadDough,
+        WeaponSprite = BakingTray_Cookies,
+        Weight = 1.9,
+        Icon = BakingTray_CookiesBaked,
+    }
+
+    item CookiesSugarDough
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CookiesSugarDough,
+        WeaponSprite = BakingTray_Cookies,
+        Weight = 1.9,
+        Icon = BakingTray_CookiesBaked,
+    }
+
+    item Dough
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dough,
+        WeaponSprite = Dough,
+        Weight = 0.3,
+        Icon = Dough,
+    }
+
+    item Muffintray_Biscuit
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Muffintray_Biscuit,
+        WeaponSprite = MuffinTray_Batter,
+        Weight = 1.5,
+        Icon = Muffintray_Batter,
+    }
+
+    item PiePrep
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PiePrep,
+        WeaponSprite = PiePreparation,
+        Weight = 0.5,
+        Icon = PieWhole,
+    }
+
+    item PieWholeRaw
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PieWholeRaw,
+        WeaponSprite = PiePreparation,
+        Weight = 0.5,
+        Icon = PieWhole,
+    }
+
+    item PieWholeRawSweet
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PieWholeRawSweet,
+        WeaponSprite = PiePreparation,
+        Weight = 0.5,
+        Icon = PieWhole,
+    }
+
+    item CandiedApple
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CandiedApple,
+        WeaponSprite = CandiedApple,
+        Weight = 0.2,
+        Icon = CandiedApple,
+    }
+
+    item CandyCaramels
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CandyCaramels,
+        WeaponSprite = CandyCaramels,
+        Weight = 0.1,
+        Icon = CandyCaramels,
+    }
+
+    item CandyGummyfish
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CandyGummyfish,
+        WeaponSprite = CandyGummyfish,
+        Weight = 0.1,
+        Icon = CandyGummyfish,
+    }
+
+    item CandyMolasses
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CandyMolasses,
+        WeaponSprite = CandyMolasses,
+        Weight = 0.1,
+        Icon = CandyMolasses,
+    }
+
+    item CandyNovapops
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CandyNovapops,
+        WeaponSprite = CandyNovapops,
+        Weight = 0.1,
+        Icon = CandyNovapops,
+    }
+
+    item Chocolate_Butterchunkers
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chocolate_Butterchunkers,
+        WeaponSprite = Chocolate_Butterchunkers,
+        Weight = 0.2,
+        Icon = Chocolate_Butterchunkers,
+    }
+
+    item Chocolate_Candy
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chocolate_Candy,
+        WeaponSprite = Chocolate_Candy,
+        Weight = 0.1,
+        Icon = Chocolate_Candy,
+    }
+
+    item Chocolate_Crackle
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chocolate_Crackle,
+        WeaponSprite = Chocolate_Crackle,
+        Weight = 0.2,
+        Icon = Chocolate_Crackle,
+    }
+
+    item Chocolate_Deux
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chocolate_Deux,
+        WeaponSprite = Chocolate_Deux,
+        Weight = 0.2,
+        Icon = Chocolate_Deux,
+    }
+
+    item Chocolate_GalacticDairy
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chocolate_GalacticDairy,
+        WeaponSprite = Chocolate_GalacticDairy,
+        Weight = 0.2,
+        Icon = Chocolate_GalacticDairy,
+    }
+
+    item Chocolate_HeartBox
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chocolate_HeartBox,
+        WeaponSprite = ChocolateHeartbox_Hand,
+        Weight = 0.5,
+        Icon = Chocolate_Heartbox,
+    }
+
+    item Chocolate_RoysPBPucks
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chocolate_RoysPBPucks,
+        WeaponSprite = Chocolate_RoysPBPucks,
+        Weight = 0.2,
+        Icon = Chocolate_RoysPBPucks,
+    }
+
+    item Chocolate_Smirkers
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chocolate_Smirkers,
+        WeaponSprite = Chocolate_Smirkers,
+        Weight = 0.2,
+        Icon = Chocolate_Smirkers,
+    }
+
+    item Chocolate_SnikSnak
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chocolate_SnikSnak,
+        WeaponSprite = Chocolate_SnikSnak,
+        Weight = 0.2,
+        Icon = Chocolate_SnikSnak,
+    }
+
+    item Gingerbreadman
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Gingerbreadman,
+        WeaponSprite = Gingerbreadman,
+        Weight = 0.1,
+        Icon = Gingerbreadman,
+    }
+
+    item JellyRoll
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = JellyRoll,
+        WeaponSprite = JellyRoll,
+        Weight = 0.1,
+        Icon = JellyRoll,
+    }
+
+    item ScoutCookies
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ScoutCookies,
+        WeaponSprite = ScoutCookies,
+        Weight = 0.2,
+        Icon = CookieBox,
+    }
+
+    item cheese_powdered
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = cheese_powdered,
+        WeaponSprite = CheesePowdered,
+        Weight = 0.1,
+        Icon = CheesePowdered,
+    }
+
+    item WaterRationCan
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WaterRationCan,
+        WeaponSprite = WaterRationCan,
+        Weight = 0.8,
+        Icon = CannedWater,
+    }
+
+    item MysteryCan
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MysteryCan,
+        WeaponSprite = MysteryCan,
+        Weight = 0.8,
+        Icon = CannedUnlabeled,
+    }
+
+    item DentedCan
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DentedCan,
+        WeaponSprite = DentedCan,
+        Weight = 0.8,
+        Icon = CannedUnlabeled_Gross,
+    }
+
+    item CannedBolognese
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedBolognese,
+        WeaponSprite = CanClosed,
+        Weight = 0.8,
+        Icon = CannedBolognese,
+    }
+
+    item CannedBologneseOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedBologneseOpen,
+        WeaponSprite = CanOpenBolognese,
+        Weight = 0.8,
+        Icon = CannedBologneseOpen,
+    }
+
+    item CannedCarrots2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedCarrots2,
+        WeaponSprite = CanClosed,
+        Weight = 0.8,
+        Icon = CannedCarrots,
+    }
+
+    item CannedCarrotsOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedCarrotsOpen,
+        WeaponSprite = CanOpen,
+        Weight = 0.8,
+        Icon = CannedCarrotsOpen,
+    }
+
+    item CannedChili
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedChili,
+        WeaponSprite = CanClosed,
+        Weight = 0.8,
+        Icon = CannedChili,
+    }
+
+    item CannedChiliOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedChiliOpen,
+        WeaponSprite = CanOpenChilli,
+        Weight = 0.8,
+        Icon = CannedChiliOpen,
+    }
+
+    item CannedCornedBeef
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedCornedBeef,
+        WeaponSprite = CanClosed,
+        Weight = 0.8,
+        Icon = CannedCornedBeef,
+    }
+
+    item CannedCornedBeefOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedCornedBeefOpen,
+        WeaponSprite = CanOpenCornerBeef,
+        Weight = 0.8,
+        Icon = CannedCornedBeefOpen,
+    }
+
+    item CannedCorn
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedCorn,
+        WeaponSprite = CanClosed,
+        Weight = 0.8,
+        Icon = CannedCorn,
+    }
+
+    item CannedCornOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedCornOpen,
+        WeaponSprite = CanOpenCorn,
+        Weight = 0.8,
+        Icon = CannedCornOpen,
+    }
+
+    item CannedFruitCocktail
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedFruitCocktail,
+        WeaponSprite = CanClosed,
+        Weight = 0.8,
+        Icon = CannedFruitCocktail,
+    }
+
+    item CannedFruitCocktailOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedFruitCocktailOpen,
+        WeaponSprite = CanOpenFruitCocktail_Ground,
+        Weight = 0.8,
+        Icon = CannedFruitCocktailOpen,
+    }
+
+    item CannedMilk
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedMilk,
+        WeaponSprite = CanClosedMilk,
+        Weight = 0.8,
+        Icon = CannedCondensedMilk,
+    }
+
+    item CannedMilkOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedMilkOpen,
+        WeaponSprite = CanOpenMilk,
+        Weight = 0.8,
+        Icon = CannedCondensedMilk_Open,
+    }
+
+    item CannedMushroomSoup
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedMushroomSoup,
+        WeaponSprite = CanClosed,
+        Weight = 0.8,
+        Icon = CannedMushroomSoup,
+    }
+
+    item CannedMushroomSoupOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedMushroomSoupOpen,
+        WeaponSprite = CanOpenMushroom,
+        Weight = 0.8,
+        Icon = CannedMushroomSoupOpen,
+    }
+
+    item CannedPeaches
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedPeaches,
+        WeaponSprite = CanClosed,
+        Weight = 0.8,
+        Icon = CannedPeaches,
+    }
+
+    item CannedPeachesOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedPeachesOpen,
+        WeaponSprite = CanOpenPeaches_Ground,
+        Weight = 0.8,
+        Icon = CannedPeachesOpen,
+    }
+
+    item CannedPeas
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedPeas,
+        WeaponSprite = CanClosed,
+        Weight = 0.8,
+        Icon = CannedPeas,
+    }
+
+    item CannedPeasOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedPeasOpen,
+        WeaponSprite = CanOpenPeas,
+        Weight = 0.8,
+        Icon = CannedPeasOpen,
+    }
+
+    item CannedPineapple
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedPineapple,
+        WeaponSprite = CanClosed,
+        Weight = 0.8,
+        Icon = CannedPineapple,
+    }
+
+    item CannedPineappleOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedPineappleOpen,
+        WeaponSprite = CanOpenPineapple_Ground,
+        Weight = 0.8,
+        Icon = CannedPineappleOpen,
+    }
+
+    item CannedPotato2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedPotato2,
+        WeaponSprite = CanClosed,
+        Weight = 0.8,
+        Icon = CannedPotato,
+    }
+
+    item CannedPotatoOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedPotatoOpen,
+        WeaponSprite = CanOpenPotatoes,
+        Weight = 0.8,
+        Icon = CannedPotatoOpen,
+    }
+
+    item CannedSardines
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedSardines,
+        WeaponSprite = CanClosed,
+        Weight = 0.3,
+        Icon = CannedSardines,
+    }
+
+    item CannedSardinesOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedSardinesOpen,
+        WeaponSprite = CannedSardines_Open_Ground,
+        Weight = 0.3,
+        Icon = CannedSardinesOpen,
+    }
+
+    item CannedTomato2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedTomato2,
+        WeaponSprite = CanClosed,
+        Weight = 0.8,
+        Icon = CannedTomato,
+    }
+
+    item CannedTomatoOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedTomatoOpen,
+        WeaponSprite = CanOpenTomatoes,
+        Weight = 0.8,
+        Icon = CannedTomatoOpen,
+    }
+
+    item Dogfood
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dogfood,
+        WeaponSprite = CanClosedDogFood,
+        Weight = 0.8,
+        Icon = Dogfood,
+    }
+
+    item DogfoodOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DogfoodOpen,
+        WeaponSprite = CanOpenDogFood,
+        Weight = 0.8,
+        Icon = DogfoodOpen,
+    }
+
+    item TinnedBeans
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TinnedBeans,
+        WeaponSprite = CanClosed,
+        Weight = 0.8,
+        Icon = Beans,
+    }
+
+    item OpenBeans
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = OpenBeans,
+        WeaponSprite = CanOpen,
+        Weight = 0.8,
+        Icon = BeansOpen,
+    }
+
+    item TinnedSoup
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TinnedSoup,
+        WeaponSprite = CanClosed,
+        Weight = 0.8,
+        Icon = Soup,
+    }
+
+    item TinnedSoupOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TinnedSoupOpen,
+        WeaponSprite = CanOpenSoup,
+        Weight = 0.8,
+        Icon = SoupOpen,
+    }
+
+    item TunaTin
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TunaTin,
+        WeaponSprite = CanClosed,
+        Weight = 0.3,
+        Icon = Tuna,
+    }
+
+    item TunaTinOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TunaTinOpen,
+        WeaponSprite = TinnedTuna_Open_Ground,
+        Weight = 0.3,
+        Icon = TunaOpen,
+    }
+
+    item Butter
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Butter,
+        WeaponSprite = Butter,
+        Weight = 0.3,
+        Icon = Butter,
+    }
+
+    item Cheese
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cheese,
+        WeaponSprite = Cheese,
+        Weight = 0.2,
+        Icon = Cheese,
+    }
+
+    item Processedcheese
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Processedcheese,
+        WeaponSprite = ProcessedCheese,
+        Weight = 0.1,
+        Icon = Processedcheese,
+    }
+
+    item SourCream
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SourCream,
+        WeaponSprite = SourCream,
+        Weight = 0.2,
+        Icon = SourCream,
+    }
+
+    item Yoghurt
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Yoghurt,
+        WeaponSprite = Yogurt,
+        Weight = 0.3,
+        Icon = Yoghurt,
+    }
+
+    item CannedFruitBeverage
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedFruitBeverage,
+        WeaponSprite = CanClosed,
+        Weight = 0.8,
+        Icon = CannedJuice,
+    }
+
+    item CannedFruitBeverageOpen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedFruitBeverageOpen,
+        WeaponSprite = CanOpenFruitBeverage_Ground,
+        Weight = 0.8,
+        Icon = CannedJuice_Open,
+    }
+
+    item Cereal
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cereal,
+        WeaponSpritesByIndex = Cereal;Cereal2;Cereal3;Cereal4;Cereal5,
+        Weight = 0.2,
+        IconsForTexture = Cereal_SunBallz;Cereal_CornFlakes;Cereal_Muesli;Cereal_HappyCurios;Cereal_OatRings,
+    }
+
+    item CerealBowl
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CerealBowl,
+        WeaponSprite = BowlRice_Ground,
+        Weight = 0.8,
+        Icon = Oatmeal,
+    }
+
+    item Coffee2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Coffee2,
+        WeaponSprite = Coffee,
+        Weight = 1.0,
+        Icon = InstantCoffee,
+    }
+
+    item OatsRaw
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = OatsRaw,
+        WeaponSprite = CanOfOats,
+        Weight = 0.8,
+        Icon = OatsRaw,
+    }
+
+    item Teabag2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Teabag2,
+        WeaponSprite = TeaBag,
+        Weight = 0.1,
+        Icon = Teabag,
+    }
+
+    item DriedBlackBeans
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DriedBlackBeans,
+        WeaponSprite = DriedBlackBeans_Ground,
+        Weight = 2.0,
+        Icon = DriedBlackBeans,
+    }
+
+    item DriedChickpeas
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DriedChickpeas,
+        WeaponSprite = DriedChickpeas_Ground,
+        Weight = 2.0,
+        Icon = DriedChickpeas,
+    }
+
+    item DriedKidneyBeans
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DriedKidneyBeans,
+        WeaponSprite = DriedKidneyBeans_Ground,
+        Weight = 2.0,
+        Icon = DriedKidneyBeans,
+    }
+
+    item DriedLentils
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DriedLentils,
+        WeaponSprite = DriedLentils_Ground,
+        Weight = 2.0,
+        Icon = DriedLentils,
+    }
+
+    item DriedSplitPeas
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DriedSplitPeas,
+        WeaponSprite = DriedSplitPeas_Ground,
+        Weight = 2.0,
+        Icon = DriedSplitPeas,
+    }
+
+    item DriedWhiteBeans
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DriedWhiteBeans,
+        WeaponSprite = DriedWhiteBeans_Ground,
+        Weight = 2.0,
+        Icon = DriedWhiteBeans,
+    }
+
+    item Macandcheese
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Macandcheese,
+        WeaponSprite = MacAndCheese,
+        Weight = 0.5,
+        Icon = Macandcheese,
+    }
+
+    item Macaroni
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Macaroni,
+        WeaponSprite = Macaroni,
+        Weight = 2.0,
+        Icon = Macaroni,
+    }
+
+    item Pasta
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pasta,
+        WeaponSprite = Pasta,
+        Weight = 2.0,
+        Icon = SpagettiRaw,
+    }
+
+    item Ramen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Ramen,
+        WeaponSprite = DryRamenNoodles,
+        Weight = 0.2,
+        Icon = Ramen,
+    }
+
+    item Rice
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Rice,
+        WeaponSprite = Rice,
+        Weight = 2.0,
+        Icon = RiceRaw,
+    }
+
+    item TVDinner
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TVDinner,
+        WeaponSprite = TVDinner,
+        Weight = 0.4,
+        Icon = TVDinner,
+    }
+
+    item BouillonCube
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BouillonCube,
+        WeaponSprite = BouillionCube_Ground,
+        Weight = 0.1,
+        Icon = BouillionCube,
+    }
+
+    item ChocolateChips
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ChocolateChips,
+        WeaponSprite = ChocolateChips_Ground,
+        Weight = 0.1,
+        Icon = ChocolateChips,
+    }
+
+    item CocoaPowder
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CocoaPowder,
+        WeaponSprite = CocoaPowder_Ground,
+        Weight = 1.0,
+        Icon = CocoaPowder,
+    }
+
+    item Cone
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cone,
+        WeaponSprite = Cone_Ground,
+        Weight = 0.1,
+        Icon = Cone,
+    }
+
+    item Cornflour2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cornflour2,
+        WeaponSprite = Cornflour,
+        Weight = 2.0,
+        Icon = Cornflour,
+    }
+
+    item Cornmeal2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cornmeal2,
+        WeaponSprite = Cornmeal,
+        Weight = 2.0,
+        Icon = Cornmeal,
+    }
+
+    item Flour2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Flour2,
+        WeaponSprite = Flour,
+        Weight = 2.0,
+        Icon = Flour,
+    }
+
+    item GrahamCrackers
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = GrahamCrackers,
+        WeaponSprite = CrackersGraham_Hand,
+        Weight = 0.1,
+        Icon = GrahamCrackers,
+    }
+
+    item RicePaper
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RicePaper,
+        WeaponSprite = RicePaper_Ground,
+        Weight = 0.1,
+        Icon = RicePaper,
+    }
+
+    item Seaweed
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Seaweed,
+        WeaponSprite = SeaWeed_Ground,
+        Weight = 0.2,
+        Icon = Seaweed,
+    }
+
+    item Sugar
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Sugar,
+        WeaponSprite = Sugar,
+        Weight = 0.1,
+        Icon = Sugar,
+    }
+
+    item SugarBrown
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SugarBrown,
+        WeaponSprite = SugarBrown_Ground,
+        Weight = 0.1,
+        Icon = SugarBrown,
+    }
+
+    item SugarCubes
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SugarCubes,
+        WeaponSprite = SugarCubes,
+        Weight = 0.02,
+        Icon = SugarCubes,
+    }
+
+    item SugarPacket
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SugarPacket,
+        WeaponSprite = SugarPacket_Ground,
+        Weight = 0.005,
+        Icon = SugarPacket,
+    }
+
+    item TacoShell
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TacoShell,
+        WeaponSprite = TacoShell_Ground,
+        Weight = 0.1,
+        Icon = TacoShell,
+    }
+
+    item EggBoiled
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = EggBoiled,
+        WeaponSprite = EggBoiled_Ground,
+        Weight = 0.1,
+        Icon = EggBoiled,
+    }
+
+    item EggOmelette
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = EggOmelette,
+        WeaponSprite = EggOmlette_Ground,
+        Weight = 0.1,
+        Icon = EggOmelette,
+    }
+
+    item EggPoached
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = EggPoached,
+        WeaponSprite = Egg,
+        Weight = 0.1,
+        Icon = EggPoached,
+    }
+
+    item EggScrambled
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = EggScrambled,
+        WeaponSprite = EggScrambled_Ground,
+        Weight = 0.1,
+        Icon = EggScrambled,
+    }
+
+    item Egg
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Egg,
+        WeaponSprite = Egg,
+        Weight = 0.1,
+        Icon = Egg,
+    }
+
+    item EggCarton
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = EggCarton,
+        WeaponSprite = EggCarton,
+        Weight = 1.0,
+        Icon = EggCarton,
+    }
+
+    item WildEggs
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WildEggs,
+        WeaponSprite = WildEggs,
+        Weight = 0.1,
+        Icon = WildEggs,
+    }
+
+    item BagelPlain
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BagelPlain,
+        WeaponSprite = Bagel_Ground,
+        Weight = 0.1,
+        Icon = BagelPlain,
+    }
+
+    item BagelPoppy
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BagelPoppy,
+        WeaponSprite = BagelPoppy_Ground,
+        Weight = 0.1,
+        Icon = BagelPoppy,
+    }
+
+    item BagelSesame
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BagelSesame,
+        WeaponSprite = BagelSesame_Ground,
+        Weight = 0.1,
+        Icon = BagelSesame,
+    }
+
+    item Burger
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Burger,
+        WeaponSprite = Burger,
+        Weight = 0.3,
+        Icon = Burger,
+    }
+
+    item Burrito
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Burrito,
+        WeaponSprite = Burrito_Ground,
+        Weight = 0.3,
+        Icon = Burrito,
+    }
+
+    item Hotdog
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Hotdog,
+        WeaponSprite = HotDog,
+        Weight = 0.3,
+        Icon = HotdogCrafted,
+    }
+
+    item Taco
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Taco,
+        WeaponSprite = Taco_Ground,
+        Weight = 0.3,
+        Icon = Taco,
+    }
+
+    item BaguetteSandwich
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BaguetteSandwich,
+        WeaponSprite = BaguetteSandwich,
+        Weight = 0.2,
+        Icon = BaguetteSandwich,
+    }
+
+    item BurgerRecipe
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BurgerRecipe,
+        WeaponSprite = Burger,
+        Weight = 0.3,
+        Icon = Burger,
+    }
+
+    item BurritoRecipe
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BurritoRecipe,
+        WeaponSprite = Burrito_Ground,
+        Weight = 0.1,
+        Icon = Burrito,
+    }
+
+    item FruitSalad
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FruitSalad,
+        WeaponSprite = BowlSalad_Ground,
+        Weight = 0.7,
+        Icon = FruitSalad,
+    }
+
+    item FruitSaladClay
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FruitSaladClay,
+        WeaponSprite = BowlSalad_Ground,
+        Weight = 0.7,
+        Icon = FruitSalad,
+    }
+
+    item GriddlePanFriedVegetables
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = GriddlePanFriedVegetables,
+        WeaponSprite = GriddlePanFriedVegetables_Ground,
+        Weight = 1.5,
+        Icon = PanFull,
+    }
+
+    item Oatmeal
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Oatmeal,
+        WeaponSprite = BowlRice_Ground,
+        Weight = 0.8,
+        Icon = Oatmeal,
+    }
+
+    item OmeletteRecipe
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = OmeletteRecipe,
+        WeaponSprite = EggOmlette_Ground,
+        Weight = 0.5,
+        Icon = PanFull,
+    }
+
+    item OmeletteRecipeForged
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = OmeletteRecipeForged,
+        WeaponSprite = EggOmlette_Ground,
+        Weight = 0.5,
+        Icon = FryingPan_Forged_Eggs,
+    }
+
+    item PancakesRecipe
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PancakesRecipe,
+        WeaponSprite = PancakesFruit_Ground,
+        Weight = 0.3,
+        Icon = PancakesFruit,
+    }
+
+    item PanFriedVegetables
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PanFriedVegetables,
+        WeaponSprite = PanFriedVegetables_Ground,
+        Weight = 1.5,
+        Icon = PanFull,
+    }
+
+    item PanFriedVegetables2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PanFriedVegetables2,
+        WeaponSprite = RoastingPanFriedVegetables,
+        Weight = 1.3,
+        Icon = RoastingpanFull,
+    }
+
+    item PastaPan
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PastaPan,
+        WeaponSprite = SaucePanPasta,
+        Weight = 3.0,
+        Icon = SaucepanFilled,
+    }
+
+    item PastaPanCopper
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PastaPanCopper,
+        WeaponSprite = SaucepanCopperPasta,
+        Weight = 3.0,
+        Icon = CopperPot_Pasta,
+    }
+
+    item PastaPot
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PastaPot,
+        WeaponSprite = CookingPotPasta_Ground,
+        Weight = 3.0,
+        Icon = PotFull,
+    }
+
+    item PastaPotForged
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PastaPotForged,
+        WeaponSprite = CookingPotForged_PastaGround,
+        Weight = 3.0,
+        Icon = Pot_Forged_Pasta,
+    }
+
+    item PizzaRecipe
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PizzaRecipe,
+        WeaponSprite = Pizza,
+        Weight = 1.5,
+        Icon = PizzaWhole,
+    }
+
+    item PizzaWhole
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PizzaWhole,
+        WeaponSprite = Pizza,
+        Weight = 1.8,
+        Icon = PizzaWhole,
+    }
+
+    item PotOfSoup
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PotOfSoup,
+        WeaponSprite = CookingPotSoup_Ground,
+        Weight = 3.0,
+        Icon = PotFull,
+    }
+
+    item PotOfSoupRecipe
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PotOfSoupRecipe,
+        WeaponSprite = CookingPotSoup_Ground,
+        Weight = 3.0,
+        Icon = PotFull,
+    }
+
+    item PotForgedSoupRecipe
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PotForgedSoupRecipe,
+        WeaponSprite = CookingPotForged_SoupGround,
+        Weight = 3.0,
+        Icon = Pot_Forged_Soup,
+    }
+
+    item PotOfStew
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PotOfStew,
+        WeaponSprite = CookingPotSoup_Ground,
+        Weight = 3.0,
+        Icon = PotFull,
+    }
+
+    item PotForgedStew
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PotForgedStew,
+        WeaponSprite = CookingPotForged_StewGround,
+        Weight = 3.0,
+        Icon = Pot_Forged_Stew,
+    }
+
+    item RicePan
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RicePan,
+        WeaponSprite = SaucePanRice,
+        Weight = 3.0,
+        Icon = SaucepanFilled,
+    }
+
+    item RicePanCopper
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RicePanCopper,
+        WeaponSprite = SaucepanCopperRice,
+        Weight = 3.0,
+        Icon = CopperPot_Pasta,
+    }
+
+    item RicePot
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RicePot,
+        WeaponSprite = CookingPotRice_Ground,
+        Weight = 3.0,
+        Icon = PotFull,
+    }
+
+    item RicePotForged
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RicePotForged,
+        WeaponSprite = CookingPotForged_RiceGround,
+        Weight = 3.0,
+        Icon = Pot_Forged_Rice,
+    }
+
+    item Salad
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Salad,
+        WeaponSprite = BowlSalad_Ground,
+        Weight = 0.5,
+        Icon = TZ_CraftSalat,
+    }
+
+    item SaladClay
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SaladClay,
+        WeaponSprite = BowlSalad_Ground,
+        Weight = 0.5,
+        Icon = TZ_CraftSalat,
+    }
+
+    item Sandwich
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Sandwich,
+        WeaponSprite = Sandwich,
+        Weight = 0.2,
+        Icon = Sandwich,
+    }
+
+    item TacoRecipe
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TacoRecipe,
+        WeaponSprite = Taco_Ground,
+        Weight = 0.1,
+        Icon = Taco,
+    }
+
+    item Toast
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Toast,
+        WeaponSprite = BreadSlices_Toast,
+        Weight = 0.1,
+        Icon = Toast,
+    }
+
+    item WafflesRecipe
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WafflesRecipe,
+        WeaponSprite = WafflesFruit_Hand,
+        Weight = 0.3,
+        Icon = SafflesFruit,
+    }
+
+    item HotDrinkTea
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HotDrinkTea,
+        WeaponSprite = Teacup_Ground,
+        Weight = 0.5,
+        Icon = Teacup,
+    }
+
+    item HotDrinkTeaCeramic
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HotDrinkTeaCeramic,
+        WeaponSprite = Teacup_Ground,
+        Weight = 0.5,
+        Icon = Ceramic_Teacup_Fired,
+    }
+
+    item HotDrink
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HotDrink,
+        WeaponSpritesByIndex = Mug;MugRed;MugWhite;MugBlue;MugYellow,
+        Weight = 0.5,
+        IconsForTexture = MugFulll;MugRedFull;MugWhite_Full;MugBlue_Full;MugYellow_Full,
+    }
+
+    item HotDrinkClay
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HotDrinkClay,
+        WeaponSprite = MugClay,
+        Weight = 0.5,
+        Icon = Ceramic_Mug_Unfired,
+    }
+
+    item HotDrinkRed
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HotDrinkRed,
+        WeaponSprite = MugRed,
+        Weight = 0.5,
+        Icon = MugRedFull,
+    }
+
+    item HotDrinkSpiffo
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HotDrinkSpiffo,
+        WeaponSprite = MugSpiffo,
+        Weight = 0.5,
+        Icon = MugSpiffoFull,
+    }
+
+    item HotDrinkWhite
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HotDrinkWhite,
+        WeaponSprite = MugWhite,
+        Weight = 0.5,
+        Icon = MugWhite_Full,
+    }
+
+    item HotDrinkMetal
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HotDrinkMetal,
+        WeaponSprite = Mug_Metal_Coffee,
+        Weight = 0.5,
+        Icon = Mug_Forged_Coffee,
+    }
+
+    item HotDrinkCopper
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HotDrinkCopper,
+        WeaponSprite = Mug_Copper_Coffee,
+        Weight = 0.5,
+        Icon = Mug_Copper_Coffee,
+    }
+
+    item HotDrinkGold
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HotDrinkGold,
+        WeaponSprite = Mug_Gold_Coffee,
+        Weight = 0.5,
+        Icon = Mug_Gold_Coffee,
+    }
+
+    item HotDrinkSilver
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HotDrinkSilver,
+        WeaponSprite = Mug_Silver_Coffee,
+        Weight = 0.5,
+        Icon = Mug_Metal_Coffee,
+    }
+
+    item HotDrinkTumbler
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HotDrinkTumbler,
+        WeaponSprite = GlassTumblerCoffee_Ground,
+        Weight = 0.5,
+        Icon = GlassTumbler_Coffee,
+    }
+
+    item BucketOfSoup
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BucketOfSoup,
+        WeaponSprite = BucketOfSoup,
+        Weight = 3.0,
+        Icon = MetalBucket_Soup,
+    }
+
+    item BucketOfStew
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BucketOfStew,
+        WeaponSprite = BucketOfSoup,
+        Weight = 3.0,
+        Icon = MetalBucket_Soup,
+    }
+
+    item BaitFish
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BaitFish,
+        WeaponSprite = LittleBaitFish,
+        Weight = 0.1,
+        Icon = FishMinnow,
+    }
+
+    item Crayfish
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Crayfish,
+        WeaponSprite = Crayfish_Ground,
+        Weight = 0.2,
+        Icon = Crayfish,
+    }
+
+    item FishFillet
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FishFillet,
+        WeaponSprite = FishFillet,
+        Weight = 0.2,
+        Icon = FishFillet,
+    }
+
+    item FishRoe
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FishRoe,
+        WeaponSprite = FishRoe_Ground,
+        Weight = 0.1,
+        Icon = FishRoe,
+    }
+
+    item Lobster
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Lobster,
+        WeaponSprite = Lobster_Ground,
+        Weight = 0.4,
+        Icon = Lobster,
+    }
+
+    item Oysters
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Oysters,
+        WeaponSprite = Oysters_Ground,
+        Weight = 0.1,
+        Icon = Oysters,
+    }
+
+    item Salmon
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Salmon,
+        WeaponSprite = Salmon,
+        Weight = 0.3,
+        Icon = Salmon,
+    }
+
+    item Shrimp
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Shrimp,
+        WeaponSprite = Shrimp_Ground,
+        Weight = 0.1,
+        Icon = Shrimp,
+    }
+
+    item Squid
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Squid,
+        WeaponSprite = Squid_Ground,
+        Weight = 0.2,
+        Icon = Squid,
+    }
+
+    item SquidCalamari
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SquidCalamari,
+        WeaponSprite = SquidCalimari_Ground,
+        Weight = 0.1,
+        Icon = SquidCalimari,
+    }
+
+    item Leech
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Leech,
+        WeaponSprite = Leech,
+        Weight = 0.1,
+        Icon = leech,
+    }
+
+    item Tadpole
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Tadpole,
+        WeaponSprite = Tadpole,
+        Weight = 0.1,
+        Icon = frog_tadpole,
+    }
+
+    item LargemouthBass
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = LargemouthBass,
+        WeaponSprite = LargemouthBass_Ground,
+        Weight = 0.4,
+        Icon = Fish_BassLargemouth,
+    }
+
+    item SmallmouthBass
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SmallmouthBass,
+        WeaponSprite = SmallmouthBass_Ground,
+        Weight = 0.4,
+        Icon = Fish_BassSmallmouth,
+    }
+
+    item SpottedBass
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SpottedBass,
+        WeaponSprite = SpottedBass_Ground,
+        Weight = 0.4,
+        Icon = Fish_BassSpotted,
+    }
+
+    item StripedBass
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = StripedBass,
+        WeaponSprite = StripedBass_Ground,
+        Weight = 0.4,
+        Icon = Fish_BassStriped,
+    }
+
+    item Walleye
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Walleye,
+        WeaponSprite = Walleye_Ground,
+        Weight = 0.4,
+        Icon = Fish_Walleye,
+    }
+
+    item Sauger
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Sauger,
+        WeaponSprite = Sauger_Ground,
+        Weight = 0.4,
+        Icon = Fish_Sauger,
+    }
+
+    item BlackCrappie
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BlackCrappie,
+        WeaponSprite = BlackCrappie_Ground,
+        Weight = 0.4,
+        Icon = Fish_CrappieBlack,
+    }
+
+    item WhiteCrappie
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WhiteCrappie,
+        WeaponSprite = WhiteCrappie_Ground,
+        Weight = 0.4,
+        Icon = Fish_CrappieWhite,
+    }
+
+    item Bluegill
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Bluegill,
+        WeaponSprite = Bluegill_Ground,
+        Weight = 0.4,
+        Icon = Fish_Bluegill,
+    }
+
+    item RedearSunfish
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RedearSunfish,
+        WeaponSprite = RedearSunfish_Ground,
+        Weight = 0.4,
+        Icon = Fish_SunfishRedear,
+    }
+
+    item GreenSunfish
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = GreenSunfish,
+        WeaponSprite = GreenSunfish_Ground,
+        Weight = 0.4,
+        Icon = Fish_SunfishGreen,
+    }
+
+    item BlueCatfish
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BlueCatfish,
+        WeaponSprite = BlueCatfish_Ground,
+        Weight = 0.4,
+        Icon = Fish_CatfishBlue,
+    }
+
+    item ChannelCatfish
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ChannelCatfish,
+        WeaponSprite = ChannelCatfish_Ground,
+        Weight = 0.4,
+        Icon = Fish_CatfishChannel,
+    }
+
+    item FlatheadCatfish
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FlatheadCatfish,
+        WeaponSprite = FlatheadCatfish_Ground,
+        Weight = 0.4,
+        Icon = Fish_CatfishFlathead,
+    }
+
+    item Muskellunge
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Muskellunge,
+        WeaponSprite = Muskellunge_Ground,
+        Weight = 0.4,
+        Icon = Fish_Muskellunge,
+    }
+
+    item WhiteBass
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WhiteBass,
+        WeaponSprite = WhiteBass_Ground,
+        Weight = 0.4,
+        Icon = Fish_BassWhite,
+    }
+
+    item YellowPerch
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = YellowPerch,
+        WeaponSprite = YellowPerch_Ground,
+        Weight = 0.4,
+        Icon = Fish_PerchYellow,
+    }
+
+    item FreshwaterDrum
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FreshwaterDrum,
+        WeaponSprite = FreshwaterDrum_Ground,
+        Weight = 0.4,
+        Icon = Fish_DrumFreshwater,
+    }
+
+    item AligatorGar
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = AligatorGar,
+        WeaponSprite = AligatorGar_Ground,
+        Weight = 0.4,
+        Icon = Fish_GarAlligator,
+    }
+
+    item Paddlefish
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Paddlefish,
+        WeaponSprite = Paddlefish_Ground,
+        Weight = 0.4,
+        Icon = Fish_Paddlefish,
+    }
+
+    item Mussels
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Mussels,
+        WeaponSprite = Mussels,
+        Weight = 0.1,
+        Icon = Mussels,
+    }
+
+    item Acorn
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Acorn,
+        WeaponSprite = Acorn_Ground,
+        Weight = 0.1,
+        Icon = Acorn,
+    }
+
+    item BeautyBerry
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BeautyBerry,
+        WeaponSprite = BeautyBerries_Ground,
+        Weight = 0.1,
+        Icon = BeautyBerries,
+    }
+
+    item Dandelions
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dandelions,
+        WeaponSprite = Dandelion_Ground,
+        Weight = 0.1,
+        Icon = Dandelions,
+    }
+
+    item FourLeafClover
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FourLeafClover,
+        WeaponSprite = FourLeafClover,
+        Weight = 0.1,
+        Icon = FourLeafClover,
+    }
+
+    item GrapeLeaves
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = GrapeLeaves,
+        WeaponSprite = GrapeLeaves,
+        Weight = 0.1,
+        Icon = GrapeLeaves,
+    }
+
+    item HollyBerry
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HollyBerry,
+        WeaponSprite = HollyBerries_Ground,
+        Weight = 0.1,
+        Icon = HollyBerries,
+    }
+
+    item LemonGrass
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = LemonGrass,
+        WeaponSprite = LemonGrass,
+        Weight = 0.1,
+        Icon = LemonGrass,
+    }
+
+    item Nettles
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Nettles,
+        WeaponSprite = Nettles_Ground,
+        Weight = 0.1,
+        Icon = Nettle,
+    }
+
+    item Rosehips
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Rosehips,
+        WeaponSprite = RoseHips,
+        Weight = 0.1,
+        Icon = Rosehips,
+    }
+
+    item Thistle
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Thistle,
+        WeaponSprite = Thistle_Ground,
+        Weight = 0.1,
+        Icon = Thistle,
+    }
+
+    item Violets
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Violets,
+        WeaponSprite = Violets,
+        Weight = 0.1,
+        Icon = Violets,
+    }
+
+    item WinterBerry
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WinterBerry,
+        WeaponSprite = WinterBerries_Ground,
+        Weight = 0.1,
+        Icon = Winterberries,
+    }
+
+    item BlackSage
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BlackSage,
+        WeaponSprite = BlackSage,
+        Weight = 0.1,
+        Icon = BlackSage,
+    }
+
+    item BlackSageDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BlackSageDried,
+        WeaponSprite = BlackSage,
+        Weight = 0.1,
+        Icon = BlackSage_Dried,
+    }
+
+    item CommonMallow
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CommonMallow,
+        WeaponSprite = CommonMallow,
+        Weight = 0.1,
+        Icon = CommonMallow,
+    }
+
+    item CommonMallowDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CommonMallowDried,
+        WeaponSprite = MedicinalHerbsLeafBundleDried,
+        Weight = 0.1,
+        Icon = CommonMallow_Dried,
+    }
+
+    item Ginseng
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Ginseng,
+        WeaponSprite = Ginseng,
+        Weight = 0.1,
+        Icon = Ginseng,
+    }
+
+    item WildGarlic2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WildGarlic2,
+        WeaponSprite = MedicinalHerbsLeafBundle,
+        Weight = 0.1,
+        Icon = WildGarlic,
+    }
+
+    item WildGarlicDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WildGarlicDried,
+        WeaponSprite = MedicinalHerbsLeafBundleDried,
+        Weight = 0.1,
+        Icon = WildGarlic,
+    }
+
+    item AmericanLadyCaterpillar
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = AmericanLadyCaterpillar,
+        WeaponSprite = AmericanLadyCaterpillar_Ground,
+        Weight = 0.1,
+        Icon = Insect_AmericanLadyCaterpillar,
+    }
+
+    item BandedWoolyBearCaterpillar
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BandedWoolyBearCaterpillar,
+        WeaponSprite = BandedWoolyBearCaterpillar_Ground,
+        Weight = 0.1,
+        Icon = Insect_BandedWoolyBearCaterpillar,
+    }
+
+    item Centipede
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Centipede,
+        WeaponSprite = Insect_Centipede_Ground,
+        Weight = 0.1,
+        Icon = Insect_Centipede1,
+    }
+
+    item Centipede2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Centipede2,
+        WeaponSprite = Insect_Centipede2_Ground,
+        Weight = 0.1,
+        Icon = Insect_Centipede2,
+    }
+
+    item Cockroach
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cockroach,
+        WeaponSprite = Cockroach_Ground,
+        Weight = 0.1,
+        Icon = Cockroach,
+    }
+
+    item Cricket
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cricket,
+        WeaponSprite = Cricket_Ground,
+        Weight = 0.1,
+        Icon = Cricket,
+    }
+
+    item Grasshopper
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Grasshopper,
+        WeaponSprite = Grasshopper_Ground,
+        Weight = 0.1,
+        Icon = Grasshopper,
+    }
+
+    item Ladybug
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Ladybug,
+        WeaponSprite = Ladybug,
+        Weight = 0.01,
+        Icon = Insect_Ladybug,
+    }
+
+    item Maggots
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Maggots,
+        WeaponSprite = Maggots_Ground,
+        Weight = 0.01,
+        Icon = Insect_Maggots,
+    }
+
+    item Millipede
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Millipede,
+        WeaponSprite = Insect_Millipede_Ground,
+        Weight = 0.1,
+        Icon = Insect_Millipede1,
+    }
+
+    item Millipede2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Millipede2,
+        WeaponSprite = Insect_Millipede2_Ground,
+        Weight = 0.1,
+        Icon = Insect_Millipede2,
+    }
+
+    item MonarchCaterpillar
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MonarchCaterpillar,
+        WeaponSprite = MonarchrCaterpillar_Ground,
+        Weight = 0.1,
+        Icon = Insect_MonarchrCaterpillar,
+    }
+
+    item Pillbug
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pillbug,
+        WeaponSprite = Insect_Pillbug_Ground,
+        Weight = 0.01,
+        Icon = Insect_Pillbug,
+    }
+
+    item SawflyLarva
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SawflyLarva,
+        WeaponSprite = SawflyLarva_Ground,
+        Weight = 0.1,
+        Icon = Insect_SawflyLarva,
+    }
+
+    item SilkMothCaterpillar
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SilkMothCaterpillar,
+        WeaponSprite = SilkMothCaterpillar_Ground,
+        Weight = 0.1,
+        Icon = Insect_SilkMothCaterpillar,
+    }
+
+    item Slug
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Slug,
+        WeaponSprite = Slug1_Ground,
+        Weight = 0.1,
+        Icon = Slug1,
+    }
+
+    item Slug2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Slug2,
+        WeaponSprite = Slug2_Ground,
+        Weight = 0.1,
+        Icon = Slug2,
+    }
+
+    item Snail
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Snail,
+        WeaponSprite = Snail_Ground,
+        Weight = 0.1,
+        Icon = Snail,
+    }
+
+    item SwallowtailCaterpillar
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SwallowtailCaterpillar,
+        WeaponSprite = SwallowtailCaterpillar_Ground,
+        Weight = 0.1,
+        Icon = Insect_SwallowtailCaterpillar,
+    }
+
+    item Termites
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Termites,
+        WeaponSprite = Insect_Termite_Ground,
+        Weight = 0.01,
+        Icon = Insect_Termite,
+    }
+
+    item Worm
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Worm,
+        WeaponSprite = Worm_Ground,
+        Weight = 0.01,
+        Icon = Worm,
+    }
+
+    item Apple
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Apple,
+        WeaponSprite = Apple_Ground,
+        Weight = 0.2,
+        Icon = Apple,
+    }
+
+    item Banana
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Banana,
+        WeaponSprite = Banana_Ground,
+        Weight = 0.2,
+        Icon = Banana,
+    }
+
+    item Cherry
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cherry,
+        WeaponSprite = Cherry_Ground,
+        Weight = 0.1,
+        Icon = Cherry,
+    }
+
+    item DriedApricots
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DriedApricots,
+        WeaponSprite = DriedApricot_Hand,
+        Weight = 0.2,
+        Icon = DriedApricots,
+    }
+
+    item Grapefruit
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Grapefruit,
+        WeaponSprite = Grapefruit_Eat,
+        Weight = 0.3,
+        Icon = Grapefruit,
+    }
+
+    item Grapes
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Grapes,
+        WeaponSprite = Grapes_Ground,
+        Weight = 0.2,
+        Icon = Grapes,
+    }
+
+    item Lemon
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Lemon,
+        WeaponSprite = Lemon_Ground,
+        Weight = 0.2,
+        Icon = Lemon,
+    }
+
+    item Lime
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Lime,
+        WeaponSprite = Lime_Hand,
+        Weight = 0.2,
+        Icon = Lime,
+    }
+
+    item Mango
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Mango,
+        WeaponSprite = Mango_Ground,
+        Weight = 0.3,
+        Icon = Mango,
+    }
+
+    item Orange
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Orange,
+        WeaponSprite = Orange_Ground,
+        Weight = 0.2,
+        Icon = Orange,
+    }
+
+    item Peach
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Peach,
+        WeaponSprite = Peach_Ground,
+        Weight = 0.2,
+        Icon = Peach,
+    }
+
+    item Pear
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pear,
+        WeaponSprite = Pear_Ground,
+        Weight = 0.2,
+        Icon = Pear,
+    }
+
+    item Pineapple
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pineapple,
+        WeaponSprite = Pineapple_Ground,
+        Weight = 0.3,
+        Icon = Pineapple,
+    }
+
+    item Watermelon
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Watermelon,
+        WeaponSprite = Watermelon_Ground,
+        Weight = 3.0,
+        Icon = Watermelon,
+    }
+
+    item WatermelonSliced
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WatermelonSliced,
+        WeaponSprite = MelonSlice,
+        Weight = 0.3,
+        Icon = WatermelonSliced,
+    }
+
+    item WatermelonSmashed
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WatermelonSmashed,
+        WeaponSprite = MelonSlice,
+        Weight = 0.6,
+        Icon = WatermelonSmashed,
+    }
+
+    item BerryBlack
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BerryBlack,
+        WeaponSprite = BerryBlack,
+        Weight = 0.1,
+        Icon = BerryBlack,
+    }
+
+    item BerryBlue
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BerryBlue,
+        WeaponSprite = BerryBlue,
+        Weight = 0.1,
+        Icon = BerryBlue,
+    }
+
+    item BerryGeneric1
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BerryGeneric1,
+        WeaponSprite = BerryGeneric1,
+        Weight = 0.1,
+        Icon = BerryGeneric1,
+    }
+
+    item BerryGeneric2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BerryGeneric2,
+        WeaponSprite = BerryGeneric2,
+        Weight = 0.1,
+        Icon = BerryGeneric2,
+    }
+
+    item BerryGeneric3
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BerryGeneric3,
+        WeaponSprite = BerryGeneric3,
+        Weight = 0.1,
+        Icon = BerryGeneric3,
+    }
+
+    item BerryGeneric4
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BerryGeneric4,
+        WeaponSprite = BerryGeneric4,
+        Weight = 0.1,
+        Icon = BerryGeneric4,
+    }
+
+    item BerryGeneric5
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BerryGeneric5,
+        WeaponSprite = BerryGeneric5,
+        Weight = 0.1,
+        Icon = BerryGeneric5,
+    }
+
+    item BerryPoisonIvy
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BerryPoisonIvy,
+        WeaponSprite = BerryWhite,
+        Weight = 0.1,
+        Icon = BerryPoisonIvy,
+    }
+
+    item Baloney
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Baloney,
+        WeaponSprite = Baloney_Ground,
+        Weight = 0.2,
+        Icon = Baloney,
+    }
+
+    item BaloneySlice
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BaloneySlice,
+        WeaponSprite = BaloneySlice_Hand,
+        Weight = 0.04,
+        Icon = BaloneySlices,
+    }
+
+    item Ham
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Ham,
+        WeaponSprite = Ham,
+        Weight = 1.0,
+        Icon = Ham,
+    }
+
+    item HamSlice
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HamSlice,
+        WeaponSprite = HamSlice,
+        Weight = 0.2,
+        Icon = HamSlices,
+    }
+
+    item HotdogPack
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HotdogPack,
+        WeaponSprite = Hotdog_Pack,
+        Weight = 0.6,
+        Icon = Hotdog,
+    }
+
+    item Hotdog_single
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Hotdog_single,
+        WeaponSprite = Hotdog_Single,
+        Weight = 0.15,
+        Icon = Hotdog_single,
+    }
+
+    item Pepperoni
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pepperoni,
+        WeaponSprite = Pepperoni_Ground,
+        Weight = 0.1,
+        Icon = Pepperoni,
+    }
+
+    item Salami
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Salami,
+        WeaponSprite = Salami_Ground,
+        Weight = 0.1,
+        Icon = Salami,
+    }
+
+    item SalamiSlice
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SalamiSlice,
+        WeaponSprite = SalamiSlice_Hand,
+        Weight = 0.02,
+        Icon = SalamiSlices,
+    }
+
+    item Sausage
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Sausage,
+        WeaponSprite = Sausage_Ground,
+        Weight = 0.1,
+        Icon = Sausage,
+    }
+
+    item MeatPatty
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MeatPatty,
+        WeaponSprite = MeatPatty,
+        Weight = 0.3,
+        Icon = MeatPatty,
+    }
+
+    item MincedMeat
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MincedMeat,
+        WeaponSprite = MincedMeat_Ground,
+        Weight = 0.3,
+        Icon = MincedMeat,
+    }
+
+    item ChickenWings
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ChickenWings,
+        WeaponSprite = PoultryWing,
+        Weight = 0.3,
+        Icon = ChickenWing,
+    }
+
+    item Chicken
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chicken,
+        WeaponSprite = Chicken,
+        Weight = 0.3,
+        Icon = Chicken,
+    }
+
+    item ChickenFillet
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ChickenFillet,
+        WeaponSprite = PoultryFillet,
+        Weight = 0.3,
+        Icon = ChickenFilet,
+    }
+
+    item TurkeyLegs
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TurkeyLegs,
+        WeaponSprite = Chicken,
+        Weight = 0.3,
+        Icon = TurkeyLeg,
+    }
+
+    item TurkeyFillet
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TurkeyFillet,
+        WeaponSprite = PoultryFillet,
+        Weight = 0.3,
+        Icon = TurkeyFilet,
+    }
+
+    item TurkeyWings
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TurkeyWings,
+        WeaponSprite = PoultryWing,
+        Weight = 0.3,
+        Icon = TurkeyWing,
+    }
+
+    item MuttonChop
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MuttonChop,
+        WeaponSprite = MuttonChop,
+        Weight = 0.3,
+        Icon = Mutton,
+    }
+
+    item PorkChop
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PorkChop,
+        WeaponSprite = PorkChop,
+        Weight = 0.3,
+        Icon = Porkchop,
+    }
+
+    item Pork
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pork,
+        WeaponSprite = Pork,
+        Weight = 0.5,
+        Icon = PorkLoin,
+    }
+
+    item Venison
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Venison,
+        WeaponSprite = Venison,
+        Weight = 0.5,
+        Icon = Venison,
+    }
+
+    item Beef
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Beef,
+        WeaponSprite = Beef,
+        Weight = 0.5,
+        Icon = BeefLoin,
+    }
+
+    item Steak
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Steak,
+        WeaponSprite = Steak,
+        Weight = 0.3,
+        Icon = Steak,
+    }
+
+    item DeadBird
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DeadBird,
+        WeaponSprite = DeadBird,
+        Weight = 0.1,
+        Icon = BirdDead,
+    }
+
+    item DeadMouse
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DeadMouse,
+        WeaponSprite = DeadMouse,
+        Weight = 0.05,
+        Icon = MouseDead,
+    }
+
+    item DeadMouseSkinned
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DeadMouseSkinned,
+        WeaponSprite = DeadMouseSkinnedWorld,
+        Weight = 0.05,
+        Icon = MouseSkinned,
+    }
+
+    item DeadMousePups
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DeadMousePups,
+        WeaponSprite = DeadMousePups,
+        Weight = 0.03,
+        Icon = MouseDead,
+    }
+
+    item DeadMousePupsSkinned
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DeadMousePupsSkinned,
+        WeaponSprite = DeadMousePupsSkinnedWorld,
+        Weight = 0.03,
+        Icon = MouseSkinned,
+    }
+
+    item DeadRabbit
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DeadRabbit,
+        WeaponSprite = DeadRabbit,
+        Weight = 1.0,
+        Icon = RabbitDead,
+    }
+
+    item DeadRat
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DeadRat,
+        WeaponSprite = DeadRat,
+        Weight = 0.2,
+        Icon = DeadRat,
+    }
+
+    item DeadRatSkinned
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DeadRatSkinned,
+        WeaponSprite = DeadRatSkinned,
+        Weight = 0.2,
+        Icon = RatSkinned,
+    }
+
+    item DeadRatBaby
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DeadRatBaby,
+        WeaponSprite = DeadRatBaby,
+        Weight = 0.12,
+        Icon = DeadRat,
+    }
+
+    item DeadRatBabySkinned
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DeadRatBabySkinned,
+        WeaponSprite = DeadRatBabySkinned,
+        Weight = 0.12,
+        Icon = RatSkinned,
+    }
+
+    item DeadSquirrel
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DeadSquirrel,
+        WeaponSprite = DeadSquirrel,
+        Weight = 0.4,
+        Icon = SquirrelDead,
+    }
+
+    item FrogMeat
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FrogMeat,
+        WeaponSprite = FrogMeat_Ground,
+        Weight = 0.2,
+        Icon = Frogmeat,
+    }
+
+    item Rabbitmeat
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Rabbitmeat,
+        WeaponSprite = RabbitMeat,
+        Weight = 0.3,
+        Icon = Rabbitmeat,
+    }
+
+    item Smallanimalmeat
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Smallanimalmeat,
+        WeaponSprite = SmallAnimalMeat_Ground,
+        Weight = 0.3,
+        Icon = Smallanimalmeat,
+    }
+
+    item Smallbirdmeat
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Smallbirdmeat,
+        WeaponSprite = SmallBirdMeat_Ground,
+        Weight = 0.3,
+        Icon = Smallbirdmeat,
+    }
+
+    item ChickenFoot
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ChickenFoot,
+        WeaponSprite = ChickenFoot_Ground,
+        Weight = 0.1,
+        Icon = ChickenFoot,
+    }
+
+    item ChickenWhole
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ChickenWhole,
+        WeaponSprite = ChickenWhole,
+        Weight = 1.2,
+        Icon = ChickenWhole,
+    }
+
+    item TurkeyWhole
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TurkeyWhole,
+        WeaponSprite = TurkeyWhole,
+        Weight = 1.3,
+        Icon = TurkeyWhole,
+    }
+
+    item CatTreats
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CatTreats,
+        WeaponSprite = CatTreats,
+        Weight = 0.1,
+        Icon = CatTreats,
+    }
+
+    item CatFoodBag
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CatFoodBag,
+        WeaponSprite = CatFoodBag,
+        Weight = 2.0,
+        Icon = CatFood,
+    }
+
+    item DogFoodBag
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DogFoodBag,
+        WeaponSprite = DogFoodBag,
+        Weight = 2.0,
+        Icon = DogFoodBag,
+    }
+
+    item ChickenFried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ChickenFried,
+        WeaponSprite = FriedChicken,
+        Weight = 0.1,
+        Icon = ChickenFried,
+    }
+
+    item ChickenNuggets
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ChickenNuggets,
+        WeaponSprite = ChickenNuggets_Ground,
+        Weight = 0.2,
+        Icon = ChickenNuggets,
+    }
+
+    item Corndog
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Corndog,
+        WeaponSprite = Corndog,
+        Weight = 0.1,
+        Icon = Corndog,
+    }
+
+    item FishFried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FishFried,
+        WeaponSprite = FishFried_Ground,
+        Weight = 0.2,
+        Icon = FishFried,
+    }
+
+    item FriedOnionRings
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FriedOnionRings,
+        WeaponSprite = OnionRings_Ground,
+        Weight = 0.1,
+        Icon = OnionRings,
+    }
+
+    item Fries
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Fries,
+        WeaponSprite = Fries,
+        Weight = 0.4,
+        Icon = Fries,
+    }
+
+    item Maki
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Maki,
+        WeaponSprite = Maki_Ground,
+        Weight = 0.1,
+        Icon = Maki,
+    }
+
+    item MeatDumpling
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MeatDumpling,
+        WeaponSprite = MeatDumplings_Ground,
+        Weight = 0.1,
+        Icon = MeatDumpling,
+    }
+
+    item MeatSteamBun
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MeatSteamBun,
+        WeaponSprite = MeatSteamBun_Hand,
+        Weight = 0.1,
+        Icon = MeatSteamBun,
+    }
+
+    item NoodleSoup
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = NoodleSoup,
+        WeaponSprite = NoodleSoup_Ground,
+        Weight = 1.0,
+        Icon = NoodleSoup,
+    }
+
+    item Onigiri
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Onigiri,
+        WeaponSprite = Onigiri_Ground,
+        Weight = 0.1,
+        Icon = Onigiri,
+    }
+
+    item OystersFried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = OystersFried,
+        WeaponSprite = OysterFried_Ground,
+        Weight = 0.1,
+        Icon = OystersFried,
+    }
+
+    item Pancakes
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pancakes,
+        WeaponSprite = Pancakes,
+        Weight = 0.3,
+        Icon = Pancakes,
+    }
+
+    item Perogies
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Perogies,
+        WeaponSprite = Perogies_Ground,
+        Weight = 0.1,
+        Icon = Perogies,
+    }
+
+    item Pizza
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pizza,
+        WeaponSprite = PizzaSlice_Ground,
+        Weight = 0.3,
+        Icon = Pizza,
+    }
+
+    item PotatoPancakes
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PotatoPancakes,
+        WeaponSprite = PotatoPancakes_Ground,
+        Weight = 0.1,
+        Icon = PotatoPancakes,
+    }
+
+    item RefriedBeans
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RefriedBeans,
+        WeaponSprite = RefriedBeans_Ground,
+        Weight = 0.2,
+        Icon = RefriedBeans,
+    }
+
+    item ShrimpDumpling
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ShrimpDumpling,
+        WeaponSprite = ShrimpDumpling_Ground,
+        Weight = 0.1,
+        Icon = ShrimpDumpling,
+    }
+
+    item ShrimpFried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ShrimpFried,
+        WeaponSprite = ShrimpFried_Ground,
+        Weight = 0.1,
+        Icon = ShrimpFried,
+    }
+
+    item Smore
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Smore,
+        WeaponSprite = Smore_Ground,
+        Weight = 0.1,
+        Icon = Smore,
+    }
+
+    item Springroll
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Springroll,
+        WeaponSprite = Springroll_Ground,
+        Weight = 0.1,
+        Icon = Springroll,
+    }
+
+    item SushiEgg
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SushiEgg,
+        WeaponSprite = SushEgg_Ground,
+        Weight = 0.1,
+        Icon = SushiEgg,
+    }
+
+    item SushiFish
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SushiFish,
+        WeaponSprite = SushiFish_Ground,
+        Weight = 0.1,
+        Icon = SushiFish,
+    }
+
+    item TofuFried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TofuFried,
+        WeaponSprite = TofuFried_Hand,
+        Weight = 0.3,
+        Icon = TofuFried,
+    }
+
+    item Tortilla
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Tortilla,
+        WeaponSprite = Tortilla_Ground,
+        Weight = 0.1,
+        Icon = Tortilla,
+    }
+
+    item Waffles
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Waffles,
+        WeaponSprite = Waffles_Hand,
+        Weight = 0.3,
+        Icon = Waffles,
+    }
+
+    item BeanBowl
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BeanBowl,
+        WeaponSprite = BowlSoup_Ground,
+        Weight = 1.5,
+        Icon = BowlFull,
+    }
+
+    item FriedOnionRingsCraft
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FriedOnionRingsCraft,
+        WeaponSprite = OnionRings_Ground,
+        Weight = 0.1,
+        Icon = OnionRings,
+    }
+
+    item PancakesCraft
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PancakesCraft,
+        WeaponSprite = Pancakes,
+        Weight = 0.3,
+        Icon = Pancakes,
+    }
+
+    item PastaBowl
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PastaBowl,
+        WeaponSprite = BowlPasta_Ground,
+        Weight = 1.0,
+        Icon = FriedRice,
+    }
+
+    item PastaBowlClay
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PastaBowlClay,
+        WeaponSprite = BowlPasta_Ground,
+        Weight = 1.0,
+        Icon = FriedRice,
+    }
+
+    item RamenBowl
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RamenBowl,
+        WeaponSprite = BowlRamen_Ground,
+        Weight = 1.0,
+        Icon = BowlFull,
+    }
+
+    item RiceBowl
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RiceBowl,
+        WeaponSprite = BowlRice_Ground,
+        Weight = 1.0,
+        Icon = FriedRice,
+    }
+
+    item RiceBowlClay
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RiceBowlClay,
+        WeaponSprite = BowlRice_Ground,
+        Weight = 1.0,
+        Icon = FriedRice,
+    }
+
+    item ShrimpFriedCraft
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ShrimpFriedCraft,
+        WeaponSprite = ShrimpFried_Ground,
+        Weight = 0.1,
+        Icon = ShrimpFried,
+    }
+
+    item SoupBowl
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SoupBowl,
+        WeaponSprite = BowlSoup_Ground,
+        Weight = 1.0,
+        Icon = BowlFull,
+    }
+
+    item SoupBowlClay
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SoupBowlClay,
+        WeaponSprite = BowlSoup_Ground,
+        Weight = 1.0,
+        Icon = BowlFull,
+    }
+
+    item StewBowl
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = StewBowl,
+        WeaponSprite = BowlSoup_Ground,
+        Weight = 1.0,
+        Icon = BowlFull,
+    }
+
+    item StewBowlClay
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = StewBowlClay,
+        WeaponSprite = BowlSoup_Ground,
+        Weight = 1.0,
+        Icon = BowlFull,
+    }
+
+    item WaterPotPasta
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WaterPotPasta,
+        WeaponSprite = CookingPotPasta_Ground,
+        Weight = 3.0,
+        Icon = Pot_Water,
+    }
+
+    item WaterPotForgedPasta
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WaterPotForgedPasta,
+        WeaponSprite = CookingPotForged_PastaGround,
+        Weight = 3.0,
+        Icon = Pot_Forged_Pasta,
+    }
+
+    item WaterPotRice
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WaterPotRice,
+        WeaponSprite = CookingPotRice_Ground,
+        Weight = 3.0,
+        Icon = Pot_Water,
+    }
+
+    item WaterPotForgedRice
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WaterPotForgedRice,
+        WeaponSprite = CookingPotForged_RiceGround,
+        Weight = 3.0,
+        Icon = Pot_Forged_Rice,
+    }
+
+    item WaterSaucepanPasta
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WaterSaucepanPasta,
+        WeaponSprite = WaterSaucepanPasta,
+        Weight = 3.0,
+        Icon = SaucepanFilled,
+    }
+
+    item WaterSaucepanPastaCopper
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WaterSaucepanPastaCopper,
+        WeaponSprite = SaucepanCopperPasta,
+        Weight = 3.0,
+        Icon = CopperPot_Pasta,
+    }
+
+    item WaterSaucepanRice
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WaterSaucepanRice,
+        WeaponSprite = WaterSaucepanRice,
+        Weight = 3.0,
+        Icon = SaucepanFilled,
+    }
+
+    item WaterSaucepanRiceCopper
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = WaterSaucepanRiceCopper,
+        WeaponSprite = SaucepanCopperRice,
+        Weight = 3.0,
+        Icon = CopperPot_Pasta,
+    }
+
+    item Frozen_ChickenNuggets
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Frozen_ChickenNuggets,
+        WeaponSprite = Frozen_ChickenNuggets,
+        Weight = 1.0,
+        Icon = Frozen_ChickenNuggets,
+    }
+
+    item Frozen_FishFingers
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Frozen_FishFingers,
+        WeaponSprite = Frozen_FishFingers,
+        Weight = 1.0,
+        Icon = Frozen_FishFingers,
+    }
+
+    item Frozen_FrenchFries
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Frozen_FrenchFries,
+        WeaponSprite = Frozen_FrenchFries,
+        Weight = 1.0,
+        Icon = Frozen_FrenchFries,
+    }
+
+    item Frozen_TatoDots
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Frozen_TatoDots,
+        WeaponSprite = Frozen_TatoDots,
+        Weight = 1.0,
+        Icon = Frozen_TatoDots,
+    }
+
+    item FishFingers
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FishFingers,
+        WeaponSprite = FishFinger_Hand,
+        Weight = 0.2,
+        Icon = FishFingers,
+    }
+
+    item FrenchFries
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FrenchFries,
+        WeaponSprite = FrenchFries_Hand,
+        Weight = 0.2,
+        Icon = FrenchFries,
+    }
+
+    item TatoDots
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TatoDots,
+        WeaponSprite = TatoDots_Hand,
+        Weight = 0.2,
+        Icon = TatoDots,
+    }
+
+    item CabbageRoll
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CabbageRoll,
+        WeaponSprite = CabbageRoll,
+        Weight = 0.3,
+        Icon = CabbageRoll,
+    }
+
+    item BalsamicVinegar
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BalsamicVinegar,
+        WeaponSprite = BalsamicVinegar,
+        Weight = 0.2,
+        Icon = BalsamicVinegar,
+    }
+
+    item BBQSauce
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BBQSauce,
+        WeaponSprite = BBQSauce,
+        Weight = 0.2,
+        Icon = BBQSauce,
+    }
+
+    item Seasoning_Basil
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Seasoning_Basil,
+        WeaponSprite = Seasoning_Basil,
+        Weight = 0.2,
+        Icon = Seasoning_Basil,
+    }
+
+    item Seasoning_Chives
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Seasoning_Chives,
+        WeaponSprite = Seasoning_Chives,
+        Weight = 0.2,
+        Icon = Seasoning_Chives,
+    }
+
+    item Seasoning_Cilantro
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Seasoning_Cilantro,
+        WeaponSprite = Seasoning_Cilantro,
+        Weight = 0.2,
+        Icon = Seasoning_Cilantro,
+    }
+
+    item Seasoning_Oregano
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Seasoning_Oregano,
+        WeaponSprite = Seasoning_Oregano,
+        Weight = 0.2,
+        Icon = Seasoning_Oregano,
+    }
+
+    item Seasoning_Parsley
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Seasoning_Parsley,
+        WeaponSprite = Seasoning_Parsley,
+        Weight = 0.2,
+        Icon = Seasoning_Parsley,
+    }
+
+    item Seasoning_Rosemary
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Seasoning_Rosemary,
+        WeaponSprite = Seasoning_Rosemary,
+        Weight = 0.2,
+        Icon = Seasoning_Rosemary,
+    }
+
+    item Seasoning_Sage
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Seasoning_Sage,
+        WeaponSprite = Seasoning_Sage,
+        Weight = 0.2,
+        Icon = Seasoning_Sage,
+    }
+
+    item Seasoning_Thyme
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Seasoning_Thyme,
+        WeaponSprite = Seasoning_Thyme,
+        Weight = 0.2,
+        Icon = Seasoning_Thyme,
+    }
+
+    item PowderedGarlic
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PowderedGarlic,
+        WeaponSprite = PowderedGarlic,
+        Weight = 0.2,
+        Icon = PowderedGarlic,
+    }
+
+    item PowderedOnion
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PowderedOnion,
+        WeaponSprite = PowderedOnion,
+        Weight = 0.2,
+        Icon = PowderedOnion,
+    }
+
+    item SeasoningSalt
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SeasoningSalt,
+        WeaponSprite = SeasoningSalt,
+        Weight = 0.2,
+        Icon = SeasoningSalt,
+    }
+
+    item SesameOil
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SesameOil,
+        WeaponSprite = SesameOil,
+        Weight = 0.2,
+        Icon = SesameOil,
+    }
+
+    item Allsorts
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Allsorts,
+        WeaponSprite = Allsorts,
+        Weight = 0.2,
+        Icon = Allsorts,
+    }
+
+    item Candycane
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Candycane,
+        WeaponSprite = CandyCane,
+        Weight = 0.2,
+        Icon = Candycane,
+    }
+
+    item CandyCorn
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CandyCorn,
+        WeaponSprite = CandyCorn_Ground,
+        Weight = 0.2,
+        Icon = CandyCorn,
+    }
+
+    item CandyFruitSlices
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CandyFruitSlices,
+        WeaponSprite = CandyFruitSlices_Ground,
+        Weight = 0.1,
+        Icon = CandyFruitSlices,
+    }
+
+    item CandyPackage
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CandyPackage,
+        WeaponSprite = CandyPackage,
+        Weight = 0.6,
+        Icon = CandyPackagei,
+    }
+
+    item Chocolate
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chocolate,
+        WeaponSprite = Chocolate,
+        Weight = 0.2,
+        Icon = Chocolate,
+    }
+
+    item ChocolateCoveredCoffeeBeans
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ChocolateCoveredCoffeeBeans,
+        WeaponSprite = ChocolateCoveredCoffeeBeans_Ground,
+        Weight = 0.1,
+        Icon = ChocolateCoveredCoffeeBeans,
+    }
+
+    item Dip_NachoCheese
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dip_NachoCheese,
+        WeaponSprite = Dip_NachoCheese_Ground,
+        Weight = 0.2,
+        Icon = Dip_NachoCheese,
+    }
+
+    item Dip_Ranch
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dip_Ranch,
+        WeaponSprite = Dip_Ranch_Ground,
+        Weight = 0.2,
+        Icon = Dip_Ranch,
+    }
+
+    item Dip_Salsa
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Dip_Salsa,
+        WeaponSprite = Dip_Salsa_Ground,
+        Weight = 0.2,
+        Icon = Dip_Salsa,
+    }
+
+    item Gum
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Gum,
+        WeaponSprite = Gum_Ground,
+        Weight = 0.1,
+        Icon = Gum,
+    }
+
+    item GummyBears
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = GummyBears,
+        WeaponSprite = GummyBears_Ground,
+        Weight = 0.1,
+        Icon = GummyBears,
+    }
+
+    item GummyWorms
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = GummyWorms,
+        WeaponSprite = GummyWorms_Ground,
+        Weight = 0.1,
+        Icon = GummyWorms,
+    }
+
+    item HardCandies
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HardCandies,
+        WeaponSprite = HardCandies,
+        Weight = 0.1,
+        Icon = HardCandies,
+    }
+
+    item JellyBeans
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = JellyBeans,
+        WeaponSprite = JellyBeans,
+        Weight = 0.1,
+        Icon = JellyBeans,
+    }
+
+    item Jujubes
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Jujubes,
+        WeaponSprite = Jujubes_Ground,
+        Weight = 0.1,
+        Icon = Jujujubes,
+    }
+
+    item LicoriceBlack
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = LicoriceBlack,
+        WeaponSprite = LicoriceBlack_Ground,
+        Weight = 0.1,
+        Icon = LicoriceBlack,
+    }
+
+    item LicoriceRed
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = LicoriceRed,
+        WeaponSprite = LicoriceRed_Ground,
+        Weight = 0.1,
+        Icon = LicoriceRed,
+    }
+
+    item Lollipop
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Lollipop,
+        WeaponSprite = Lollipop,
+        Weight = 0.1,
+        Icon = Lollipop,
+    }
+
+    item MintCandy
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MintCandy,
+        WeaponSprite = MintCandy,
+        Weight = 0.1,
+        Icon = MintCandy,
+    }
+
+    item Modjeska
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Modjeska,
+        WeaponSprite = Modjeska,
+        Weight = 0.1,
+        Icon = Modjeska,
+    }
+
+    item Peppermint
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Peppermint,
+        WeaponSprite = Peppermint_Ground,
+        Weight = 0.1,
+        Icon = Peppermint,
+    }
+
+    item RockCandy
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RockCandy,
+        WeaponSprite = RockCandy_Ground,
+        Weight = 0.1,
+        Icon = RockCandy,
+    }
+
+    item Crisps
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Crisps,
+        WeaponSprite = Chips,
+        Weight = 0.2,
+        Icon = Crisps,
+    }
+
+    item Crisps2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Crisps2,
+        WeaponSprite = Chips2,
+        Weight = 0.2,
+        Icon = Crisps2,
+    }
+
+    item Crisps3
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Crisps3,
+        WeaponSprite = Chips3,
+        Weight = 0.2,
+        Icon = Crisps3,
+    }
+
+    item Crisps4
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Crisps4,
+        WeaponSprite = Chips4,
+        Weight = 0.2,
+        Icon = Crisps4,
+    }
+
+    item TortillaChips
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TortillaChips,
+        WeaponSprite = CornChips,
+        Weight = 0.2,
+        Icon = CornChips,
+    }
+
+    item ConeIcecream
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ConeIcecream,
+        WeaponSprite = ConeIcecream_Ground,
+        Weight = 0.2,
+        Icon = ConeIcecream,
+    }
+
+    item ConeIcecreamMelted
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ConeIcecreamMelted,
+        WeaponSprite = Cone_Ground,
+        Weight = 0.2,
+        Icon = ConeIcecream,
+    }
+
+    item ConeIcecreamToppings
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ConeIcecreamToppings,
+        WeaponSprite = ConeIceCreamToppings_Ground,
+        Weight = 0.2,
+        Icon = ConeIceCreamTopped,
+    }
+
+    item Icecream
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Icecream,
+        WeaponSprite = IceCream,
+        Weight = 0.2,
+        Icon = Icecream,
+    }
+
+    item IcecreamMelted
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = IcecreamMelted,
+        WeaponSprite = IcecreamMelted,
+        Weight = 0.2,
+        Icon = IcecreamMelted,
+    }
+
+    item Creamocle
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Creamocle,
+        WeaponSprite = Creamocle,
+        Weight = 0.2,
+        Icon = Creamocle,
+    }
+
+    item FudgeePop
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FudgeePop,
+        WeaponSprite = FudgeePop,
+        Weight = 0.2,
+        Icon = FudgeePop,
+    }
+
+    item IcecreamSandwich
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = IcecreamSandwich,
+        WeaponSprite = IcecreamSandwich,
+        Weight = 0.2,
+        Icon = IcecreamSandwich,
+    }
+
+    item Popsicle
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Popsicle,
+        WeaponSprite = Popsicle,
+        Weight = 0.2,
+        Icon = Popsicle,
+    }
+
+    item Creamocle_Melted
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Creamocle_Melted,
+        WeaponSprite = Creamocle,
+        Weight = 0.2,
+        Icon = Puddle_Generic,
+    }
+
+    item FudgeePop_Melted
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FudgeePop_Melted,
+        WeaponSprite = FudgeePop,
+        Weight = 0.2,
+        Icon = Puddle_Generic,
+    }
+
+    item IcecreamSandwich_Melted
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = IcecreamSandwich_Melted,
+        WeaponSprite = IcecreamSandwich,
+        Weight = 0.2,
+        Icon = Puddle_Generic,
+    }
+
+    item Popsicle_Melted
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Popsicle_Melted,
+        WeaponSprite = Popsicle,
+        Weight = 0.2,
+        Icon = Puddle_Generic,
+    }
+
+    item BeefJerky
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BeefJerky,
+        WeaponSprite = BeefJerky_Hand,
+        Weight = 0.2,
+        Icon = BeefJerky,
+    }
+
+    item DehydratedMeatStick
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = DehydratedMeatStick,
+        WeaponSprite = DehydratedMeatStick_Ground,
+        Weight = 0.1,
+        Icon = DehydratedMeatStick,
+    }
+
+    item Peanuts
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Peanuts,
+        WeaponSprite = Peanuts,
+        Weight = 0.2,
+        Icon = Peanut,
+    }
+
+    item SunflowerSeeds
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SunflowerSeeds,
+        WeaponSprite = SunflowerSeeds,
+        Weight = 0.1,
+        Icon = SunflowerSeeds,
+    }
+
+    item Caviar
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Caviar,
+        WeaponSprite = Caviar_Eat,
+        Weight = 0.2,
+        Icon = Caviar,
+    }
+
+    item Crackers
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Crackers,
+        WeaponSprite = Crackers_Hand,
+        Weight = 0.1,
+        Icon = Crackers,
+    }
+
+    item ChocoCakes
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ChocoCakes,
+        WeaponSprite = Snackcake_Chocakes,
+        Weight = 0.2,
+        Icon = Snackcake_Chocakes,
+    }
+
+    item Cupcake
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cupcake,
+        WeaponSprite = Cupcake,
+        Weight = 0.2,
+        Icon = Cupcake,
+    }
+
+    item GranolaBar
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = GranolaBar,
+        WeaponSprite = GranolaBar_Ground,
+        Weight = 0.2,
+        Icon = GranolaBar,
+    }
+
+    item HiHis
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HiHis,
+        WeaponSprite = Snackcake_HiHis,
+        Weight = 0.2,
+        Icon = Snackcake_HiHis,
+    }
+
+    item Marshmallows
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Marshmallows,
+        WeaponSprite = Marshmallows_Hand,
+        Weight = 0.1,
+        Icon = Marshmallows,
+    }
+
+    item Plonkies
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Plonkies,
+        WeaponSprite = Snackcake_Plonkies_Hand,
+        Weight = 0.2,
+        Icon = Snackcake_Plonkies,
+    }
+
+    item Popcorn
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Popcorn,
+        WeaponSprite = Popcorn,
+        Weight = 0.3,
+        Icon = Popcorn,
+    }
+
+    item PorkRinds
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PorkRinds,
+        WeaponSprite = PorkRinds,
+        Weight = 0.1,
+        Icon = PorkRinds,
+    }
+
+    item Pretzel
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pretzel,
+        WeaponSprite = Pretzel_Hand,
+        Weight = 0.1,
+        Icon = Pretzel,
+    }
+
+    item SnoGlobes
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SnoGlobes,
+        WeaponSprite = Snackcake_SnoSpheres,
+        Weight = 0.2,
+        Icon = Snackcake_SnoSpheres,
+    }
+
+    item QuaggaCakes
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = QuaggaCakes,
+        WeaponSprite = Snackcake_QuaggaCakes,
+        Weight = 0.2,
+        Icon = Snackcake_QuaggaCakes,
+    }
+
+    item TortillaChipsBaked
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TortillaChipsBaked,
+        WeaponSprite = TortillaChips_Ground,
+        Weight = 0.2,
+        Icon = TortillaChips,
+    }
+
+    item Gravy
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Gravy,
+        WeaponSprite = GravyBoat_Full,
+        Weight = 0.2,
+        Icon = Gravy,
+    }
+
+    item Guacamole
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Guacamole,
+        WeaponSprite = Guacamole_Ground,
+        Weight = 0.1,
+        Icon = Guacamole,
+    }
+
+    item Honey
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Honey,
+        WeaponSprite = Honey,
+        Weight = 0.4,
+        Icon = Honeybottle,
+    }
+
+    item Hotsauce
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Hotsauce,
+        WeaponSprite = HotSauce,
+        Weight = 0.2,
+        Icon = Hotsauce,
+    }
+
+    item Icing
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Icing,
+        WeaponSprite = Icing_Ground,
+        Weight = 0.1,
+        Icon = Icing,
+    }
+
+    item JamFruit
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = JamFruit,
+        WeaponSprite = JamFruit_Ground,
+        Weight = 0.2,
+        Icon = JamFruit,
+    }
+
+    item JamMarmalade
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = JamMarmalade,
+        WeaponSprite = JamMarmalade_Ground,
+        Weight = 0.2,
+        Icon = JamMarmalade,
+    }
+
+    item Ketchup
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Ketchup,
+        WeaponSprite = Ketchup,
+        Weight = 0.2,
+        Icon = Ketchup,
+    }
+
+    item Lard
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Lard,
+        WeaponSprite = Lard_Ground,
+        Weight = 0.3,
+        Icon = Lard,
+    }
+
+    item MapleSyrup
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MapleSyrup,
+        WeaponSprite = MapleSyrup_Ground,
+        Weight = 0.2,
+        Icon = MapleSyrup,
+    }
+
+    item Margarine
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Margarine,
+        WeaponSprite = Margerine_Ground,
+        Weight = 0.3,
+        Icon = Margerine,
+    }
+
+    item Marinara
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Marinara,
+        WeaponSprite = Marinara,
+        Weight = 0.2,
+        Icon = Marinarai,
+    }
+
+    item Mustard
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Mustard,
+        WeaponSprite = Mustard,
+        Weight = 0.2,
+        Icon = Mustard,
+    }
+
+    item OilOlive
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = OilOlive,
+        WeaponSprite = OilOlive_Ground,
+        Weight = 0.2,
+        Icon = OilOlive,
+    }
+
+    item OilVegetable
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = OilVegetable,
+        WeaponSprite = OilVegetable_Ground,
+        Weight = 0.2,
+        Icon = OilVegetable,
+    }
+
+    item PeanutButter
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PeanutButter,
+        WeaponSprite = PeanutButter,
+        Weight = 0.3,
+        Icon = PeanutButter,
+    }
+
+    item RiceVinegar
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RiceVinegar,
+        WeaponSprite = RiceVinegar_Ground,
+        Weight = 0.2,
+        Icon = RiceVinegar,
+    }
+
+    item Soysauce
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Soysauce,
+        WeaponSprite = Soysauce_Ground,
+        Weight = 0.2,
+        Icon = Soysauce,
+    }
+
+    item TomatoPaste
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = TomatoPaste,
+        WeaponSprite = TomatoPaste_Ground,
+        Weight = 0.2,
+        Icon = TomatoPaste,
+    }
+
+    item Wasabi
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Wasabi,
+        WeaponSprite = Wasabi,
+        Weight = 0.2,
+        Icon = Wasabi,
+    }
+
+    item Pepper
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pepper,
+        WeaponSprite = Pepper,
+        Weight = 0.2,
+        Icon = Pepper,
+    }
+
+    item Salt
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Salt,
+        WeaponSprite = Salt,
+        Weight = 0.2,
+        Icon = Salt,
+    }
+
+    item Basil
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Basil,
+        WeaponSprite = Basil_Ground,
+        Weight = 0.1,
+        Icon = HerbBasil,
+    }
+
+    item BasilDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BasilDried,
+        WeaponSprite = DriedHerbs_generic,
+        Weight = 0.1,
+        Icon = DriedHerbs_generic,
+    }
+
+    item Chamomile
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chamomile,
+        WeaponSprite = Chamomile,
+        Weight = 0.1,
+        Icon = Chamomile,
+    }
+
+    item ChamomileDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ChamomileDried,
+        WeaponSprite = ChamomileDried,
+        Weight = 0.1,
+        Icon = Chamomile_Dried,
+    }
+
+    item Chives
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Chives,
+        WeaponSprite = HerbChives_Ground,
+        Weight = 0.1,
+        Icon = HerbChives,
+    }
+
+    item ChivesDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ChivesDried,
+        WeaponSprite = DriedHerbs_generic,
+        Weight = 0.1,
+        Icon = DriedHerbs_generic,
+    }
+
+    item Cilantro
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cilantro,
+        WeaponSprite = HerbCilantro_Ground,
+        Weight = 0.1,
+        Icon = HerbCilantro,
+    }
+
+    item CilantroDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CilantroDried,
+        WeaponSprite = DriedHerbs_generic,
+        Weight = 0.1,
+        Icon = DriedHerbs_generic,
+    }
+
+    item Cinnamon
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cinnamon,
+        WeaponSprite = Cinnamon,
+        Weight = 0.1,
+        Icon = Cinnamon,
+    }
+
+    item GingerRoot
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = GingerRoot,
+        WeaponSprite = Ginger_Ground,
+        Weight = 0.1,
+        Icon = RootGinger,
+    }
+
+    item Marigold
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Marigold,
+        WeaponSprite = Marigold,
+        Weight = 0.1,
+        Icon = Marigold,
+    }
+
+    item MarigoldDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MarigoldDried,
+        WeaponSprite = MarigoldDried,
+        Weight = 0.1,
+        Icon = Marigold_Dried,
+    }
+
+    item MintHerb
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MintHerb,
+        WeaponSprite = MintHerb,
+        Weight = 0.1,
+        Icon = Mint,
+    }
+
+    item MintHerbDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MintHerbDried,
+        WeaponSprite = DriedHerbs_generic,
+        Weight = 0.1,
+        Icon = Mint,
+    }
+
+    item Oregano
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Oregano,
+        WeaponSprite = HerbOregano_Ground,
+        Weight = 0.1,
+        Icon = HerbOregano,
+    }
+
+    item OreganoDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = OreganoDried,
+        WeaponSprite = DriedHerbs_generic,
+        Weight = 0.1,
+        Icon = DriedHerbs_generic,
+    }
+
+    item Parsley
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Parsley,
+        WeaponSprite = HerbParsley_Ground,
+        Weight = 0.1,
+        Icon = HerbParsley,
+    }
+
+    item ParsleyDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ParsleyDried,
+        WeaponSprite = DriedHerbs_generic,
+        Weight = 0.1,
+        Icon = DriedHerbs_generic,
+    }
+
+    item Rosemary
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Rosemary,
+        WeaponSprite = HerbRosemary_Ground,
+        Weight = 0.1,
+        Icon = HerbRosemary,
+    }
+
+    item RosemaryDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RosemaryDried,
+        WeaponSprite = DriedHerbs_generic,
+        Weight = 0.1,
+        Icon = DriedHerbs_generic,
+    }
+
+    item Sage
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Sage,
+        WeaponSprite = HerbSage_Ground,
+        Weight = 0.1,
+        Icon = HerbSage,
+    }
+
+    item SageDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SageDried,
+        WeaponSprite = DriedHerbs_generic,
+        Weight = 0.1,
+        Icon = DriedHerbs_generic,
+    }
+
+    item Thyme
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Thyme,
+        WeaponSprite = HerbThyme_Ground,
+        Weight = 0.1,
+        Icon = HerbThyme,
+    }
+
+    item ThymeDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ThymeDried,
+        WeaponSprite = DriedHerbs_generic,
+        Weight = 0.1,
+        Icon = DriedHerbs_generic,
+    }
+
+    item Capers
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Capers,
+        WeaponSprite = Capers,
+        Weight = 0.1,
+        Icon = Capers,
+    }
+
+    item Olives
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Olives,
+        WeaponSprite = Olives,
+        Weight = 0.1,
+        Icon = Olives,
+    }
+
+    item Avocado
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Avocado,
+        WeaponSprite = Avocado_Ground,
+        Weight = 0.3,
+        Icon = Avocado,
+    }
+
+    item BellPepper
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BellPepper,
+        WeaponSprite = BellPepper_Ground,
+        Weight = 0.2,
+        Icon = BellPepper,
+    }
+
+    item Blackbeans
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Blackbeans,
+        WeaponSprite = Blackbeans_Ground,
+        Weight = 0.1,
+        Icon = Blackbeans,
+    }
+
+    item Broccoli
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Broccoli,
+        WeaponSprite = Broccoli_Ground,
+        Weight = 0.2,
+        Icon = Broccoli,
+    }
+
+    item BrusselSprouts
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = BrusselSprouts,
+        WeaponSprite = BrusselSprouts,
+        Weight = 0.6,
+        Icon = BrusselSprouts,
+    }
+
+    item Book
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Book,
+        WeaponSprite = Book,
+        Weight = 1,
+        Icon = TZ_WateringCan,
+    }
+
+    item Carrots
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Carrots,
+        WeaponSprite = Carrots_Hand,
+        Weight = 0.2,
+        Icon = Carrots,
+    }
+
+    item Cauliflower
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cauliflower,
+        WeaponSprite = Cauliflower_Ground,
+        Weight = 0.2,
+        Icon = Cauliflower,
+    }
+
+    item Corn
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Corn,
+        WeaponSprite = Corn_Ground,
+        Weight = 0.2,
+        Icon = Corn,
+    }
+
+    item CornFrozen
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CornFrozen,
+        WeaponSprite = CornFrozen_Ground,
+        Weight = 0.6,
+        Icon = Frozen_Corn,
+    }
+
+    item Cucumber
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cucumber,
+        WeaponSprite = Cucumber,
+        Weight = 0.3,
+        Icon = Cucumber,
+    }
+
+    item Daikon
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Daikon,
+        WeaponSprite = Daikon_Ground,
+        Weight = 0.2,
+        Icon = Daikon,
+    }
+
+    item Edamame
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Edamame,
+        WeaponSprite = Edamame_Ground,
+        Weight = 0.1,
+        Icon = Edamame,
+    }
+
+    item Eggplant
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Eggplant,
+        WeaponSprite = EggPlant_Ground,
+        Weight = 0.2,
+        Icon = Eggplant,
+    }
+
+    item Garlic
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Garlic,
+        WeaponSprite = Garlic,
+        Weight = 0.2,
+        Icon = Garlic,
+    }
+
+    item GreenOnions
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = GreenOnions,
+        WeaponSprite = GreenOnions,
+        Weight = 0.2,
+        Icon = HerbChives,
+    }
+
+    item Greenpeas
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Greenpeas,
+        WeaponSprite = Greenpeas,
+        Weight = 0.2,
+        Icon = Greenpeas,
+    }
+
+    item Kale
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Kale,
+        WeaponSprite = Kale,
+        Weight = 0.2,
+        Icon = Kale,
+    }
+
+    item Leek
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Leek,
+        WeaponSprite = Leek_Ground,
+        Weight = 0.2,
+        Icon = Leek,
+    }
+
+    item Lettuce
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Lettuce,
+        WeaponSprite = Lettuce_Ground,
+        Weight = 0.2,
+        Icon = Lettuce,
+    }
+
+    item MixedVegetables
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MixedVegetables,
+        WeaponSprite = VegetableFrozen_Ground,
+        Weight = 0.6,
+        Icon = Frozen_MixedVegetables,
+    }
+
+    item Onion
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Onion,
+        WeaponSprite = Onion_Ground,
+        Weight = 0.2,
+        Icon = Onion,
+    }
+
+    item Peas
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Peas,
+        WeaponSprite = Peas,
+        Weight = 0.6,
+        Icon = Peas,
+    }
+
+    item PepperHabanero
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PepperHabanero,
+        WeaponSprite = PepperHabanero_Ground,
+        Weight = 0.1,
+        Icon = PepperHabanero,
+    }
+
+    item PepperHabaneroDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PepperHabaneroDried,
+        WeaponSprite = HabaneroDried,
+        Weight = 0.1,
+        Icon = PepperHabanero_Dried,
+    }
+
+    item PepperJalapeno
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PepperJalapeno,
+        WeaponSprite = PepperJalapeno_Ground,
+        Weight = 0.1,
+        Icon = PepperJalapeno,
+    }
+
+    item PepperJalapenoDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PepperJalapenoDried,
+        WeaponSprite = JalapenoDried,
+        Weight = 0.1,
+        Icon = PepperJalapeno_Dried,
+    }
+
+    item Pickles
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pickles,
+        WeaponSprite = Pickles,
+        Weight = 0.1,
+        Icon = Pickles,
+    }
+
+    item Pumpkin
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Pumpkin,
+        WeaponSprite = Pumpkin_Ground,
+        Weight = 1.0,
+        Icon = Pumpkin,
+    }
+
+    item PumpkinSliced
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PumpkinSliced,
+        WeaponSprite = PumpkinSlice,
+        Weight = 0.1,
+        Icon = Pumpkin_Slice,
+    }
+
+    item PumpkinSmashed
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PumpkinSmashed,
+        WeaponSprite = PumpkinSmashed,
+        Weight = 0.2,
+        Icon = Pumpkin_Smashed,
+    }
+
+    item Soybeans
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Soybeans,
+        WeaponSprite = Soybeans,
+        Weight = 0.1,
+        Icon = Soybeans,
+    }
+
+    item Spinach
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Spinach,
+        WeaponSprite = Spinach,
+        Weight = 0.1,
+        Icon = Spinach,
+    }
+
+    item Squash
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Squash,
+        WeaponSprite = Squash,
+        Weight = 0.5,
+        Icon = Squash,
+    }
+
+    item SugarBeet
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SugarBeet,
+        WeaponSprite = SugarBeet_Ground,
+        Weight = 0.2,
+        Icon = SugarBeets,
+    }
+
+    item SweetPotato
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SweetPotato,
+        WeaponSprite = SweetPotato_Ground,
+        Weight = 0.2,
+        Icon = SweetPotato,
+    }
+
+    item Turnip
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Turnip,
+        WeaponSprite = Turnip,
+        Weight = 0.2,
+        Icon = Turnip,
+    }
+
+    item Zucchini
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Zucchini,
+        WeaponSprite = Zucchini_Ground,
+        Weight = 0.3,
+        Icon = Zucchini,
+    }
+
+    item MushroomGeneric1
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MushroomGeneric1,
+        WeaponSprite = MushroomGeneric1_Hand,
+        Weight = 0.2,
+        Icon = MushroomGeneric1,
+    }
+
+    item MushroomGeneric2
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MushroomGeneric2,
+        WeaponSprite = MushroomGeneric2_Hand,
+        Weight = 0.2,
+        Icon = MushroomGeneric2,
+    }
+
+    item MushroomGeneric3
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MushroomGeneric3,
+        WeaponSprite = MushroomGeneric3,
+        Weight = 0.2,
+        Icon = MushroomGeneric3,
+    }
+
+    item MushroomGeneric4
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MushroomGeneric4,
+        WeaponSprite = MushroomGeneric4_Hand,
+        Weight = 0.2,
+        Icon = MushroomGeneric4,
+    }
+
+    item MushroomGeneric5
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MushroomGeneric5,
+        WeaponSprite = MushroomGeneric5_Hand,
+        Weight = 0.2,
+        Icon = MushroomGeneric5,
+    }
+
+    item MushroomGeneric6
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MushroomGeneric6,
+        WeaponSprite = MushroomGeneric6,
+        Weight = 0.2,
+        Icon = MushroomGeneric6,
+    }
+
+    item MushroomGeneric7
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MushroomGeneric7,
+        WeaponSprite = MushroomGeneric7,
+        Weight = 0.2,
+        Icon = MushroomGeneric7,
+    }
+
+    item MushroomsButton
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = MushroomsButton,
+        WeaponSprite = MushroomsButton_Hand,
+        Weight = 0.2,
+        Icon = MushroomButton,
+    }
+
+    item GingerPickled
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = GingerPickled,
+        WeaponSprite = GingerPickled_Ground,
+        Weight = 0.1,
+        Icon = GingerPickled,
+    }
+
+    item HalloweenPumpkin
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = HalloweenPumpkin,
+        WeaponSprite = Jackolantern_Ground,
+        Weight = 1.0,
+        Icon = Jackolantern,
+    }
+
+    item Tofu
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Tofu,
+        WeaponSprite = Tofu,
+        Weight = 0.3,
+        Icon = Tofu,
+    }
+
+    item Antibiotics
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Antibiotics,
+        WeaponSprite = Antibiotics,
+        Weight = 0.1,
+        Icon = Antibiotics,
+    }
+
+    item Comfrey
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Comfrey,
+        WeaponSprite = MedicinalHerbsLeafBundle,
+        Weight = 0.1,
+        Icon = Comfrey,
+    }
+
+    item ComfreyDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = ComfreyDried,
+        WeaponSprite = MedicinalHerbsLeafBundleDried,
+        Weight = 0.1,
+        Icon = Comfrey_Dried,
+    }
+
+    item Plantain
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Plantain,
+        WeaponSprite = MedicinalHerbsLeafBundle,
+        Weight = 0.1,
+        Icon = PlantainPlantago,
+    }
+
+    item PlantainDried
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = PlantainDried,
+        WeaponSprite = MedicinalHerbsLeafBundleDried,
+        Weight = 0.1,
+        Icon = BroadleafPlaintain_Dried,
+    }
+
+    item Cigar
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cigar,
+        WeaponSprite = Cigar_Lit,
+        Weight = 0.2,
+        Icon = Cigar,
+    }
+
+    item CigaretteSingle
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CigaretteSingle,
+        WeaponSprite = Cigarette_Lit,
+        Weight = 0.01,
+        Icon = Cigarette,
+    }
+
+    item CigaretteRolled
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CigaretteRolled,
+        WeaponSprite = CigaretteRolled_Lit,
+        Weight = 0.01,
+        Icon = CigaretteRolled,
+    }
+
+    item Cigarillo
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = Cigarillo,
+        WeaponSprite = Cigarillo_Lit,
+        Weight = 0.02,
+        Icon = Cigarillo,
+    }
+
+    item SmokingPipe_Tobacco
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = SmokingPipe_Tobacco,
+        WeaponSprite = SmokingPipeFired,
+        Weight = 0.3,
+        Icon = Ceramic_SmokingPipe_Unfired,
+    }
+
+    item CanPipe_Tobacco
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CanPipe_Tobacco,
+        WeaponSprite = CanPipe,
+        Weight = 0.3,
+        Icon = Pipe_BeerCan,
+    }
+
+    item RatKing
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = RatKing,
+        WeaponSprite = RatKing,
+        Weight = 1.0,
+        Icon = RatKing,
+    }
+
+    item FishGuts
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FishGuts,
+        WeaponSprite = FishGuts,
+        Weight = 0.1,
+        Icon = Fish_Guts,
+    }
+
+    item FishRoeSac
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = FishRoeSac,
+        WeaponSprite = FishEggSac,
+        Weight = 0.1,
+        Icon = Fish_EggSack,
+    }
+
+    item CannedRoe
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedRoe,
+        WeaponSprite = JarRoeGround,
+        Weight = 0.8,
+        Icon = Jar_Roe,
+    }
+
+    item CannedRoe_Open
+    {
+        ItemType = base:weapon,
+        DisplayCategory = FoodWeapon,
+        DisplayName = CannedRoe_Open,
+        WeaponSprite = JarRoeOpen,
+        Weight = 0.8,
+        Icon = Jar_Roe,
+    }
+
+}
