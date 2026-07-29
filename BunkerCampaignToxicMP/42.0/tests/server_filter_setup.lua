@@ -29,6 +29,7 @@ local worn = {
     getItemByIndex = function(self, index) return mask end,
 }
 local playerX, playerY = 10, 10
+local secondEnabled = false
 local player = {
     isGodMod = function() return false end,
     getWornItems = function() return worn end,
@@ -36,11 +37,23 @@ local player = {
     getUsername = function() return "filter-tester" end,
     getX = function() return playerX end,
     getY = function() return playerY end,
+    getZ = function() return 0 end,
+    setHealth = function() end,
+}
+local emptyWorn = { size=function() return 0 end, getItemByIndex=function() return nil end }
+local secondPlayer = {
+    isGodMod = function() return false end,
+    getWornItems = function() return emptyWorn end,
+    isDead = function() return false end,
+    getUsername = function() return "contact-target" end,
+    getX = function() return playerX + 1 end,
+    getY = function() return playerY end,
+    getZ = function() return 0 end,
     setHealth = function() end,
 }
 local players = {
-    size = function() return 1 end,
-    get = function(self, index) return player end,
+    size = function() return secondEnabled and 2 or 1 end,
+    get = function(self, index) return index == 0 and player or secondPlayer end,
 }
 local persisted = {
     ToxicZone = {
@@ -77,3 +90,5 @@ function ToxicFilterCondition() return maskCondition end
 function ToxicFilterPlayer() return player end
 function ToxicFilterCommands() return calls.commands end
 function ToxicFilterMoveOutside() playerX, playerY = 100, 100 end
+function ToxicFilterEnableContactTarget() secondEnabled = true end
+function ToxicFilterContactTarget() return secondPlayer end

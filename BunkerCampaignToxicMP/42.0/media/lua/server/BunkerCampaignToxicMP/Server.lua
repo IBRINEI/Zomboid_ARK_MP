@@ -142,11 +142,10 @@ local function collectWornItems(player)
     return result
 end
 
-local function collectCarriedItems(player, limit)
+local function collectContainerItems(root, limit)
     local result = {}
     local seen = {}
     limit = math.max(1, tonumber(limit) or Constants.MAX_CARRIED_ITEMS_PER_SCAN)
-    local root = player and player.getInventory and player:getInventory() or nil
     if not root or not root.getItems then return result end
 
     local containers = { root }
@@ -174,6 +173,27 @@ local function collectCarriedItems(player, limit)
         end
     end
     return result
+end
+
+local function collectCarriedItems(player, limit)
+    local root = player and player.getInventory and player:getInventory() or nil
+    return collectContainerItems(root, limit)
+end
+
+local function applyPlayerContact(player, record, sourceContamination, fraction)
+    if not player or not record then return end
+    record.surfaceContamination = ContaminationModel.contact(
+        record.surfaceContamination,
+        sourceContamination,
+        fraction
+    )
+    local maximum = ContaminationModel.clamp(record.gearContamination)
+    for _, item in ipairs(collectWornItems(player)) do
+        local nextValue = ContaminationModel.contact(itemContamination(item), sourceContamination, fraction)
+        setItemContamination(player, item, nextValue, false)
+        maximum = math.max(maximum, nextValue)
+    end
+    record.gearContamination = maximum
 end
 
 local function updateSurfaceContamination(player, record, zone, elapsed, scanCarried, carriedElapsed)
@@ -413,6 +433,96 @@ function Server.applySurfaceContact(player, sourceContamination, fraction)
     return true
 end
 
+function Server.getItemContamination(item)
+    return itemContamination(item)
+end
+
+function Server.findCarriedItem(player, itemId)
+    itemId = tonumber(itemId)
+    if not player or not itemId then return nil end
+    for _, item in ipairs(collectCarriedItems(player, Constants.MAX_CARRIED_ITEMS_PER_SCAN)) do
+        if item.getID and tonumber(item:getID()) == itemId then return item end
+    end
+    return nil
+end
+
+function Server.cleanItem(player, item, removalFraction)
+    if not item then return false, "item_unavailable" end
+    local current = itemContamination(item)
+    local cleaned = ContaminationModel.clean(current, removalFraction)
+    setItemContamination(player, item, cleaned, true)
+    return true, current, cleaned
+end
+
+function Server.cleanContainer(container, removalFraction, limit)
+    local cleaned = 0
+    local items = collectContainerItems(container, limit or Constants.MAX_WORLD_ITEMS_PER_CYCLE)
+    for _, item in ipairs(items) do
+        local current = itemContamination(item)
+        local nextValue = ContaminationModel.clean(current, removalFraction)
+        if setItemContamination(nil, item, nextValue, true) then cleaned = cleaned + 1 end
+    end
+    return cleaned, #items
+end
+
+function Server.cleanWorldInBounds(bounds, removalFraction)
+    if type(bounds) ~= "table" or not getCell then return false, "invalid_bounds" end
+    local cell = getCell()
+    if not cell then return false, "cell_unavailable" end
+    local cleanedItems = 0
+    local cleanedCorpses = 0
+    local remaining = Constants.MAX_WORLD_ITEMS_PER_CYCLE
+
+    for x = math.ceil(tonumber(bounds.x1) or 0), math.floor(tonumber(bounds.x2) or -1) do
+        for y = math.ceil(tonumber(bounds.y1) or 0), math.floor(tonumber(bounds.y2) or -1) do
+            if remaining <= 0 then break end
+            local square = cell:getGridSquare(x, y, tonumber(bounds.z) or 0)
+            if square then
+                local worldObjects = square:getWorldObjects()
+                if worldObjects then
+                    for index = 0, worldObjects:size() - 1 do
+                        if remaining <= 0 then break end
+                        local object = worldObjects:get(index)
+                        local item = object and instanceof(object, "IsoWorldInventoryObject") and object:getItem() or nil
+                        if item then
+                            local current = itemContamination(item)
+                            if setItemContamination(nil, item, ContaminationModel.clean(current, removalFraction), true) then
+                                cleanedItems = cleanedItems + 1
+                            end
+                            remaining = remaining - 1
+                            if instanceof(item, "InventoryContainer") then
+                                local nested = item:getInventory()
+                                local count, scanned = Server.cleanContainer(nested, removalFraction, remaining)
+                                cleanedItems = cleanedItems + count
+                                remaining = remaining - scanned
+                            end
+                        end
+                    end
+                end
+
+                local staticObjects = square:getStaticMovingObjects()
+                if staticObjects then
+                    for index = 0, staticObjects:size() - 1 do
+                        if remaining <= 0 then break end
+                        local object = staticObjects:get(index)
+                        if object and instanceof(object, "IsoDeadBody") then
+                            local container = object:getContainer()
+                            local count, scanned = Server.cleanContainer(container, removalFraction, remaining)
+                            cleanedItems = cleanedItems + count
+                            remaining = remaining - scanned
+                            object:getModData()[Constants.CONTAMINATION_MODDATA_KEY] = 0
+                            pcall(object.transmitModData, object)
+                            cleanedCorpses = cleanedCorpses + 1
+                        end
+                    end
+                end
+            end
+        end
+        if remaining <= 0 then break end
+    end
+    return true, cleanedItems, cleanedCorpses
+end
+
 function Server.cleanPlayer(player, bodyRemoval, gearRemoval, onlyMostContaminated)
     local record = Server.getPlayerRecord(player)
     if not record or type(player) == "string" then return false, "player_unavailable" end
@@ -456,10 +566,42 @@ function Server.update()
     local sendNow = Server.statusAccumulator >= Constants.STATUS_INTERVAL_SECONDS
 
     local players = getOnlinePlayers()
+    local updated = {}
     for index = 0, players:size() - 1 do
         local player = players:get(index)
         local record = updatePlayer(player, elapsed, sendNow, Server.statusAccumulator)
-        if sendNow then sendStatus(player, record) end
+        if record then
+            updated[#updated + 1] = {
+                player=player,
+                record=record,
+                sourceContamination=math.max(
+                    tonumber(record.surfaceContamination) or 0,
+                    tonumber(record.gearContamination) or 0
+                ),
+            }
+        end
+    end
+
+    local radiusSquared = Constants.PLAYER_CONTACT_RADIUS * Constants.PLAYER_CONTACT_RADIUS
+    local contactFraction = math.min(1, Constants.PLAYER_CONTACT_FRACTION_PER_SECOND * elapsed)
+    for targetIndex, target in ipairs(updated) do
+        local sourceMaximum = 0
+        local tx, ty, tz = target.player:getX(), target.player:getY(), target.player:getZ()
+        for sourceIndex, source in ipairs(updated) do
+            if sourceIndex ~= targetIndex and math.abs(source.player:getZ() - tz) < 0.1 then
+                local dx, dy = source.player:getX() - tx, source.player:getY() - ty
+                if dx * dx + dy * dy <= radiusSquared then
+                    sourceMaximum = math.max(sourceMaximum, source.sourceContamination)
+                end
+            end
+        end
+        if sourceMaximum > 0 then
+            applyPlayerContact(target.player, target.record, sourceMaximum, contactFraction)
+        end
+    end
+
+    if sendNow then
+        for _, entry in ipairs(updated) do sendStatus(entry.player, entry.record) end
     end
     if sendNow then Server.statusAccumulator = 0 end
 end

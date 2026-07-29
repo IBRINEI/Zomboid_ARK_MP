@@ -45,17 +45,13 @@ Constants.DECONTAMINATION = {
     TEST_ZONE = { startX=9918, startY=12618, endX=9943, endY=12632 },
     MAX_REAGENT_UNITS = 100,
     TABLET_UNITS = 50,
+    MANUAL_WASH = {
+        baseWaterLiters=4,
+        contaminationPerAdditionalLiter=10,
+        contaminationPerAgentUse=25,
+        minimumDuration=100,
+    },
     MODES = {
-        manual = {
-            durationSeconds=8,
-            waterLiters=2,
-            inventoryReagent=true,
-            reagentTypes={"Base.CleaningLiquid2", "Base.Bleach", "Base.Soap2"},
-            bodyRemoval=0.50,
-            gearRemoval=0.35,
-            onlyMostContaminated=true,
-            requiresPower=false,
-        },
         emergency = {
             durationSeconds=10,
             waterLiters=5,

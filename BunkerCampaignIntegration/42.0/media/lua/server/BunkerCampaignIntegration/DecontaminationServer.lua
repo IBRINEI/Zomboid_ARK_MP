@@ -22,6 +22,8 @@ local Server = {
     lastTickMs = 0,
     lastStatusMs = 0,
     startingCycle = false,
+    manualCompletions = {},
+    manualStarts = {},
 }
 
 local function actor(player)
@@ -140,6 +142,93 @@ local function consumeInventoryItem(player, item)
     local container = item:getContainer()
     if container then container:Remove(item); return true end
     return false
+end
+
+local function consumeWholeInventoryItem(item)
+    local container = item and item:getContainer() or nil
+    if not container then return false end
+    container:Remove(item)
+    if type(sendRemoveItemFromContainer) == "function" then
+        sendRemoveItemFromContainer(container, item)
+    end
+    return true
+end
+
+local function collectInventoryItems(player, limit)
+    local result = {}
+    local containers = {}
+    local root = player and player:getInventory() or nil
+    if not root then return result end
+    containers[1] = root
+    local containerIndex = 1
+    local maximum = math.max(1, tonumber(limit) or 100)
+    while containerIndex <= #containers and #result < maximum do
+        local container = containers[containerIndex]
+        containerIndex = containerIndex + 1
+        local items = container:getItems()
+        for index = 0, items:size() - 1 do
+            if #result >= maximum then break end
+            local item = items:get(index)
+            if item then
+                result[#result + 1] = item
+                if instanceof(item, "InventoryContainer")
+                    and item:getModData().BunkerCampaignSealed ~= true then
+                    containers[#containers + 1] = item:getInventory()
+                end
+            end
+        end
+    end
+    return result
+end
+
+local function cleaningFluidPerUse()
+    return math.max(0.001, tonumber(ZomboidGlobals and ZomboidGlobals.CleanStainCleaningFluidAmount) or 0.1)
+end
+
+local function manualAgentCapacity(item)
+    if not item then return 0 end
+    local fullType = item:getFullType()
+    if fullType == "Base.Soap2" and instanceof(item, "DrainableComboItem") then
+        return math.max(0, math.floor(tonumber(item:getCurrentUses()) or 0))
+    end
+    if fullType == "Base.CleaningLiquid2" or fullType == "Base.Bleach" then
+        local fluid = item:getFluidContainer()
+        return fluid and math.max(0, math.floor(fluid:getAmount() / cleaningFluidPerUse() + 0.0001)) or 0
+    end
+    return 0
+end
+
+local function manualAgents(player)
+    local agents = {}
+    local total = 0
+    for _, item in ipairs(collectInventoryItems(player, 100)) do
+        local capacity = manualAgentCapacity(item)
+        if capacity > 0 then
+            agents[#agents + 1] = { item=item, capacity=capacity }
+            total = total + capacity
+        end
+    end
+    return agents, total
+end
+
+local function consumeManualAgentUses(agents, required)
+    local remaining = math.max(0, math.floor(tonumber(required) or 0))
+    for _, entry in ipairs(agents) do
+        if remaining <= 0 then break end
+        local take = math.min(remaining, manualAgentCapacity(entry.item))
+        if take > 0 then
+            if entry.item:getFullType() == "Base.Soap2" then
+                for _ = 1, take do entry.item:UseAndSync() end
+            else
+                local fluid = entry.item:getFluidContainer()
+                local nextAmount = math.max(0, fluid:getAmount() - take * cleaningFluidPerUse())
+                if nextAmount <= 0.001 then fluid:Empty() else fluid:adjustAmount(nextAmount) end
+                if type(sendItemStats) == "function" then sendItemStats(entry.item) end
+            end
+            remaining = remaining - take
+        end
+    end
+    return remaining <= 0
 end
 
 local function refreshWaterSnapshot(source)
@@ -281,10 +370,19 @@ local function finishCycle(cycle)
 
     state.roomContamination = math.max(0, state.roomContamination * (1 - mode.bodyRemoval))
     state.areas.chamber = math.max(0, state.areas.chamber * (1 - mode.bodyRemoval))
+    local worldItems, corpses = 0, 0
+    if cycle.mode == "automatic" then
+        local worldOk, cleanedWorldItems, cleanedCorpses = ToxicServer.cleanWorldInBounds(Rules.ROOM, 1)
+        if worldOk then
+            worldItems = cleanedWorldItems or 0
+            corpses = cleanedCorpses or 0
+        end
+    end
     if mode.requiresPower then setPowerRequested(false, cycle.username) end
     Model.finish(state, cycle.mode .. "_complete")
     CampaignState.appendLog("decontamination", cycle.mode .. " cycle completed id=" .. tostring(cycle.id)
-        .. " players=" .. tostring(cleaned), cycle.username)
+        .. " players=" .. tostring(cleaned) .. " worldItems=" .. tostring(worldItems)
+        .. " corpses=" .. tostring(corpses), cycle.username)
     for _, username in ipairs(type(cycle.participants) == "table" and cycle.participants or {cycle.username}) do
         local player = findOnlinePlayer(username)
         if player then
@@ -305,9 +403,133 @@ local function loadReagent(player)
     local inventory = player:getInventory()
     local item = inventory and inventory:getFirstTypeRecurse("Bandits.NBCTablets") or nil
     if not item then return false, "nbc_tablet_required" end
-    if not consumeInventoryItem(player, item) then return false, "reagent_transaction_failed" end
+    if not consumeWholeInventoryItem(item) then return false, "reagent_transaction_failed" end
     state.reagentUnits = math.min(Rules.MAX_REAGENT_UNITS, state.reagentUnits + Rules.TABLET_UNITS)
     CampaignState.appendLog("decontamination", "NBC mixer loaded to " .. tostring(state.reagentUnits), actor(player))
+    return true
+end
+
+local function manualWashBunker(player, args)
+    if not inInteractionRange(player) then return false, "decon_access_required" end
+    local target = type(args) == "table" and args.target or nil
+    local contamination = 0
+    local item = nil
+    if target == "body" then
+        local record = ToxicServer.getPlayerRecord(player)
+        contamination = tonumber(record and record.surfaceContamination) or 0
+    elseif target == "item" then
+        item = ToxicServer.findCarriedItem(player, args.itemId)
+        if not item then return false, "item_unavailable" end
+        contamination = ToxicServer.getItemContamination(item)
+    else
+        return false, "unknown_manual_target"
+    end
+    if contamination <= BunkerCampaignToxicMP.Constants.SURFACE_TRACE then return false, "already_clean" end
+
+    local manual = Rules.MANUAL_WASH
+    local waterLiters = manual.baseWaterLiters
+        + math.ceil(contamination / manual.contaminationPerAdditionalLiter)
+    local agentUses = math.max(1, math.ceil(contamination / manual.contaminationPerAgentUse))
+    if WaterpipesAdapter.availableBunkerWater(waterState(), true) + 0.0001 < waterLiters then
+        return false, "clean_water_required"
+    end
+    local agents, availableUses = manualAgents(player)
+    if availableUses < agentUses then return false, "cleaning_agent_required" end
+    if not WaterpipesAdapter.consumeBunkerWater(waterState(), waterLiters, true) then
+        return false, "clean_water_changed"
+    end
+    if not consumeManualAgentUses(agents, agentUses) then return false, "reagent_transaction_failed" end
+
+    if target == "body" then
+        ToxicServer.cleanPlayer(player, 1, 0, false)
+    else
+        ToxicServer.cleanItem(player, item, 1)
+    end
+    refreshWaterSnapshot("manual radioactive wash")
+    CampaignState.appendLog("decontamination", "manual wash target=" .. target
+        .. " contamination=" .. tostring(contamination) .. " water=" .. tostring(waterLiters)
+        .. " agentUses=" .. tostring(agentUses), actor(player))
+    return true
+end
+
+local function validateVanillaWaterSource(player, args)
+    if type(args) ~= "table" or player:isDead() then return false, "invalid_manual_wash" end
+    local x, y, z = tonumber(args.sourceX), tonumber(args.sourceY), tonumber(args.sourceZ)
+    if not x or not y or not z or math.abs(player:getZ() - z) >= 0.1 then
+        return false, "water_source_required"
+    end
+    local dx, dy = player:getX() - (x + 0.5), player:getY() - (y + 0.5)
+    if dx * dx + dy * dy > 9 then return false, "water_source_required" end
+    local square = getCell() and getCell():getGridSquare(x, y, z) or nil
+    if not square then return false, "water_source_required" end
+    return true, nil, x, y, z
+end
+
+local function sameManualTarget(left, right)
+    return left and right and left.target == right.target
+        and tonumber(left.itemId) == tonumber(right.itemId)
+        and tonumber(left.sourceX) == tonumber(right.sourceX)
+        and tonumber(left.sourceY) == tonumber(right.sourceY)
+        and tonumber(left.sourceZ) == tonumber(right.sourceZ)
+end
+
+local function manualWashVanillaStart(player, args)
+    local valid, code = validateVanillaWaterSource(player, args)
+    if not valid then return false, code end
+    if args.target == "body" then
+        local record = ToxicServer.getPlayerRecord(player)
+        if (tonumber(record and record.surfaceContamination) or 0)
+            <= BunkerCampaignToxicMP.Constants.SURFACE_TRACE then return false, "already_clean" end
+    elseif args.target == "item" then
+        local item = ToxicServer.findCarriedItem(player, args.itemId)
+        if not item then return false, "item_unavailable" end
+        if ToxicServer.getItemContamination(item)
+            <= BunkerCampaignToxicMP.Constants.SURFACE_TRACE then return false, "already_clean" end
+    else
+        return false, "unknown_manual_target"
+    end
+    Server.manualStarts[actor(player)] = {
+        target=args.target,
+        itemId=args.itemId,
+        sourceX=args.sourceX,
+        sourceY=args.sourceY,
+        sourceZ=args.sourceZ,
+        startedAt=getTimestampMs(),
+    }
+    return true
+end
+
+local function manualWashVanilla(player, args)
+    local valid, code = validateVanillaWaterSource(player, args)
+    if not valid then return false, code end
+
+    local username = actor(player)
+    local now = getTimestampMs()
+    local started = Server.manualStarts[username]
+    Server.manualStarts[username] = nil
+    if not sameManualTarget(started, args) or now - (tonumber(started and started.startedAt) or now) > 180000 then
+        return false, "manual_wash_not_started"
+    end
+    if now - (tonumber(Server.manualCompletions[username]) or 0) < 500 then
+        return false, "manual_wash_rate_limited"
+    end
+    Server.manualCompletions[username] = now
+
+    if args.target == "body" then
+        local record = ToxicServer.getPlayerRecord(player)
+        if (tonumber(record and record.surfaceContamination) or 0)
+            <= BunkerCampaignToxicMP.Constants.SURFACE_TRACE then return false, "already_clean" end
+        ToxicServer.cleanPlayer(player, 1, 0, false)
+    elseif args.target == "item" then
+        local item = ToxicServer.findCarriedItem(player, args.itemId)
+        if not item then return false, "item_unavailable" end
+        if ToxicServer.getItemContamination(item)
+            <= BunkerCampaignToxicMP.Constants.SURFACE_TRACE then return false, "already_clean" end
+        ToxicServer.cleanItem(player, item, 1)
+    else
+        return false, "unknown_manual_target"
+    end
+    CampaignState.appendLog("decontamination", "vanilla manual wash target=" .. tostring(args.target), username)
     return true
 end
 
@@ -460,6 +682,21 @@ end
 function Server.onClientCommand(module, command, player, args)
     if module ~= Constants.DECON_NETWORK_MODULE then return end
     if command == "requestStatus" then sendStatus(player); return end
+    if command == "manualWashBunker" then
+        local ok, code = manualWashBunker(player, args)
+        sendResult(player, ok, command, code)
+        return
+    end
+    if command == "manualWashVanillaStart" then
+        local ok, code = manualWashVanillaStart(player, args)
+        if not ok then sendResult(player, false, command, code) end
+        return
+    end
+    if command == "manualWashVanilla" then
+        local ok, code = manualWashVanilla(player, args)
+        sendResult(player, ok, command, code)
+        return
+    end
     if command == "startCycle" then
         local mode = type(args) == "table" and args.mode or nil
         local ok, code = startCycle(player, mode)

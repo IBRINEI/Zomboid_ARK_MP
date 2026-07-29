@@ -22,4 +22,16 @@ Events.OnTick.handlers[1]()
 assert(ToxicFilterMaskData().percent < inZoneRemaining,
     "a worn gas-mask filter must continue draining outside toxic zones")
 
+ToxicFilterEnableContactTarget()
+local source = BunkerCampaignToxicMP.Server.getPlayerRecord(ToxicFilterPlayer())
+local target = BunkerCampaignToxicMP.Server.getPlayerRecord(ToxicFilterContactTarget())
+source.surfaceContamination = 80
+source.gearContamination = 80
+target.surfaceContamination = 0
+target.gearContamination = 0
+ToxicFilterAdvance(2000)
+Events.OnTick.handlers[1]()
+assert(target.surfaceContamination > 0,
+    "a highly contaminated nearby player must transfer surface contamination")
+
 print("BunkerCampaignToxicMP server filter tests passed")

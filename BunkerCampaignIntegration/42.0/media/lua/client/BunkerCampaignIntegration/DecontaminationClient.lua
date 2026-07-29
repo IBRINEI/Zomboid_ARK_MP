@@ -1,5 +1,7 @@
 require "ISUI/ISContextMenu"
 require "BunkerCampaignIntegration/Constants"
+require "BunkerCampaignIntegration/ManualWashClient"
+require "BunkerCampaignIntegration/DecontaminationEffects"
 
 BunkerCampaignIntegration = BunkerCampaignIntegration or {}
 
@@ -89,7 +91,7 @@ local function addGameplayMenu(context, player)
     menu:addOption("Load NBC tablet into mixer (+50%)", player, function(p)
         send(p, "loadReagent", {})
     end)
-    addMode(menu, player, "manual", "Manual item wash")
+    BunkerCampaignIntegration.ManualWashClient.addBunkerOptions(menu, player, status)
     addMode(menu, player, "emergency", "Emergency rinse")
     addMode(menu, player, "automatic", "Automatic full cycle")
 end

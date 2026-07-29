@@ -1,0 +1,17 @@
+module Base
+{
+    sound BunkerDecontaminationMist
+    {
+        category = Object,
+        loop = false,
+        is3D = true,
+        clip
+        {
+            file = media/sound/ambient_mist.ogg,
+            distanceMin = 1,
+            distanceMax = 8,
+            reverbFactor = 0.1,
+            volume = 0.8,
+        }
+    }
+}

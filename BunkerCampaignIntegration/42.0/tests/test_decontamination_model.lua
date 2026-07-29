@@ -19,7 +19,7 @@ assert(not missingPower and powerCode == "power_required", "automatic cycle must
 
 local cycle = Model.start(state, "automatic", "tester", 12)
 assert(cycle and state.status == "running", "valid cycle must enter running state")
-local duplicate, duplicateCode = Model.start(state, "manual", "tester", 12)
+local duplicate, duplicateCode = Model.start(state, "emergency", "tester", 12)
 assert(not duplicate and duplicateCode == "cycle_active", "only one chamber cycle may run at once")
 
 local complete, status = Model.advance(state, 5, true)
