@@ -46,7 +46,7 @@ end
 function RunBunkerCampaignServerTests()
 BunkerCampaign.CampaignState.initialize(true)
 local firstReference = BunkerCampaign.CampaignState.get()
-assert(firstReference.version == 4, "server must initialize versioned state")
+assert(firstReference.version == 5, "server must initialize versioned state")
 assert(#firstReference.auditLog > 0, "initialization must be audited")
 assert(firstReference.bunker.modules.water.status == "offline", "water module must migrate with safe defaults")
 assert(firstReference.bunker.modules.water.adapterOnline == false, "water adapter must start offline")

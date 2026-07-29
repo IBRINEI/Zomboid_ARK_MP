@@ -285,7 +285,10 @@ local function updatePlayer(player, elapsed, scanCarried, carriedElapsed)
         if itemKey and record.filterItemKey == itemKey and finite(record.filterRemaining) then
             filterRemaining = math.min(filterRemaining, record.filterRemaining)
         end
-        if zone and filterRemaining > 0 then
+        -- A fitted filter is breathing equipment, not a zone detector.  Its
+        -- service life advances whenever the mask is worn, including in clean
+        -- air, so players cannot preserve it by stepping across a zone edge.
+        if filterRemaining > 0 then
             local duration = multiplier("FilterDurationMultiplier", 1)
             filterRemaining = math.max(0,
                 filterRemaining - Constants.FILTER_DRAIN_PER_SECOND * elapsed / duration)

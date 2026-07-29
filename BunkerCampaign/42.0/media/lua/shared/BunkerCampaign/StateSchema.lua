@@ -210,6 +210,10 @@ function StateSchema.prepare(state, isNewGame)
         table.insert(changes, "state migration 3 -> 4: decontamination power consumer")
         changed = true
     end
+    if oldVersion < 5 then
+        table.insert(changes, "state migration 4 -> 5: decontamination backup-power priority")
+        changed = true
+    end
 
     if copyMissing(state, {
         campaignId = defaults.campaignId,
@@ -228,6 +232,10 @@ function StateSchema.prepare(state, isNewGame)
     if ensureTable(state.bunker, "modules") then changed = true end
     if ensureTable(state.bunker.modules, "power") then changed = true end
     if PowerSimulation.normalize(state.bunker.modules.power) then changed = true end
+    if oldVersion < 5 then
+        state.bunker.modules.power.consumers.decontamination.priority =
+            defaults.bunker.modules.power.consumers.decontamination.priority
+    end
     if ensureTable(state.bunker.modules, "ventilation") then changed = true end
     if normalizeVentilation(state.bunker.modules.ventilation) then changed = true end
     if ensureTable(state.bunker.modules, "water") then changed = true end

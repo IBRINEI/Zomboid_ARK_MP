@@ -28,13 +28,14 @@ local worn = {
     size = function() return 1 end,
     getItemByIndex = function(self, index) return mask end,
 }
+local playerX, playerY = 10, 10
 local player = {
     isGodMod = function() return false end,
     getWornItems = function() return worn end,
     isDead = function() return false end,
     getUsername = function() return "filter-tester" end,
-    getX = function() return 10 end,
-    getY = function() return 10 end,
+    getX = function() return playerX end,
+    getY = function() return playerY end,
     setHealth = function() end,
 }
 local players = {
@@ -75,3 +76,4 @@ function ToxicFilterFieldSyncCount() return calls.fields end
 function ToxicFilterCondition() return maskCondition end
 function ToxicFilterPlayer() return player end
 function ToxicFilterCommands() return calls.commands end
+function ToxicFilterMoveOutside() playerX, playerY = 100, 100 end

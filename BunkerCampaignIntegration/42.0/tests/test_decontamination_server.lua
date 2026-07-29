@@ -30,13 +30,22 @@ local now = 1000
 getTimestampMs = function() return now end
 local tabletUsed = 0
 local tablet = { Use=function() tabletUsed = tabletUsed + 1 end }
+local addedItems = 0
+local syncedAddedItems = 0
 local inventory = {
     getFirstTypeRecurse=function(self, itemType)
         if itemType == "Bandits.NBCTablets" and tabletUsed == 0 then return tablet end
         return nil
     end,
-    AddItem=function() end,
+    AddItem=function(self, itemType)
+        addedItems = addedItems + 1
+        return { itemType=itemType }
+    end,
 }
+sendAddItemToContainer = function(container, item)
+    assert(container == inventory and item, "QA inventory sync must use the authoritative container")
+    syncedAddedItems = syncedAddedItems + 1
+end
 local player = {
     getUsername=function() return "decon-tester" end,
     isAccessLevel=function(self, level) return level == "admin" end,
@@ -46,11 +55,24 @@ local player = {
     getInventory=function() return inventory end,
     isDead=function() return false end,
 }
-local online = { size=function() return 1 end, get=function() return player end }
+local secondPlayer = {
+    getUsername=function() return "second-chamber-player" end,
+    isAccessLevel=function() return false end,
+    getX=function() return 9947 end,
+    getY=function() return 12625 end,
+    getZ=function() return -4 end,
+    getInventory=function() return inventory end,
+    isDead=function() return false end,
+}
+local online = {
+    size=function() return 2 end,
+    get=function(self, index) return index == 0 and player or secondPlayer end,
+}
 getOnlinePlayers = function() return online end
 sendServerCommand = function() end
 
 local power = { consumers={ decontamination={requested=false,allocated=false} } }
+local refueledGenerator = nil
 BunkerCampaign.CampaignState = {
     get=function() return { bunker={modules={power=power}} } end,
     setConsumerRequested=function(id, requested)
@@ -60,11 +82,14 @@ BunkerCampaign.CampaignState = {
     end,
     setWaterSnapshot=function() return true end,
     appendLog=function() end,
+    refuelGenerator=function(id) refueledGenerator = id; return true end,
 }
 BunkerCampaign.Util.worldAgeHours = function() return 10 end
 
 local cleaned = 0
 local qaMutations = 0
+BunkerCampaignToxicMP = BunkerCampaignToxicMP or {}
+BunkerCampaignToxicMP.Constants = { SURFACE_DIRTY=40 }
 BunkerCampaignToxicMP.Server = {
     getPlayerRecord=function() return {surfaceContamination=80,gearContamination=80} end,
     cleanPlayer=function() cleaned = cleaned + 1; return true end,
@@ -109,9 +134,20 @@ BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
 BunkerCampaignIntegration.DecontaminationServer.update()
 now = now + 1000
 BunkerCampaignIntegration.DecontaminationServer.update()
-assert(cleaned == 1, "completed cycle must invoke authoritative contamination cleanup once")
+assert(cleaned == 2, "one completed chamber cycle must clean every player who was inside at its start")
 assert(decon.activeCycle == nil and decon.status == "idle", "completed cycle must release the chamber")
 assert(not power.consumers.decontamination.requested, "completed cycle must release the power consumer")
+
+BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
+    "BunkerCampaignDecontamination", "qaGiveSupplies", player, {}
+)
+assert(addedItems == 6 and syncedAddedItems == 6,
+    "QA supplies must be added on the server and explicitly synchronized to the client")
+
+BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
+    "BunkerCampaignDecontamination", "qaRefuelGenerator", player, {generator="backup"}
+)
+assert(refueledGenerator == "backup", "QA refuel must target the requested logical generator")
 
 print("BunkerCampaign decontamination server tests passed")
 end

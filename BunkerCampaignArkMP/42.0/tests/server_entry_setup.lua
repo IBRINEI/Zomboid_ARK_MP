@@ -42,6 +42,7 @@ Events = {
 local modData = {}
 local serverCommands = {}
 local transmitted = {}
+local characterData = {}
 local player = {
     x = 10944,
     y = 9374,
@@ -63,6 +64,8 @@ local player = {
         }
     end,
     isAccessLevel = function(self, level) return level == "admin" and self.admin == true end,
+    getModData = function() return characterData end,
+    transmitModData = function(self) self.modDataTransmitted = true end,
 }
 
 GameServer = {
@@ -112,3 +115,4 @@ function ArkMPServerEntryPlayer() return player end
 function ArkMPServerEntryCommands() return serverCommands end
 function ArkMPPowerSyncCalls() return powerSyncCalls end
 function ArkMPRoomMetadataInitCalls() return roomMetadataInitCalls end
+function ArkMPCharacterData() return characterData end

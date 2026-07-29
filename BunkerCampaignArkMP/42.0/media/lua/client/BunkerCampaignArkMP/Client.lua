@@ -238,7 +238,7 @@ local function retryEntry(player)
     Client.arrivalTicks = 0
     Client.teleportArgs = nil
     Client.teleportAttempts = 0
-    sendClientCommand(player, Constants.NETWORK_MODULE, "joinReady", {})
+    sendClientCommand(player, Constants.NETWORK_MODULE, "enterBunker", {})
 end
 
 local function addContextOptions(playerNum, context, worldObjects, test)

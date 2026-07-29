@@ -228,6 +228,20 @@ function CampaignState.setGeneratorRequested(generatorId, requested, actor)
     return true
 end
 
+function CampaignState.refuelGenerator(generatorId, actor)
+    local power = CampaignState.data and CampaignState.data.bunker.modules.power
+    local generator = power and power.generators[generatorId]
+    if not generator then return false, "unknown_generator" end
+    if generator.fuel >= 1 then return true, "unchanged" end
+
+    generator.fuel = 1
+    CampaignState.recalculatePower(0, actor)
+    CampaignState.touch()
+    CampaignState.appendLog("power", tostring(generatorId) .. " generator refueled", actor)
+    CampaignState.broadcast()
+    return true
+end
+
 function CampaignState.setConsumerRequested(consumerId, requested, actor)
     if type(requested) ~= "boolean" then return false, "requested must be boolean" end
     local power = CampaignState.data and CampaignState.data.bunker.modules.power

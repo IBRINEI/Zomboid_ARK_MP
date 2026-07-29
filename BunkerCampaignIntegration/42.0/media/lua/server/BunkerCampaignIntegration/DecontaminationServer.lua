@@ -21,6 +21,7 @@ local Server = {
     data = nil,
     lastTickMs = 0,
     lastStatusMs = 0,
+    startingCycle = false,
 }
 
 local function actor(player)
@@ -59,6 +60,35 @@ local function findOnlinePlayer(username)
         if player and player:getUsername() == username then return player end
     end
     return nil
+end
+
+local function collectChamberParticipants()
+    local participants = {}
+    local seen = {}
+    local players = getOnlinePlayers and getOnlinePlayers() or nil
+    if not players then return participants end
+    for index = 0, players:size() - 1 do
+        local player = players:get(index)
+        local username = player and player:getUsername() or nil
+        if username and inside(Rules.ROOM, player) and not player:isDead() and not seen[username] then
+            participants[#participants + 1] = username
+            seen[username] = true
+        end
+    end
+    return participants
+end
+
+local function includeCurrentParticipants(cycle)
+    if type(cycle) ~= "table" then return end
+    if type(cycle.participants) ~= "table" then cycle.participants = { cycle.username } end
+    local seen = {}
+    for _, username in ipairs(cycle.participants) do seen[username] = true end
+    for _, username in ipairs(collectChamberParticipants()) do
+        if not seen[username] then
+            cycle.participants[#cycle.participants + 1] = username
+            seen[username] = true
+        end
+    end
 end
 
 local function deconState()
@@ -145,6 +175,14 @@ local function sendStatus(player)
     end
 end
 
+local function broadcastStatus()
+    if not isServer() or not getOnlinePlayers then return end
+    local players = getOnlinePlayers()
+    for index = 0, players:size() - 1 do
+        sendStatus(players:get(index))
+    end
+end
+
 local function sendResult(player, ok, action, code)
     if player and isServer() then
         sendServerCommand(player, Constants.DECON_NETWORK_MODULE, "deconResult", {
@@ -152,16 +190,26 @@ local function sendResult(player, ok, action, code)
             action=tostring(action or "unknown"),
             code=code,
         })
-        sendStatus(player)
+        broadcastStatus()
     end
 end
 
 local function startCycle(player, modeId)
     if not inInteractionRange(player) then return false, "decon_access_required" end
+    if Server.startingCycle then return false, "cycle_active" end
     local state = deconState()
     if state.activeCycle then return false, "cycle_active" end
     local mode = Rules.MODES[modeId]
     if not mode then return false, "unknown_mode" end
+
+    local participants = collectChamberParticipants()
+    if #participants == 0 then return false, "chamber_occupant_required" end
+    Server.startingCycle = true
+
+    local function completeStart(ok, code)
+        Server.startingCycle = false
+        return ok, code
+    end
 
     local inventoryReagent = firstReagent(player, mode)
     local cleanWater = WaterpipesAdapter.availableBunkerWater(waterState(), true)
@@ -176,19 +224,19 @@ local function startCycle(player, modeId)
     })
     if not ok then
         if mode.requiresPower then setPowerRequested(false, actor(player)) end
-        return false, code
+        return completeStart(false, code)
     end
 
     local consumed = WaterpipesAdapter.consumeBunkerWater(waterState(), mode.waterLiters, true)
     if not consumed then
         if mode.requiresPower then setPowerRequested(false, actor(player)) end
-        return false, "clean_water_changed"
+        return completeStart(false, "clean_water_changed")
     end
 
     if inventoryReagent then
         if not consumeInventoryItem(player, inventoryReagent) then
             if mode.requiresPower then setPowerRequested(false, actor(player)) end
-            return false, "reagent_transaction_failed"
+            return completeStart(false, "reagent_transaction_failed")
         end
     elseif mode.mixerUnits then
         state.reagentUnits = state.reagentUnits - mode.mixerUnits
@@ -197,8 +245,9 @@ local function startCycle(player, modeId)
     local cycle = Model.start(state, modeId, actor(player), Util.worldAgeHours())
     if not cycle then
         if mode.requiresPower then setPowerRequested(false, actor(player)) end
-        return false, "cycle_start_failed"
+        return completeStart(false, "cycle_start_failed")
     end
+    cycle.participants = participants
     cycle.resources = {
         waterLiters=mode.waterLiters,
         mixerUnits=mode.mixerUnits or 0,
@@ -207,21 +256,44 @@ local function startCycle(player, modeId)
     }
     refreshWaterSnapshot("decontamination cycle")
     CampaignState.appendLog("decontamination", modeId .. " cycle started id=" .. tostring(cycle.id), actor(player))
-    return true
+    return completeStart(true)
 end
 
-local function finishCycle(player, cycle)
+local function finishCycle(cycle)
     local state = deconState()
     local mode = Rules.MODES[cycle.mode]
-    if not player or not mode then return false end
-    local ok = ToxicServer.cleanPlayer(player, mode.bodyRemoval, mode.gearRemoval, mode.onlyMostContaminated)
-    if not ok then return false end
+    if not mode then return false end
+
+    local cleaned = 0
+    local online = 0
+    for _, username in ipairs(type(cycle.participants) == "table" and cycle.participants or {cycle.username}) do
+        local player = findOnlinePlayer(username)
+        if player then
+            online = online + 1
+            if not player:isDead() then
+                local ok = ToxicServer.cleanPlayer(player, mode.bodyRemoval, mode.gearRemoval, mode.onlyMostContaminated)
+                if ok then cleaned = cleaned + 1 end
+            end
+        end
+    end
+    if online == 0 then return false, "participants_offline" end
+    if cleaned == 0 then return false, "participants_dead" end
+
     state.roomContamination = math.max(0, state.roomContamination * (1 - mode.bodyRemoval))
     state.areas.chamber = math.max(0, state.areas.chamber * (1 - mode.bodyRemoval))
     if mode.requiresPower then setPowerRequested(false, cycle.username) end
     Model.finish(state, cycle.mode .. "_complete")
-    CampaignState.appendLog("decontamination", cycle.mode .. " cycle completed id=" .. tostring(cycle.id), cycle.username)
-    sendResult(player, true, "cycleComplete", nil)
+    CampaignState.appendLog("decontamination", cycle.mode .. " cycle completed id=" .. tostring(cycle.id)
+        .. " players=" .. tostring(cleaned), cycle.username)
+    for _, username in ipairs(type(cycle.participants) == "table" and cycle.participants or {cycle.username}) do
+        local player = findOnlinePlayer(username)
+        if player then
+            sendServerCommand(player, Constants.DECON_NETWORK_MODULE, "deconResult", {
+                ok=true, action="cycleComplete",
+            })
+        end
+    end
+    broadcastStatus()
     return true
 end
 
@@ -254,9 +326,20 @@ end
 local function qaGiveSupplies(player)
     local inventory = player:getInventory()
     if not inventory then return false end
-    for _ = 1, 3 do inventory:AddItem("Bandits.NBCTablets") end
-    inventory:AddItem("Base.CleaningLiquid2")
-    inventory:AddItem("Base.Bleach")
+
+    local function add(itemType)
+        local item = inventory:AddItem(itemType)
+        if not item then return false end
+        if type(sendAddItemToContainer) == "function" then
+            sendAddItemToContainer(inventory, item)
+        end
+        return true
+    end
+
+    for _ = 1, 3 do if not add("Bandits.NBCTablets") then return false end end
+    if not add("Base.CleaningLiquid2") then return false end
+    if not add("Base.Bleach") then return false end
+    if not add("Base.Soap2") then return false end
     return true
 end
 
@@ -280,7 +363,7 @@ local function runQa(player, command, args)
         ToxicServer.setPlayerSurfaceContamination(player, 80, true)
         return true
     elseif command == "qaClean" then
-        ToxicServer.setPlayerSurfaceContamination(player, 0, true)
+        ToxicServer.cleanPlayer(player, 1, 1, false)
         local state = deconState()
         state.roomContamination = 0
         state.areas.dirty = 0
@@ -293,6 +376,10 @@ local function runQa(player, command, args)
         local changed = WaterpipesAdapter.fillBunkerWater(waterState())
         refreshWaterSnapshot("QA water fill")
         return changed or WaterpipesAdapter.availableBunkerWater(waterState(), true) > 0, "no_bunker_storage"
+    elseif command == "qaRefuelGenerator" then
+        local generatorId = type(args) == "table" and args.generator or nil
+        if generatorId ~= "main" and generatorId ~= "backup" then return false, "unknown_generator" end
+        return CampaignState.refuelGenerator(generatorId, actor(player))
     elseif command == "qaFinishCycle" then
         local cycle = deconState().activeCycle
         if not cycle then return false, "no_active_cycle" end
@@ -332,7 +419,9 @@ function Server.update()
     for index = 0, players:size() - 1 do
         local player = players:get(index)
         local side = zoneSide(player)
-        if side ~= "remote" then
+        -- Area transfer belongs to the decontamination suite, not the entire
+        -- bunker level east or west of it.
+        if side ~= "remote" and inInteractionRange(player) then
             local record = ToxicServer.getPlayerRecord(player)
             local carried = math.max(record and record.surfaceContamination or 0, record and record.gearContamination or 0)
             state.areas[side] = math.max(state.areas[side] or 0, carried * 0.15)
@@ -341,29 +430,30 @@ function Server.update()
         end
     end
 
+
+    if now - Server.lastStatusMs >= 2000 then
+        broadcastStatus()
+        Server.lastStatusMs = now
+    end
+
     local cycle = state.activeCycle
     if not cycle then return end
+    includeCurrentParticipants(cycle)
     local mode = Rules.MODES[cycle.mode]
     local canRun = not mode.requiresPower or (powerConsumer() and powerConsumer().allocated == true)
     local complete = Model.advance(state, elapsed, canRun)
-    if now - Server.lastStatusMs >= 2000 then
-        local owner = findOnlinePlayer(cycle.username)
-        if owner then sendStatus(owner) end
-        Server.lastStatusMs = now
-    end
     if complete then
-        local player = findOnlinePlayer(cycle.username)
-        if not player then
+        local ok, code = finishCycle(cycle)
+        if not ok and code == "participants_offline" then
             state.status = "paused"
             return
         end
-        if player:isDead() then
+        if not ok and code == "participants_dead" then
             if mode.requiresPower then setPowerRequested(false, cycle.username) end
             Model.finish(state, "player_dead")
-            sendResult(player, false, "cycleComplete", "player_dead")
+            broadcastStatus()
             return
         end
-        finishCycle(player, cycle)
     end
 end
 

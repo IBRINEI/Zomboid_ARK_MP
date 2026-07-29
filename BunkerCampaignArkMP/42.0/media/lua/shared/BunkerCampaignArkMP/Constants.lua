@@ -6,6 +6,7 @@ local Constants = {
     NETWORK_MODULE = "BunkerCampaignArkMP",
     STATE_VERSION = 5,
     SPAWN_VERSION = 2,
+    CHARACTER_SPAWN_KEY = "BunkerCampaignArkMPSpawnVersion",
     MAP_ID = "Muldraugh, KY",
     SPAWN = { x = 9966.5, y = 12622.5, z = -4 },
     INSPECTION_POINTS = {

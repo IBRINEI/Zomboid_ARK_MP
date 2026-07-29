@@ -35,8 +35,23 @@ for index = commandCountBeforeArrival + 1, #commands do
 end
 assert(receivedCurrentLighting,
     "confirmed arrival must receive the current lighting state even without a global transition")
+assert(ArkMPCharacterData().BunkerCampaignArkMPSpawnVersion == BunkerCampaignArkMP.Constants.SPAWN_VERSION,
+    "confirmed entry must persist a marker on this character")
+
+player.x, player.y, player.z = 9955, 12635, -4
+player.serverTeleported = false
+local commandCountBeforeReconnect = #commands
+Events.OnClientCommand.handlers[1]("BunkerCampaignArkMP", "joinReady", player, {})
+assert(player.serverTeleported == false,
+    "reconnecting an initialized character must preserve its saved position")
+commands = ArkMPServerEntryCommands()
+for index = commandCountBeforeReconnect + 1, #commands do
+    assert(commands[index].command ~= "teleportToBunker",
+        "reconnect synchronization must not issue a spawn teleport")
+end
 
 GameServer = nil
+ArkMPCharacterData().BunkerCampaignArkMPSpawnVersion = nil
 player.x, player.y, player.z = 10944, 9374, 0
 player.networkAIRequested = false
 Events.OnClientCommand.handlers[1]("BunkerCampaignArkMP", "joinReady", player, {})

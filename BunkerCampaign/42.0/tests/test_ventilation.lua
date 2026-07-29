@@ -27,7 +27,7 @@ local migrated = {
 }
 local changed, messages = BunkerCampaign.StateSchema.prepare(migrated, false)
 assert(changed, "version 0 state must be migrated")
-assert(migrated.version == 4, "migration must set state version")
+assert(migrated.version == 5, "migration must set state version")
 assert(migrated.bunker.modules.water.status == "offline", "migration must add water defaults")
 assert(migrated.bunker.modules.power.generators.main.fuel == 0.87, "migration must add power defaults")
 assert(migrated.bunker.modules.ventilation.enabled == false, "migration must preserve valid existing values")
@@ -35,6 +35,13 @@ assert(migrated.bunker.modules.ventilation.condition == 1, "migration must clamp
 assert(migrated.bunker.modules.ventilation.filterRemaining == 0, "migration must clamp filter")
 assert(migrated.bunker.modules.ventilation.co2 == 400, "migration must replace NaN")
 assert(#messages > 0, "migration must report its action")
+
+local legacyPriority = BunkerCampaign.StateSchema.createDefault()
+legacyPriority.version = 4
+legacyPriority.bunker.modules.power.consumers.decontamination.priority = 75
+BunkerCampaign.StateSchema.prepare(legacyPriority, false)
+assert(legacyPriority.bunker.modules.power.consumers.decontamination.priority == 85,
+    "version 4 saves must migrate decontamination above the water-pump priority")
 
 local futureState = BunkerCampaign.StateSchema.createDefault()
 futureState.version = 999

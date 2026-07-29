@@ -45,6 +45,16 @@ function Model.normalize(state)
             cycle.remainingSeconds = math.max(0, tonumber(cycle.remainingSeconds) or 0)
             cycle.durationSeconds = math.max(0.1, tonumber(cycle.durationSeconds) or 1)
             if not finite(cycle.startedAtWorldAgeHours) then cycle.startedAtWorldAgeHours = 0 end
+            local participants = {}
+            local seen = {}
+            for _, username in ipairs(type(cycle.participants) == "table" and cycle.participants or {cycle.username}) do
+                if type(username) == "string" and username ~= "" and not seen[username] then
+                    participants[#participants + 1] = username
+                    seen[username] = true
+                end
+            end
+            if #participants == 0 then participants[1] = cycle.username end
+            cycle.participants = participants
         end
     end
     if state.lastResult ~= nil and type(state.lastResult) ~= "string" then state.lastResult = tostring(state.lastResult) end
@@ -74,6 +84,7 @@ function Model.start(state, modeId, username, worldAgeHours)
         durationSeconds = mode.durationSeconds,
         remainingSeconds = mode.durationSeconds,
         startedAtWorldAgeHours = tonumber(worldAgeHours) or 0,
+        participants = { username },
     }
     state.nextCycleId = state.nextCycleId + 1
     state.activeCycle = cycle

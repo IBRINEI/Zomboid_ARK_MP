@@ -15,4 +15,11 @@ Events.OnTick.handlers[1]()
 assert(ToxicFilterMaskData().percent < firstRemaining,
     "stale client item modData must not refill the server-authoritative filter")
 
+local inZoneRemaining = ToxicFilterMaskData().percent
+ToxicFilterMoveOutside()
+ToxicFilterAdvance(2000)
+Events.OnTick.handlers[1]()
+assert(ToxicFilterMaskData().percent < inZoneRemaining,
+    "a worn gas-mask filter must continue draining outside toxic zones")
+
 print("BunkerCampaignToxicMP server filter tests passed")

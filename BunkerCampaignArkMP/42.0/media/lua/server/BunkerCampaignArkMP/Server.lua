@@ -383,12 +383,48 @@ local function playerAtBunker(player)
         and math.abs(player:getZ() - Constants.SPAWN.z) < 0.1
 end
 
+local function entryCompleted(player)
+    local data = player and player:getModData() or nil
+    return type(data) == "table" and tonumber(data[Constants.CHARACTER_SPAWN_KEY]) == Constants.SPAWN_VERSION
+end
+
+local function markEntryCompleted(player)
+    local data = player and player:getModData() or nil
+    if type(data) ~= "table" then return end
+    data[Constants.CHARACTER_SPAWN_KEY] = Constants.SPAWN_VERSION
+    if player.transmitModData then player:transmitModData() end
+end
+
+local function synchronizePlayer(player)
+    Server.tryBuild()
+    PowerGrid.sync(true)
+    sendLightingState(player)
+    local username = player:getUsername()
+    local manifestKey = username .. ":" .. tostring(player)
+    if Server.state.status == "ready" and not Server.lightManifestSent[manifestKey] then
+        sendLightManifest(player)
+        Server.lightManifestSent[manifestKey] = true
+    end
+    sendStatus(player)
+end
+
 function Server.onClientCommand(module, command, player, args)
     if module ~= Constants.NETWORK_MODULE or not player then return end
     if command == "joinReady" then
-        Server.state.players[player:getUsername()] = true
+        if entryCompleted(player) then
+            print("[BunkerCampaignArkMP] resumed player=" .. player:getUsername()
+                .. " at=" .. math.floor(player:getX()) .. "," .. math.floor(player:getY()) .. "," .. tostring(player:getZ()))
+            synchronizePlayer(player)
+            return
+        end
         print("[BunkerCampaignArkMP] entry requested player=" .. player:getUsername()
             .. " from=" .. math.floor(player:getX()) .. "," .. math.floor(player:getY()) .. "," .. tostring(player:getZ()))
+        sendSpawn(player)
+        sendStatus(player)
+        return
+    end
+    if command == "enterBunker" then
+        print("[BunkerCampaignArkMP] manual entry requested player=" .. player:getUsername())
         sendSpawn(player)
         sendStatus(player)
         return
@@ -401,19 +437,9 @@ function Server.onClientCommand(module, command, player, args)
             return
         end
         print("[BunkerCampaignArkMP] arrival confirmed player=" .. player:getUsername())
-        Server.tryBuild()
-        -- Reconcile all currently streamed fixtures once, then give this
-        -- player the current authoritative state even when no global power
-        -- transition occurred during their connection.
-        PowerGrid.sync(true)
-        sendLightingState(player)
-        local username = player:getUsername()
-        local manifestKey = username .. ":" .. tostring(player)
-        if Server.state.status == "ready" and not Server.lightManifestSent[manifestKey] then
-            sendLightManifest(player)
-            Server.lightManifestSent[manifestKey] = true
-        end
-        sendStatus(player)
+        Server.state.players[player:getUsername()] = true
+        markEntryCompleted(player)
+        synchronizePlayer(player)
         return
     end
     if command == "requestStatus" then

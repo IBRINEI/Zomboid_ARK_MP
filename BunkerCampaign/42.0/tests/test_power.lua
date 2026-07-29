@@ -33,6 +33,12 @@ assert(power.consumers.water.allocated == true, "water must resume after backup 
 assert(power.consumers.emergency_lighting.allocated == false, "emergency lights must turn off after grid restoration")
 
 power.consumers.decontamination.requested = true
+BunkerCampaign.PowerSimulation.update(power, 0)
+assert(power.consumers.decontamination.allocated == true,
+    "backup generator must prioritize an active automatic decontamination cycle")
+assert(power.consumers.water.allocated == false,
+    "backup generator may shed the lower-priority water pump during decontamination")
+
 power.generators.main.requested = true
 BunkerCampaign.PowerSimulation.update(power, 0)
 assert(power.consumers.decontamination.allocated == true, "automatic decontamination must receive grid power")
