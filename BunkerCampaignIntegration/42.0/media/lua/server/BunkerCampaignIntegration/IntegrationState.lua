@@ -5,6 +5,7 @@ require "BunkerCampaign/Util"
 require "BunkerCampaignIntegration/Constants"
 require "BunkerCampaignIntegration/ZoneSampler"
 require "BunkerCampaignIntegration/WaterpipesAdapter"
+require "BunkerCampaignIntegration/DecontaminationModel"
 
 BunkerCampaignIntegration = BunkerCampaignIntegration or {}
 
@@ -13,6 +14,7 @@ local Util = BunkerCampaign.Util
 local Constants = BunkerCampaignIntegration.Constants
 local ZoneSampler = BunkerCampaignIntegration.ZoneSampler
 local WaterpipesAdapter = BunkerCampaignIntegration.WaterpipesAdapter
+local DecontaminationModel = BunkerCampaignIntegration.DecontaminationModel
 local IntegrationState = {
     data = nil,
     powerListenerRegistered = false,
@@ -28,6 +30,8 @@ local function prepare(data)
     if type(data.toxicZones) ~= "table" then data.toxicZones = {} end
     if type(data.toxicZones.zones) ~= "table" then data.toxicZones.zones = {} end
     if type(data.waterpipes) ~= "table" then data.waterpipes = {} end
+    if type(data.decontamination) ~= "table" then data.decontamination = DecontaminationModel.createDefault() end
+    DecontaminationModel.normalize(data.decontamination)
 
     data.theArk.initialized = data.theArk.initialized == true
     data.theArk.powerInitialized = data.theArk.powerInitialized == true
@@ -210,6 +214,14 @@ function IntegrationState.snapshot()
             initialized = data.waterpipes.initialized,
             pumpFound = data.waterpipes.lastPumpFound == true,
             flowPerMinute = data.waterpipes.lastFlowPerMinute or 0,
+        },
+        decontamination = {
+            status = data.decontamination.status,
+            reagentUnits = data.decontamination.reagentUnits,
+            roomContamination = data.decontamination.roomContamination,
+            areas = data.decontamination.areas,
+            activeCycle = data.decontamination.activeCycle,
+            lastResult = data.decontamination.lastResult,
         },
     }
 end

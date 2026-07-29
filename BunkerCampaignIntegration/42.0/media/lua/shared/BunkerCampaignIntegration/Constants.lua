@@ -4,8 +4,9 @@ local Constants = {}
 
 Constants.MOD_ID = "BunkerCampaignIntegration"
 Constants.NETWORK_MODULE = "BunkerCampaignIntegration"
+Constants.DECON_NETWORK_MODULE = "BunkerCampaignDecontamination"
 Constants.STATE_KEY = "BunkerCampaign.IntegrationState"
-Constants.STATE_VERSION = 2
+Constants.STATE_VERSION = 3
 Constants.THE_ARK_STATE_KEY = "BanditWeekOneTheArk"
 Constants.TOXIC_ZONES_STATE_KEY = "ToxicZone"
 Constants.WATERPIPES_STATE_KEY = "WaterPipes"
@@ -31,6 +32,50 @@ Constants.BUNKER_WATER_PIPES = {
 }
 Constants.BUNKER_WATER_BUILDING_CONNECTION = { x = 9956, y = 12615, z = -4 }
 Constants.BUNKER_PUMP_POWER_DEMAND_KW = 1.5
+
+Constants.DECONTAMINATION = {
+    ROOM = { x1=9944, x2=9949, y1=12622, y2=12628, z=-4 },
+    INTERACTION = { x1=9942, x2=9951, y1=12620, y2=12630, z=-4 },
+    DIRTY_ENTRY = { x=9942.5, y=12625.5, z=-4 },
+    CHAMBER = { x=9946.5, y=12625.5, z=-4 },
+    CLEAN_EXIT = { x=9951.5, y=12625.5, z=-4 },
+    REAGENT_STORAGE = { x=9950.5, y=12621.5, z=-5 },
+    EXTERIOR_TEST = { x=9928.5, y=12625.5, z=0 },
+    TEST_ZONE_NAME = "BunkerCampaignExteriorQA",
+    TEST_ZONE = { startX=9918, startY=12618, endX=9943, endY=12632 },
+    MAX_REAGENT_UNITS = 100,
+    TABLET_UNITS = 50,
+    MODES = {
+        manual = {
+            durationSeconds=8,
+            waterLiters=2,
+            inventoryReagent=true,
+            reagentTypes={"Base.CleaningLiquid2", "Base.Bleach", "Base.Soap"},
+            bodyRemoval=0.50,
+            gearRemoval=0.35,
+            onlyMostContaminated=true,
+            requiresPower=false,
+        },
+        emergency = {
+            durationSeconds=10,
+            waterLiters=5,
+            mixerUnits=2,
+            bodyRemoval=0.80,
+            gearRemoval=0.50,
+            onlyMostContaminated=false,
+            requiresPower=false,
+        },
+        automatic = {
+            durationSeconds=20,
+            waterLiters=20,
+            mixerUnits=5,
+            bodyRemoval=1.00,
+            gearRemoval=1.00,
+            onlyMostContaminated=false,
+            requiresPower=true,
+        },
+    },
+}
 
 BunkerCampaignIntegration.Constants = Constants
 return Constants

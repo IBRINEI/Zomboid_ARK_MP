@@ -185,6 +185,60 @@ function WaterpipesAdapter.ensureBunkerInfrastructure(gmd)
     return changed
 end
 
+local function sortedBunkerBarrels(gmd, cleanOnly)
+    local result = {}
+    local barrels = type(gmd) == "table" and type(gmd.Barrels) == "table" and gmd.Barrels or {}
+    for key, barrel in pairs(barrels) do
+        if isInsideBunker(barrel) and (not cleanOnly or barrel.m == "Water") then
+            result[#result + 1] = { key=tostring(key), barrel=barrel }
+        end
+    end
+    table.sort(result, function(left, right) return left.key < right.key end)
+    return result
+end
+
+function WaterpipesAdapter.availableBunkerWater(gmd, cleanOnly)
+    local raw = 0
+    for _, entry in ipairs(sortedBunkerBarrels(gmd, cleanOnly == true)) do
+        raw = raw + Util.numberOr(entry.barrel.w, 0, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE)
+    end
+    return raw / 100
+end
+
+function WaterpipesAdapter.consumeBunkerWater(gmd, liters, cleanOnly)
+    liters = Util.numberOr(liters, 0, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE)
+    local required = liters * 100
+    if WaterpipesAdapter.availableBunkerWater(gmd, cleanOnly == true) * 100 + 0.0001 < required then
+        return false, 0
+    end
+
+    local remaining = required
+    for _, entry in ipairs(sortedBunkerBarrels(gmd, cleanOnly == true)) do
+        if remaining <= 0 then break end
+        local barrel = entry.barrel
+        local available = Util.numberOr(barrel.w, 0, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE)
+        local used = math.min(available, remaining)
+        barrel.w = available - used
+        if barrel.w <= 0 then barrel.w = 0; barrel.m = nil end
+        remaining = remaining - used
+    end
+    return remaining <= 0.0001, (required - remaining) / 100
+end
+
+function WaterpipesAdapter.fillBunkerWater(gmd)
+    local changed = false
+    for _, entry in ipairs(sortedBunkerBarrels(gmd, false)) do
+        local barrel = entry.barrel
+        local capacity = Util.numberOr(barrel.wmax, 0, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE)
+        if barrel.w ~= capacity or barrel.m ~= "Water" then
+            barrel.w = capacity
+            barrel.m = "Water"
+            changed = true
+        end
+    end
+    return changed
+end
+
 function WaterpipesAdapter.sample(gmd)
     local result = {
         adapterOnline = type(gmd) == "table",
