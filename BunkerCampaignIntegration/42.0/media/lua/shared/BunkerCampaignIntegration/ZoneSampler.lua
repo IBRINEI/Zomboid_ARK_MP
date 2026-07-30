@@ -78,5 +78,33 @@ function ZoneSampler.sampleAirIntakes(zones, airIntakes)
     return toxicCount / activeCount, activeCount, toxicCount
 end
 
+function ZoneSampler.sampleAirIntakesDetailed(zones, airIntakes)
+    local result, activeCount, toxicCount = {}, 0, 0
+    if type(airIntakes) ~= "table" then return result, activeCount, toxicCount end
+    local ordered = {}
+    for _, intake in pairs(airIntakes) do
+        if type(intake) == "table" and Util.isFiniteNumber(intake.x) and Util.isFiniteNumber(intake.y) then
+            ordered[#ordered + 1] = intake
+        end
+    end
+    table.sort(ordered, function(left, right)
+        if left.x ~= right.x then return left.x < right.x end
+        if left.y ~= right.y then return left.y < right.y end
+        return (left.z or 0) < (right.z or 0)
+    end)
+    for index, intake in ipairs(ordered) do
+        local id = "intake_" .. tostring(index)
+        if intake.broken ~= true then
+            activeCount = activeCount + 1
+            local value = ZoneSampler.isPointToxic(zones, intake.x, intake.y) and 1 or 0
+            result[id] = value
+            if value > 0 then toxicCount = toxicCount + 1 end
+        else
+            result[id] = 0
+        end
+    end
+    return result, activeCount, toxicCount
+end
+
 BunkerCampaignIntegration.ZoneSampler = ZoneSampler
 return ZoneSampler

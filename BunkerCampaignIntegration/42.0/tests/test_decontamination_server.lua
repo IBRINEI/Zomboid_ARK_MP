@@ -9,6 +9,20 @@ Events = {
     OnTick=event(),
     OnClientCommand=event(),
 }
+ISWashClothing = {
+    GetRequiredSoap=function() return 0 end,
+    GetRequiredWater=function() return 0 end,
+    GetSoapRemaining=function() return 0 end,
+    new=function() return {maxTime=100} end,
+    complete=function() return true end,
+}
+ISWashYourself = {
+    GetRequiredSoap=function() return 0 end,
+    GetRequiredWater=function() return 0 end,
+    new=function() return {maxTime=100} end,
+    complete=function() return true end,
+}
+Fluid = { CleaningLiquid="CleaningLiquid" }
 isClient = function() return false end
 isServer = function() return true end
 

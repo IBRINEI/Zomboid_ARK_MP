@@ -12,6 +12,7 @@ local Server = {
     zones = {},
     lastTickMs = 0,
     statusAccumulator = 0,
+    ambientProviders = {},
 }
 
 local function finite(value)
@@ -49,6 +50,15 @@ local function zoneAt(x, y)
         if x >= zone.x1 and x <= zone.x2 and y >= zone.y1 and y <= zone.y2 then return zone end
     end
     return nil
+end
+
+local function ambientAt(player)
+    local maximum = 0
+    for _, provider in ipairs(Server.ambientProviders) do
+        local ok, value = pcall(provider, player)
+        if ok and finite(tonumber(value)) then maximum = math.max(maximum, math.min(1, tonumber(value))) end
+    end
+    return maximum
 end
 
 local function containsPattern(value, patterns)
@@ -293,6 +303,8 @@ local function updatePlayer(player, elapsed, scanCarried, carriedElapsed)
     end
 
     local zone = zoneAt(player:getX(), player:getY())
+    local ambient = ambientAt(player)
+    local airborne = zone and 1 or ambient
     local level, mask, observedCharge, hasCloth = classifyProtection(player)
 
     if mask then
@@ -330,20 +342,22 @@ local function updatePlayer(player, elapsed, scanCarried, carriedElapsed)
         end
     end
 
-    if zone and level < 1 then
+    if airborne > 0 and level < 1 then
         local damage = multiplier("ToxicDamageMultiplier", 1)
-        record.exposure = math.min(100, record.exposure + Constants.EXPOSURE_PER_SECOND * elapsed * damage * (1 - level))
+        record.exposure = math.min(100, record.exposure
+            + Constants.EXPOSURE_PER_SECOND * elapsed * damage * (1 - level) * airborne)
         if record.exposure >= 100 then
             record.awaitingRespawn = true
             kill(player)
         end
-    elseif not zone then
+    elseif airborne <= 0 then
         record.exposure = math.max(0, record.exposure - Constants.EXPOSURE_DECAY_PER_SECOND * elapsed)
     end
 
     updateSurfaceContamination(player, record, zone, elapsed, scanCarried, carriedElapsed)
 
-    record.inZone = zone ~= nil
+    record.inZone = zone ~= nil or ambient > 0.01
+    record.ambientContamination = ambient
     record.protection = level
     return record
 end
@@ -364,6 +378,13 @@ end
 
 function Server.refreshZones()
     refreshZones()
+end
+
+function Server.addAmbientProvider(provider)
+    if type(provider) ~= "function" then return false end
+    for _, current in ipairs(Server.ambientProviders) do if current == provider then return true end end
+    Server.ambientProviders[#Server.ambientProviders + 1] = provider
+    return true
 end
 
 function Server.ensureZone(name, bounds)

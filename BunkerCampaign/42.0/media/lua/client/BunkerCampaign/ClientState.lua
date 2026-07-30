@@ -52,6 +52,57 @@ function ClientState.setVentilationEnabled(player, enabled)
     end
 end
 
+function ClientState.setVentilationMode(player, mode)
+    if type(mode) ~= "string" then return end
+    player = player or getPlayer()
+    if isClient() then
+        if player then sendClientCommand(player, Constants.NETWORK_MODULE, "setVentilationMode", { mode=mode }) end
+    elseif BunkerCampaign.CampaignState then
+        BunkerCampaign.CampaignState.setVentilationMode(mode, "singleplayer")
+        ClientState.request(player)
+    end
+end
+
+function ClientState.startAirlockPurge(player, roomId)
+    player = player or getPlayer()
+    roomId = type(roomId) == "string" and roomId or "decontamination_chamber"
+    if isClient() then
+        if player then sendClientCommand(player, Constants.NETWORK_MODULE, "startAirlockPurge", { roomId=roomId }) end
+    elseif BunkerCampaign.CampaignState then
+        BunkerCampaign.CampaignState.startAirlockPurge(roomId, "singleplayer")
+        ClientState.request(player)
+    end
+end
+
+function ClientState.replaceVentilationFilter(player)
+    player = player or getPlayer()
+    if isClient() then
+        if player then sendClientCommand(player, Constants.NETWORK_MODULE, "replaceVentilationFilter", {}) end
+    end
+end
+
+function ClientState.setWaterSource(player, sourceId)
+    if type(sourceId) ~= "string" then return end
+    player = player or getPlayer()
+    if isClient() then
+        if player then sendClientCommand(player, Constants.NETWORK_MODULE, "setWaterSource", { id=sourceId }) end
+    elseif BunkerCampaign.CampaignState then
+        BunkerCampaign.CampaignState.setWaterSource(sourceId, "singleplayer")
+        ClientState.request(player)
+    end
+end
+
+function ClientState.setWaterBypass(player, enabled)
+    if type(enabled) ~= "boolean" then return end
+    player = player or getPlayer()
+    if isClient() then
+        if player then sendClientCommand(player, Constants.NETWORK_MODULE, "setWaterBypass", { enabled=enabled }) end
+    elseif BunkerCampaign.CampaignState then
+        BunkerCampaign.CampaignState.setWaterBypass(enabled, "singleplayer")
+        ClientState.request(player)
+    end
+end
+
 function ClientState.setGeneratorRequested(player, generatorId, requested)
     if type(generatorId) ~= "string" or type(requested) ~= "boolean" then return end
     player = player or getPlayer()

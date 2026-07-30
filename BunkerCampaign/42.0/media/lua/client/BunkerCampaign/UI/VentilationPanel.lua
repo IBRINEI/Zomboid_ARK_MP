@@ -30,9 +30,11 @@ end
 function VentilationPanel:createChildren()
     ISCollapsableWindow.createChildren(self)
 
-    local firstY = self.height - 98
-    local secondY = self.height - 68
-    local thirdY = self.height - 38
+    local firstY = self.height - 158
+    local secondY = self.height - 128
+    local thirdY = self.height - 98
+    local fourthY = self.height - 68
+    local fifthY = self.height - 38
     self.mainButton = ISButton:new(12, firstY, 155, 26, getText("UI_BC_MainGenerator"), self, VentilationPanel.onToggleMain)
     self.mainButton:initialise()
     self.mainButton:instantiate()
@@ -53,15 +55,35 @@ function VentilationPanel:createChildren()
     self.lightingButton:instantiate()
     self:addChild(self.lightingButton)
 
-    self.toggleButton = ISButton:new(12, thirdY, 235, 26, getText("UI_BC_VentilationToggle"), self, VentilationPanel.onToggle)
-    self.toggleButton:initialise()
-    self.toggleButton:instantiate()
-    self:addChild(self.toggleButton)
+    self.modeButton = ISButton:new(12, thirdY, 235, 26, getText("UI_BC_VentilationMode"), self, VentilationPanel.onCycleMode)
+    self.modeButton:initialise()
+    self.modeButton:instantiate()
+    self:addChild(self.modeButton)
 
     self.waterButton = ISButton:new(252, thirdY, 236, 26, getText("UI_BC_WaterPump"), self, VentilationPanel.onToggleWater)
     self.waterButton:initialise()
     self.waterButton:instantiate()
     self:addChild(self.waterButton)
+
+    self.purgeButton = ISButton:new(12, fourthY, 155, 26, getText("UI_BC_AirlockPurge"), self, VentilationPanel.onPurge)
+    self.purgeButton:initialise()
+    self.purgeButton:instantiate()
+    self:addChild(self.purgeButton)
+
+    self.filterButton = ISButton:new(172, fourthY, 155, 26, getText("UI_BC_ReplaceAirFilter"), self, VentilationPanel.onReplaceFilter)
+    self.filterButton:initialise()
+    self.filterButton:instantiate()
+    self:addChild(self.filterButton)
+
+    self.bypassButton = ISButton:new(332, fourthY, 156, 26, getText("UI_BC_WaterBypass"), self, VentilationPanel.onToggleBypass)
+    self.bypassButton:initialise()
+    self.bypassButton:instantiate()
+    self:addChild(self.bypassButton)
+
+    self.sourceButton = ISButton:new(12, fifthY, 476, 26, getText("UI_BC_SelectWaterSource"), self, VentilationPanel.onCycleWaterSource)
+    self.sourceButton:initialise()
+    self.sourceButton:instantiate()
+    self:addChild(self.sourceButton)
 end
 
 local function toggleGenerator(self, id)
@@ -83,10 +105,32 @@ function VentilationPanel:onToggleLighting()
     end
 end
 
-function VentilationPanel:onToggle()
+function VentilationPanel:onCycleMode()
     local snapshot = ClientState.snapshot
     if not snapshot or not snapshot.ventilation or not canControl() then return end
-    ClientState.setVentilationEnabled(getSpecificPlayer(self.playerNum), not snapshot.ventilation.enabled)
+    local current = snapshot.ventilation.requestedMode or "off"
+    local modes = { "external_filtration", "emergency_ventilation", "sealed", "off" }
+    if snapshot.ventilation.recirculationUnlocked then table.insert(modes, 2, "internal_recirculation") end
+    local nextMode = modes[1]
+    for index, mode in ipairs(modes) do
+        if mode == current then nextMode = modes[index % #modes + 1]; break end
+    end
+    ClientState.setVentilationMode(getSpecificPlayer(self.playerNum), nextMode)
+end
+
+function VentilationPanel:onPurge()
+    if canControl() then ClientState.startAirlockPurge(getSpecificPlayer(self.playerNum), "decontamination_chamber") end
+end
+
+function VentilationPanel:onReplaceFilter()
+    if canControl() then ClientState.replaceVentilationFilter(getSpecificPlayer(self.playerNum)) end
+end
+
+function VentilationPanel:onToggleBypass()
+    local water = ClientState.snapshot and ClientState.snapshot.water
+    if water and water.treatment and canControl() then
+        ClientState.setWaterBypass(getSpecificPlayer(self.playerNum), not water.treatment.bypass)
+    end
 end
 
 function VentilationPanel:onToggleWater()
@@ -95,6 +139,29 @@ function VentilationPanel:onToggleWater()
     if consumer and canControl() then
         ClientState.setConsumerRequested(getSpecificPlayer(self.playerNum), "water", not consumer.requested)
     end
+end
+
+function VentilationPanel:onCycleWaterSource()
+    local water = ClientState.snapshot and ClientState.snapshot.water
+    if not water or type(water.sources) ~= "table" or not canControl() then return end
+    local preferred = { "underground_well", "external_tank", "collected_water", "portable_supply" }
+    local available = {}
+    for _, sourceId in ipairs(preferred) do
+        local source = water.sources[sourceId]
+        if source and source.enabled
+            and (source.renewable or (tonumber(source.availableLiters) or 0) > 0) then
+            available[#available + 1] = sourceId
+        end
+    end
+    if #available == 0 then return end
+    local nextSource = available[1]
+    for index, sourceId in ipairs(available) do
+        if sourceId == water.selectedSource then
+            nextSource = available[index % #available + 1]
+            break
+        end
+    end
+    ClientState.setWaterSource(getSpecificPlayer(self.playerNum), nextSource)
 end
 
 function VentilationPanel:onRefresh()
@@ -110,18 +177,33 @@ function VentilationPanel:prerender()
     local backup = power and power.generators and power.generators.backup or nil
     local waterConsumer = power and power.consumers and power.consumers.water or nil
     local lightingConsumer = power and power.consumers and power.consumers.main_lighting or nil
-    if ventilation then
-        self.toggleButton:setTitle(ventilation.enabled and getText("UI_BC_DisableVentilation") or getText("UI_BC_EnableVentilation"))
-    end
+    if ventilation then self.modeButton:setTitle(getText("UI_BC_VentilationMode") .. ": " .. tostring(ventilation.requestedMode or "off")) end
     if main then self.mainButton:setTitle(main.requested and getText("UI_BC_StopMain") or getText("UI_BC_StartMain")) end
     if backup then self.backupButton:setTitle(backup.requested and getText("UI_BC_StopBackup") or getText("UI_BC_StartBackup")) end
     if waterConsumer then self.waterButton:setTitle(waterConsumer.requested and getText("UI_BC_DisableWater") or getText("UI_BC_EnableWater")) end
     if lightingConsumer then self.lightingButton:setTitle(lightingConsumer.requested and getText("UI_BC_DisableLighting") or getText("UI_BC_EnableLighting")) end
-    self.toggleButton:setEnable(ventilation ~= nil and canControl())
+    self.modeButton:setEnable(ventilation ~= nil and canControl())
     self.mainButton:setEnable(main ~= nil and canControl())
     self.backupButton:setEnable(backup ~= nil and canControl())
     self.waterButton:setEnable(waterConsumer ~= nil and canControl())
     self.lightingButton:setEnable(lightingConsumer ~= nil and canControl())
+    self.purgeButton:setEnable(ventilation ~= nil and ventilation.airlock ~= nil and not ventilation.airlock.active and canControl())
+    self.filterButton:setEnable(ventilation ~= nil and canControl())
+    local treatment = ClientState.snapshot and ClientState.snapshot.water and ClientState.snapshot.water.treatment
+    if treatment then self.bypassButton:setTitle(treatment.bypass and getText("UI_BC_CloseBypass") or getText("UI_BC_OpenBypass")) end
+    self.bypassButton:setEnable(treatment ~= nil and canControl())
+    local water = ClientState.snapshot and ClientState.snapshot.water
+    local availableSources = 0
+    if water and type(water.sources) == "table" then
+        for _, source in pairs(water.sources) do
+            if source.enabled and (source.renewable or (tonumber(source.availableLiters) or 0) > 0) then
+                availableSources = availableSources + 1
+            end
+        end
+        self.sourceButton:setTitle(getText("UI_BC_SelectWaterSource") .. ": "
+            .. tostring(water.selectedSource or water.source or "none"))
+    end
+    self.sourceButton:setEnable(availableSources > 1 and canControl())
 end
 
 function VentilationPanel:render()
@@ -175,15 +257,21 @@ function VentilationPanel:render()
     self:drawText(getText("UI_BC_VentilationSection"), x, y, 0.35, 0.75, 1, 1, UIFont.Small)
     y = y + lineHeight
     drawRows({
-        { getText("UI_BC_Requested"), ventilation.enabled and getText("UI_BC_Yes") or getText("UI_BC_No") },
+        { getText("UI_BC_RequestedMode"), tostring(ventilation.requestedMode or "-") },
+        { getText("UI_BC_ActiveMode"), tostring(ventilation.activeMode or "-") },
+        { getText("UI_BC_Restriction"), tostring(ventilation.reason or "none") },
         { getText("UI_BC_Powered"), ventilation.powerAllocated and getText("UI_BC_Yes") or getText("UI_BC_No") },
         { getText("UI_BC_Operating"), ventilation.operating and getText("UI_BC_Yes") or getText("UI_BC_No") },
         { getText("UI_BC_Status"), tostring(ventilation.status or "-") },
         { getText("UI_BC_Condition"), percent(ventilation.condition) },
         { getText("UI_BC_Filter"), percent(ventilation.filterRemaining) },
+        { getText("UI_BC_Airflow"), number(ventilation.airflowM3PerMinute, 0) .. " m3/min" },
         { getText("UI_BC_CO2"), number(ventilation.co2, 0) .. " ppm" },
         { getText("UI_BC_ExternalContamination"), percent(ventilation.externalContamination) },
         { getText("UI_BC_InternalContamination"), percent(ventilation.internalContamination) },
+        { getText("UI_BC_Occupants"), tostring(ventilation.telemetry and ventilation.telemetry.totalOccupants or 0) },
+        { getText("UI_BC_WorstRoom"), tostring(ventilation.telemetry and ventilation.telemetry.worstRoomId or "-") },
+        { getText("UI_BC_Airlock"), tostring(ventilation.airlock and ventilation.airlock.status or "-") },
     })
 
     local water = snapshot.water
@@ -192,18 +280,25 @@ function VentilationPanel:render()
         self:drawText(getText("UI_BC_WaterSection"), x, y, 0.35, 0.75, 1, 1, UIFont.Small)
         y = y + lineHeight
         local reserve = number(water.stored, 0) .. " / " .. number(water.capacity, 0)
+        local storage = water.storage or {}
+        local treatment = water.treatment or {}
         drawRows({
             { getText("UI_BC_Adapter"), water.adapterOnline and getText("UI_BC_Online") or getText("UI_BC_Offline") },
             { getText("UI_BC_Requested"), water.pumpRequested and getText("UI_BC_Yes") or getText("UI_BC_No") },
             { getText("UI_BC_Powered"), water.powerAllocated and getText("UI_BC_Yes") or getText("UI_BC_No") },
             { getText("UI_BC_Pump"), water.pumpActive and getText("UI_BC_Enabled") or getText("UI_BC_Disabled") },
             { getText("UI_BC_Status"), tostring(water.status or "-") },
+            { getText("UI_BC_Restriction"), tostring(water.reason or "none") },
             { getText("UI_BC_Condition"), percent(water.pumpCondition) },
             { getText("UI_BC_Filter"), percent(water.filterRemaining) },
             { getText("UI_BC_WaterReserve"), reserve .. " L" },
+            { getText("UI_BC_CleanWater"), number(storage.cleanLiters, 0) .. " L" },
+            { getText("UI_BC_TaintedWater"), number(storage.taintedLiters, 0) .. " L" },
+            { getText("UI_BC_WaterContamination"), percent(water.contamination) },
             { getText("UI_BC_WaterFlow"), number(water.flowPerMinute, 2) .. " L/min" },
             { getText("UI_BC_PowerDemand"), number(water.powerDemandKw, 1) .. " kW" },
             { getText("UI_BC_Source"), tostring(water.source or "none") },
+            { getText("UI_BC_WaterBypass"), treatment.bypass and getText("UI_BC_Open") or getText("UI_BC_Closed") },
         })
     end
 
@@ -219,9 +314,9 @@ function VentilationPanel:render()
     end
 
     if ClientState.lastError then
-        self:drawText(getText("UI_BC_Error") .. ": " .. ClientState.lastError, x, self.height - 118, 1, 0.25, 0.25, 1, UIFont.Small)
+        self:drawText(getText("UI_BC_Error") .. ": " .. ClientState.lastError, x, self.height - 148, 1, 0.25, 0.25, 1, UIFont.Small)
     elseif not canControl() then
-        self:drawText(getText("UI_BC_BunkerOnly"), x, self.height - 118, 1, 0.75, 0.25, 1, UIFont.Small)
+        self:drawText(getText("UI_BC_BunkerOnly"), x, self.height - 148, 1, 0.75, 0.25, 1, UIFont.Small)
     end
 end
 
@@ -232,7 +327,7 @@ end
 
 function VentilationPanel:new(x, y, playerNum)
     local width = 500
-    local height = 720
+    local height = 1010
     local panel = ISCollapsableWindow:new(x, y, width, height)
     setmetatable(panel, self)
     self.__index = self
@@ -248,7 +343,7 @@ function VentilationPanel.open(playerNum)
     end
 
     local width = 500
-    local height = 720
+    local height = 1010
     local x = (getCore():getScreenWidth() - width) / 2
     local y = (getCore():getScreenHeight() - height) / 2
     local panel = VentilationPanel:new(x, y, playerNum or 0)

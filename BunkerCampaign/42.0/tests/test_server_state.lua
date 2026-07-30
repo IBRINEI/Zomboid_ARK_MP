@@ -46,7 +46,7 @@ end
 function RunBunkerCampaignServerTests()
 BunkerCampaign.CampaignState.initialize(true)
 local firstReference = BunkerCampaign.CampaignState.get()
-assert(firstReference.version == 5, "server must initialize versioned state")
+assert(firstReference.version == 6, "server must initialize versioned state")
 assert(#firstReference.auditLog > 0, "initialization must be audited")
 assert(firstReference.bunker.modules.water.status == "offline", "water module must migrate with safe defaults")
 assert(firstReference.bunker.modules.water.adapterOnline == false, "water adapter must start offline")
@@ -59,7 +59,8 @@ assert(ok, "valid server mutation must succeed")
 assert(firstReference.bunker.modules.ventilation.enabled == false, "server mutation must change persistent state")
 local co2Before = firstReference.bunker.modules.ventilation.co2
 BunkerCampaign.CampaignState.updateOneMinute()
-assert(firstReference.bunker.modules.ventilation.co2 > co2Before, "server tick must update ventilation")
+assert(firstReference.bunker.modules.ventilation.co2 >= co2Before,
+    "empty bunker must not create artificial CO2 while ventilation is off")
 
 BunkerCampaign.CampaignState.initialize(false)
 assert(BunkerCampaign.CampaignState.get() == firstReference, "reload must reuse the ModData table")

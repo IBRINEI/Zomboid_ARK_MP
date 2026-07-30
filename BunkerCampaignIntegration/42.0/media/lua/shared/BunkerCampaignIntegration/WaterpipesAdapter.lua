@@ -88,6 +88,35 @@ function WaterpipesAdapter.ensureBunkerPump(gmd, physicalPresent, activeDefault)
     return pump, changed
 end
 
+function WaterpipesAdapter.setBunkerPumpOperating(gmd, operating, selectedSource, bypass)
+    if type(gmd) ~= "table" or type(gmd.Pumps) ~= "table" then return false, "pump_missing" end
+    local pump = gmd.Pumps[coordsId(Constants.BUNKER_WATER_PUMP)]
+    if type(pump) ~= "table" then return false, "pump_missing" end
+    local changed = false
+    operating = operating == true
+    if pump.active ~= operating then pump.active = operating; changed = true end
+    local medium = "TaintedWater"
+    if selectedSource == "portable_supply" then medium = "Water" end
+    if pump.source ~= medium then pump.source = medium; changed = true end
+    pump.BunkerCampaignSource = type(selectedSource) == "string" and selectedSource or "underground_well"
+    if bypass == true then
+        if Util.isFiniteNumber(pump.filter) and pump.filter > 0 then
+            pump.BunkerCampaignStoredFilter = math.max(tonumber(pump.BunkerCampaignStoredFilter) or 0, pump.filter)
+            pump.filter = 0
+            changed = true
+        end
+        pump.BunkerCampaignBypass = true
+    else
+        if pump.BunkerCampaignBypass == true and Util.isFiniteNumber(pump.BunkerCampaignStoredFilter) then
+            pump.filter = Util.clamp(pump.BunkerCampaignStoredFilter, 0, 100)
+            pump.BunkerCampaignStoredFilter = nil
+            changed = true
+        end
+        pump.BunkerCampaignBypass = false
+    end
+    return changed
+end
+
 local function registerBuildingReceivers(gmd, building, buildingId)
     if not building or not buildingId or type(WPIso.GetBarrel) ~= "function" or type(WPIso.GetWaterStatus) ~= "function" then
         return false
@@ -242,6 +271,8 @@ end
 function WaterpipesAdapter.sample(gmd)
     local result = {
         adapterOnline = type(gmd) == "table",
+        physicallyAvailable = false,
+        pumpPresent = false,
         pumpActive = false,
         pumpCondition = 0,
         status = "offline",
@@ -252,6 +283,10 @@ function WaterpipesAdapter.sample(gmd)
         flowPerMinute = 0,
         powerDemandKw = 0,
         source = "none",
+        cleanStored = 0,
+        taintedStored = 0,
+        storageFull = false,
+        burn = false,
     }
     if type(gmd) ~= "table" then return result end
 
@@ -259,9 +294,13 @@ function WaterpipesAdapter.sample(gmd)
     local pump = pumps[coordsId(Constants.BUNKER_WATER_PUMP)]
     if type(pump) ~= "table" then return result end
 
+    result.physicallyAvailable = true
+    result.pumpPresent = true
     result.pumpActive = pump.active == true
+    result.burn = pump.burn == true
     result.pumpCondition = normalizePercent(pump.efficiency)
-    result.filterRemaining = normalizePercent(pump.filter)
+    result.filterRemaining = normalizePercent(pump.BunkerCampaignBypass == true
+        and pump.BunkerCampaignStoredFilter or pump.filter)
     result.powerDemandKw = Constants.BUNKER_PUMP_POWER_DEMAND_KW
 
     if pump.source == "TaintedWater" then
@@ -284,14 +323,21 @@ function WaterpipesAdapter.sample(gmd)
             local stored = rawStored / 100
             result.capacity = result.capacity + capacity
             result.stored = result.stored + stored
-            if barrel.m == "TaintedWater" then taintedStored = taintedStored + stored end
+            if barrel.m == "TaintedWater" then
+                taintedStored = taintedStored + stored
+                result.taintedStored = result.taintedStored + stored
+            elseif barrel.m == "Water" then
+                result.cleanStored = result.cleanStored + stored
+            end
         end
     end
     result.capacity = Util.clamp(result.capacity, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE)
     result.stored = Util.clamp(result.stored, 0, result.capacity)
+    result.storageFull = result.capacity > 0 and result.stored >= result.capacity - 0.0001
 
     if result.stored > 0 then result.contamination = taintedStored / result.stored end
-    if result.pumpActive and pump.source == "TaintedWater" and result.filterRemaining <= 0 then
+    if result.pumpActive and pump.source == "TaintedWater"
+        and (result.filterRemaining <= 0 or pump.BunkerCampaignBypass == true) then
         result.contamination = 1
     end
 

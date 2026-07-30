@@ -6,7 +6,7 @@ require "BunkerCampaign/CampaignState"
 require "BunkerCampaign/Util"
 require "BunkerCampaignIntegration/Constants"
 require "BunkerCampaignIntegration/DecontaminationModel"
-require "BunkerCampaignIntegration/WaterpipesAdapter"
+require "BunkerCampaignIntegration/WaterService"
 require "BunkerCampaignToxicMP/Server"
 
 BunkerCampaignIntegration = BunkerCampaignIntegration or {}
@@ -15,7 +15,7 @@ local CampaignState = BunkerCampaign.CampaignState
 local Util = BunkerCampaign.Util
 local Constants = BunkerCampaignIntegration.Constants
 local Model = BunkerCampaignIntegration.DecontaminationModel
-local WaterpipesAdapter = BunkerCampaignIntegration.WaterpipesAdapter
+local WaterService = BunkerCampaignIntegration.WaterService
 local ToxicServer = BunkerCampaignToxicMP.Server
 local ManualWashShared = BunkerCampaignIntegration.ManualWashShared
 local Rules = Constants.DECONTAMINATION
@@ -119,10 +119,6 @@ local function deconState()
     if type(integration.decontamination) ~= "table" then integration.decontamination = Model.createDefault() end
     Server.data = Model.normalize(integration.decontamination)
     return Server.data
-end
-
-local function waterState()
-    return ModData.getOrCreate(Constants.WATERPIPES_STATE_KEY)
 end
 
 local function powerConsumer()
@@ -252,9 +248,7 @@ local function consumeManualAgentUses(agents, required)
 end
 
 local function refreshWaterSnapshot(source)
-    local gmd = waterState()
-    if type(TransmitWPModData) == "function" then TransmitWPModData() end
-    CampaignState.setWaterSnapshot(WaterpipesAdapter.sample(gmd), source or "decontamination controller")
+    CampaignState.setWaterSnapshot(WaterService.sample(), source or "decontamination controller")
 end
 
 local function snapshotFor(player)
@@ -268,7 +262,7 @@ local function snapshotFor(player)
         areas = state.areas,
         activeCycle = state.activeCycle,
         lastResult = state.lastResult,
-        cleanWaterLiters = WaterpipesAdapter.availableBunkerWater(waterState(), true),
+        cleanWaterLiters = WaterService.available("clean"),
         powerRequested = consumer and consumer.requested == true or false,
         powerAllocated = consumer and consumer.allocated == true or false,
         surfaceContamination = record and record.surfaceContamination or 0,
@@ -321,7 +315,7 @@ local function startCycle(player, modeId)
     end
 
     local inventoryReagent = firstReagent(player, mode)
-    local cleanWater = WaterpipesAdapter.availableBunkerWater(waterState(), true)
+    local cleanWater = WaterService.available("clean")
     local powerReady = true
     if mode.requiresPower then powerReady = setPowerRequested(true, actor(player)) end
 
@@ -336,7 +330,7 @@ local function startCycle(player, modeId)
         return completeStart(false, code)
     end
 
-    local consumed = WaterpipesAdapter.consumeBunkerWater(waterState(), mode.waterLiters, true)
+    local consumed = WaterService.consume(mode.waterLiters, "clean", "decontamination")
     if not consumed then
         if mode.requiresPower then setPowerRequested(false, actor(player)) end
         return completeStart(false, "clean_water_changed")
@@ -453,12 +447,12 @@ local function manualWashBunker(player, args)
     local waterLiters = manual.baseWaterLiters
         + math.ceil(contamination / manual.contaminationPerAdditionalLiter)
     local agentUses = math.max(1, math.ceil(contamination / manual.contaminationPerAgentUse))
-    if WaterpipesAdapter.availableBunkerWater(waterState(), true) + 0.0001 < waterLiters then
+    if WaterService.available("clean") + 0.0001 < waterLiters then
         return false, "clean_water_required"
     end
     local agents, availableUses = manualAgents(player)
     if availableUses < agentUses then return false, "cleaning_agent_required" end
-    if not WaterpipesAdapter.consumeBunkerWater(waterState(), waterLiters, true) then
+    if not WaterService.consume(waterLiters, "clean", "manual_wash") then
         return false, "clean_water_changed"
     end
     if not consumeManualAgentUses(agents, agentUses) then return false, "reagent_transaction_failed" end
@@ -537,9 +531,8 @@ local function runQa(player, command, args)
     elseif command == "qaGiveSupplies" then
         return qaGiveSupplies(player), "inventory_unavailable"
     elseif command == "qaFillWater" then
-        local changed = WaterpipesAdapter.fillBunkerWater(waterState())
-        refreshWaterSnapshot("QA water fill")
-        return changed or WaterpipesAdapter.availableBunkerWater(waterState(), true) > 0, "no_bunker_storage"
+        local changed = WaterService.fillForQa()
+        return changed or WaterService.available("clean") > 0, "no_bunker_storage"
     elseif command == "qaRefuelGenerator" then
         local generatorId = type(args) == "table" and args.generator or nil
         if generatorId ~= "main" and generatorId ~= "backup" then return false, "unknown_generator" end

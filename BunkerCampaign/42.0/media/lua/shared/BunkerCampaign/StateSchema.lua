@@ -1,45 +1,24 @@
 require "BunkerCampaign/Constants"
 require "BunkerCampaign/Util"
 require "BunkerCampaign/PowerSimulation"
+require "BunkerCampaign/WaterSimulation"
+require "BunkerCampaign/VentilationSimulation"
 
 BunkerCampaign = BunkerCampaign or {}
 
 local Constants = BunkerCampaign.Constants
 local Util = BunkerCampaign.Util
 local PowerSimulation = BunkerCampaign.PowerSimulation
+local WaterSimulation = BunkerCampaign.WaterSimulation
+local VentilationSimulation = BunkerCampaign.VentilationSimulation
 local StateSchema = {}
 
 local function defaultVentilation()
-    return {
-        enabled = true,
-        powerAllocated = false,
-        operating = false,
-        condition = 1.0,
-        status = "operational",
-        filterRemaining = 1.0,
-        co2 = 400,
-        externalContamination = 0.0,
-        internalContamination = 0.0,
-        recirculationUnlocked = false,
-    }
+    return VentilationSimulation.createDefault()
 end
 
 local function defaultWater()
-    return {
-        adapterOnline = false,
-        pumpActive = false,
-        pumpRequested = true,
-        powerAllocated = false,
-        pumpCondition = 0.0,
-        status = "offline",
-        filterRemaining = 0.0,
-        stored = 0.0,
-        capacity = 0.0,
-        contamination = 0.0,
-        flowPerMinute = 0.0,
-        powerDemandKw = 0.0,
-        source = "none",
-    }
+    return WaterSimulation.createDefault()
 end
 
 function StateSchema.createDefault()
@@ -86,68 +65,16 @@ local function copyMissing(target, defaults)
 end
 
 local function normalizeWater(water)
-    local defaults = defaultWater()
-    local changed = copyMissing(water, defaults)
-
-    local adapterOnline = Util.booleanOr(water.adapterOnline, defaults.adapterOnline)
-    local pumpActive = Util.booleanOr(water.pumpActive, defaults.pumpActive)
-    local pumpRequested = Util.booleanOr(water.pumpRequested, defaults.pumpRequested)
-    local powerAllocated = Util.booleanOr(water.powerAllocated, defaults.powerAllocated)
-    local pumpCondition = Util.numberOr(water.pumpCondition, defaults.pumpCondition, 0, 1)
-    local filterRemaining = Util.numberOr(water.filterRemaining, defaults.filterRemaining, 0, 1)
-    local stored = Util.numberOr(water.stored, defaults.stored, 0, Constants.WATER.MAX_STORAGE)
-    local capacity = Util.numberOr(water.capacity, defaults.capacity, 0, Constants.WATER.MAX_STORAGE)
-    local contamination = Util.numberOr(water.contamination, defaults.contamination, 0, 1)
-    local flow = Util.numberOr(water.flowPerMinute, defaults.flowPerMinute, 0, Constants.WATER.MAX_FLOW_PER_MINUTE)
-    local power = Util.numberOr(water.powerDemandKw, defaults.powerDemandKw, 0, Constants.WATER.MAX_POWER_DEMAND_KW)
-    local status = Constants.VALID_WATER_STATUS[water.status] and water.status or defaults.status
-    local source = type(water.source) == "string" and water.source or defaults.source
-
-    if stored > capacity and capacity > 0 then stored = capacity end
-    if water.adapterOnline ~= adapterOnline then water.adapterOnline = adapterOnline; changed = true end
-    if water.pumpActive ~= pumpActive then water.pumpActive = pumpActive; changed = true end
-    if water.pumpRequested ~= pumpRequested then water.pumpRequested = pumpRequested; changed = true end
-    if water.powerAllocated ~= powerAllocated then water.powerAllocated = powerAllocated; changed = true end
-    if water.pumpCondition ~= pumpCondition then water.pumpCondition = pumpCondition; changed = true end
-    if water.filterRemaining ~= filterRemaining then water.filterRemaining = filterRemaining; changed = true end
-    if water.stored ~= stored then water.stored = stored; changed = true end
-    if water.capacity ~= capacity then water.capacity = capacity; changed = true end
-    if water.contamination ~= contamination then water.contamination = contamination; changed = true end
-    if water.flowPerMinute ~= flow then water.flowPerMinute = flow; changed = true end
-    if water.powerDemandKw ~= power then water.powerDemandKw = power; changed = true end
-    if water.status ~= status then water.status = status; changed = true end
-    if water.source ~= source then water.source = source; changed = true end
-
-    return changed
+    local hadAdvancedState = type(water.pump) == "table" and type(water.storage) == "table"
+    WaterSimulation.normalize(water)
+    return not hadAdvancedState
 end
 
 local function normalizeVentilation(ventilation)
-    local defaults = defaultVentilation()
-    local changed = copyMissing(ventilation, defaults)
-
-    local enabled = Util.booleanOr(ventilation.enabled, defaults.enabled)
-    local powerAllocated = Util.booleanOr(ventilation.powerAllocated, defaults.powerAllocated)
-    local operating = enabled and powerAllocated
-    local condition = Util.numberOr(ventilation.condition, defaults.condition, 0, 1)
-    local filterRemaining = Util.numberOr(ventilation.filterRemaining, defaults.filterRemaining, 0, 1)
-    local co2 = Util.numberOr(ventilation.co2, defaults.co2, Constants.VENTILATION.MIN_CO2, Constants.VENTILATION.MAX_CO2)
-    local external = Util.numberOr(ventilation.externalContamination, defaults.externalContamination, 0, 1)
-    local internal = Util.numberOr(ventilation.internalContamination, defaults.internalContamination, 0, 1)
-    local recirculation = Util.booleanOr(ventilation.recirculationUnlocked, defaults.recirculationUnlocked)
-    local status = Constants.VALID_VENTILATION_STATUS[ventilation.status] and ventilation.status or defaults.status
-
-    if ventilation.enabled ~= enabled then ventilation.enabled = enabled; changed = true end
-    if ventilation.powerAllocated ~= powerAllocated then ventilation.powerAllocated = powerAllocated; changed = true end
-    if ventilation.operating ~= operating then ventilation.operating = operating; changed = true end
-    if ventilation.condition ~= condition then ventilation.condition = condition; changed = true end
-    if ventilation.filterRemaining ~= filterRemaining then ventilation.filterRemaining = filterRemaining; changed = true end
-    if ventilation.co2 ~= co2 then ventilation.co2 = co2; changed = true end
-    if ventilation.externalContamination ~= external then ventilation.externalContamination = external; changed = true end
-    if ventilation.internalContamination ~= internal then ventilation.internalContamination = internal; changed = true end
-    if ventilation.recirculationUnlocked ~= recirculation then ventilation.recirculationUnlocked = recirculation; changed = true end
-    if ventilation.status ~= status then ventilation.status = status; changed = true end
-
-    return changed
+    local hadAdvancedState = type(ventilation.filterBank) == "table"
+        and type(ventilation.intakes) == "table" and type(ventilation.rooms) == "table"
+    VentilationSimulation.normalize(ventilation)
+    return not hadAdvancedState
 end
 
 local function normalizeAuditLog(state)
@@ -214,6 +141,10 @@ function StateSchema.prepare(state, isNewGame)
         table.insert(changes, "state migration 4 -> 5: decontamination backup-power priority")
         changed = true
     end
+    if oldVersion < 6 then
+        table.insert(changes, "state migration 5 -> 6: extensible room-based life support")
+        changed = true
+    end
 
     if copyMissing(state, {
         campaignId = defaults.campaignId,
@@ -238,6 +169,7 @@ function StateSchema.prepare(state, isNewGame)
     end
     if ensureTable(state.bunker.modules, "ventilation") then changed = true end
     if normalizeVentilation(state.bunker.modules.ventilation) then changed = true end
+    if oldVersion < 6 then state.bunker.modules.ventilation.recirculationUnlocked = true end
     if ensureTable(state.bunker.modules, "water") then changed = true end
     if normalizeWater(state.bunker.modules.water) then changed = true end
     if ensureTable(state, "auditLog") then changed = true end

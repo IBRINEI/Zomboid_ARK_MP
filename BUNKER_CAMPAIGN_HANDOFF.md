@@ -288,3 +288,47 @@ radiation medicines and long-term dose treatment, weather-driven moving zones,
 protective-suit repair progression, skill/specialization bonuses, and campaign
 missions/unlocks. The second-slice data model should leave room for them but
 must not implement them prematurely.
+
+## Third slice implemented: extensible water and ventilation (2026-07-30)
+
+The user accepted the preceding playable slice and authorized the complete
+water/ventilation implementation. Work is on branch `slice-3-life-support`.
+This section records implementation and automated validation; dedicated MP
+acceptance is still pending.
+
+Implemented versions:
+
+- `BunkerCampaign` 0.5.0, persistent state version 6;
+- `BunkerCampaignIntegration` 0.7.0, integration state version 4;
+- `BunkerCampaignToxicMP` 0.5.0;
+- the accepted `BunkerCampaignArkMP` lighting behavior remains untouched.
+
+The new `RoomRegistry` is data-driven. Integration automatically imports every
+bounded negative-Z ArkMP room and derives volume, vent weight and adjacency.
+Addon rooms can instead call `CampaignState.registerRoom`. The water and air
+simulations iterate the registry, so future garage, laboratory, workshop or
+storage rooms do not require named branches in those systems.
+
+There is now one ordered server lifecycle: room/occupant discovery, external
+sampling, power-demand preparation, power allocation, physical actuation,
+simulation, effects and snapshot publication. This removes the previous race
+where a pump could be evaluated before bunker power existed.
+
+Ventilation now models five modes, independent Ark intakes, real contaminated
+airflow, filter loading, fan/intake availability, per-room CO2 and airborne
+contamination, room leakage/mixing and a persistent airlock purge. Internal
+air contamination is provided to ToxicMP, which remains the sole owner of
+player exposure and mask-filter drain. High-CO2 effects are server owned.
+
+Water now distinguishes requested, allocated, physically available and actual
+operation. It models well/external/collected/portable sources, pump and
+treatment condition/faults, bypass, clean/tainted storage and telemetry.
+Waterpipes remains canonical for physical topology, volumes, types, filter and
+pump wear. Decontamination consumes through the new server-owned WaterService;
+persisted transaction ids prevent duplicate debit.
+
+Architecture and extension contract:
+`BunkerCampaign/42.0/docs/LIFE_SUPPORT_ARCHITECTURE.md`.
+
+Dedicated MP acceptance procedure:
+`BunkerCampaignIntegration/42.0/docs/THIRD_SLICE_TESTING.md`.

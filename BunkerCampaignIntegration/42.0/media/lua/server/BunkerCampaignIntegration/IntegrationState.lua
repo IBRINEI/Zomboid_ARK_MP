@@ -6,6 +6,8 @@ require "BunkerCampaignIntegration/Constants"
 require "BunkerCampaignIntegration/ZoneSampler"
 require "BunkerCampaignIntegration/WaterpipesAdapter"
 require "BunkerCampaignIntegration/DecontaminationModel"
+require "BunkerCampaignArkMP/Constants"
+require "BunkerCampaignToxicMP/Server"
 
 BunkerCampaignIntegration = BunkerCampaignIntegration or {}
 
@@ -15,11 +17,81 @@ local Constants = BunkerCampaignIntegration.Constants
 local ZoneSampler = BunkerCampaignIntegration.ZoneSampler
 local WaterpipesAdapter = BunkerCampaignIntegration.WaterpipesAdapter
 local DecontaminationModel = BunkerCampaignIntegration.DecontaminationModel
+local ToxicServer = BunkerCampaignToxicMP.Server
 local IntegrationState = {
     data = nil,
     powerListenerRegistered = false,
+    lifeSupportRegistered = false,
+    toxicProviderRegistered = false,
 }
 local getArkState
+
+local function bunkerAirContamination(player)
+    if not player then return 0 end
+    local definition = BunkerCampaign.RoomRegistry.find(player:getX(), player:getY(), player:getZ())
+    local campaign = CampaignState.get()
+    local ventilation = campaign and campaign.bunker.modules.ventilation
+    local room = definition and ventilation and ventilation.rooms[definition.id]
+    return room and room.contamination or 0
+end
+
+local function roomId(name)
+    local id = tostring(name or "room"):gsub("(%l)(%u)", "%1_%2"):gsub("[^%w]+", "_")
+    return string.lower(id)
+end
+
+local function roomKind(name)
+    if name == "Entrance" or name == "DecontaminationChamber" then return "airlock" end
+    if name == "Generator" or name == "AirVentRoom" or name == "ServiceTunnels" then return "technical" end
+    if name == "Corridor" then return "circulation" end
+    return "habitable"
+end
+
+local function boundsAdjacent(left, right)
+    if left.z ~= right.z then return false end
+    local xOverlap = left.x1 <= right.x2 + 1 and right.x1 <= left.x2 + 1
+    local yOverlap = left.y1 <= right.y2 + 1 and right.y1 <= left.y2 + 1
+    return xOverlap and yOverlap
+end
+
+local function registerArkRooms()
+    if type(BWOARooms) ~= "table" then return 0 end
+    local definitions = {}
+    for name, room in pairs(BWOARooms) do
+        if name ~= "Exterior" and type(room) == "table" then
+            if type(room.Init) == "function" then pcall(room.Init) end
+            if Util.isFiniteNumber(room.x1) and Util.isFiniteNumber(room.x2)
+                and Util.isFiniteNumber(room.y1) and Util.isFiniteNumber(room.y2)
+                and Util.isFiniteNumber(room.z) and room.z < 0 then
+                definitions[#definitions + 1] = {
+                    id=roomId(name),
+                    label=type(room.name) == "string" and room.name or name,
+                    kind=roomKind(name),
+                    bounds={x1=room.x1, x2=room.x2, y1=room.y1, y2=room.y2, z=room.z},
+                    vents=type(room.vents) == "table" and room.vents or {},
+                    ventWeight=math.max(0.25, #(type(room.vents) == "table" and room.vents or {})),
+                    leakRate=roomKind(name) == "airlock" and 0.008 or 0.002,
+                    connections={},
+                }
+            end
+        end
+    end
+    table.sort(definitions, function(left, right) return left.id < right.id end)
+    for leftIndex, left in ipairs(definitions) do
+        for rightIndex = leftIndex + 1, #definitions do
+            local right = definitions[rightIndex]
+            if boundsAdjacent(left.bounds, right.bounds) then
+                left.connections[#left.connections + 1] = right.id
+                right.connections[#right.connections + 1] = left.id
+            end
+        end
+    end
+    local accepted = 0
+    for _, definition in ipairs(definitions) do
+        if CampaignState.registerRoom(definition) then accepted = accepted + 1 end
+    end
+    return accepted
+end
 
 local function prepare(data)
     if tonumber(data.version) and tonumber(data.version) > Constants.STATE_VERSION then
@@ -93,9 +165,12 @@ local function importArkVentilationOnce()
     local source = ark.ventilation
     local target = campaign.bunker.modules.ventilation
     target.enabled = Util.booleanOr(source.active, target.enabled)
+    target.requestedMode = target.enabled and "external_filtration" or "off"
     target.co2 = Util.numberOr(source.co2, target.co2, BunkerCampaign.Constants.VENTILATION.MIN_CO2, BunkerCampaign.Constants.VENTILATION.MAX_CO2)
+    for _, room in pairs(target.rooms or {}) do room.co2 = target.co2 end
     if Util.isFiniteNumber(source.filter) then
         target.filterRemaining = Util.clamp(source.filter / 100, 0, 1)
+        target.filterBank.remaining = target.filterRemaining
     end
 
     integration.theArk.initialized = true
@@ -123,9 +198,17 @@ end
 local function updateExternalContamination()
     local ark = getArkState()
     local zones = IntegrationState.data.toxicZones.zones
-    local value, activeCount, toxicCount = ZoneSampler.sampleAirIntakes(zones, ark.airintakes)
+    local detailed, activeCount, toxicCount = ZoneSampler.sampleAirIntakesDetailed(zones, ark.airintakes)
+    local value = activeCount > 0 and toxicCount / activeCount or 0
     IntegrationState.data.toxicZones.lastActiveIntakes = activeCount
     IntegrationState.data.toxicZones.lastToxicIntakes = toxicCount
+    local campaign = CampaignState.get()
+    local ventilation = campaign and campaign.bunker.modules.ventilation
+    if ventilation then
+        for id, contamination in pairs(detailed) do
+            if ventilation.intakes[id] then ventilation.intakes[id].externalContamination = contamination end
+        end
+    end
     CampaignState.setExternalContamination(value, "ToxicZones adapter")
 end
 
@@ -162,8 +245,9 @@ local function syncWaterpipes()
     local ark = getArkState()
     local campaign = CampaignState.get()
     local power = campaign and campaign.bunker.modules.power or nil
+    local water = campaign and campaign.bunker.modules.water or nil
     local waterConsumer = power and power.consumers.water or nil
-    local activeDefault = waterConsumer and waterConsumer.requested and waterConsumer.allocated
+    local activeDefault = water and water.requested and waterConsumer and waterConsumer.allocated
     if not waterConsumer then activeDefault = type(ark.waterpump) ~= "table" or ark.waterpump.active ~= false end
     local pump, changed = WaterpipesAdapter.ensureBunkerPump(
         gmd,
@@ -171,6 +255,16 @@ local function syncWaterpipes()
         activeDefault
     )
     if WaterpipesAdapter.ensureBunkerInfrastructure(gmd) then changed = true end
+    if pump and water then
+        local selected = water.sources and water.sources[water.selectedSource]
+        local sourceAvailable = selected and selected.enabled
+            and (selected.renewable or (tonumber(selected.availableLiters) or 0) > 0)
+        local shouldOperate = water.requested and water.powerAllocated and sourceAvailable
+            and (tonumber(pump.efficiency) or 0) > 5 and pump.burn ~= true
+        if WaterpipesAdapter.setBunkerPumpOperating(
+            gmd, shouldOperate, water.selectedSource, water.treatment and water.treatment.bypass
+        ) then changed = true end
+    end
 
     if changed and type(TransmitWPModData) == "function" then TransmitWPModData() end
 
@@ -190,6 +284,114 @@ local function syncWaterpipes()
         ark.waterpump.filter = snapshot.filterRemaining * 100
         ark.waterpump.source = snapshot.source
     end
+end
+
+local function sampleLifeSupport(state, context)
+    if not IntegrationState.data then return end
+    local ark = getArkState()
+    local zones = IntegrationState.data.toxicZones.zones
+    local detailed, activeCount, toxicCount = ZoneSampler.sampleAirIntakesDetailed(zones, ark.airintakes)
+    context.intakeContamination = detailed
+    context.externalContamination = activeCount > 0 and toxicCount / activeCount or 0
+    IntegrationState.data.toxicZones.lastActiveIntakes = activeCount
+    IntegrationState.data.toxicZones.lastToxicIntakes = toxicCount
+
+    local ventilation = state.bunker.modules.ventilation
+    local ordered = {}
+    for _, intake in pairs(type(ark.airintakes) == "table" and ark.airintakes or {}) do
+        if type(intake) == "table" then ordered[#ordered + 1] = intake end
+    end
+    table.sort(ordered, function(left, right)
+        if left.x ~= right.x then return left.x < right.x end
+        if left.y ~= right.y then return left.y < right.y end
+        return (left.z or 0) < (right.z or 0)
+    end)
+    for index, intake in ipairs(ordered) do
+        local target = ventilation.intakes["intake_" .. tostring(index)]
+        if target then
+            target.x, target.y, target.z = intake.x, intake.y, intake.z
+            target.broken = intake.broken == true
+            target.condition = target.broken and 0 or Util.numberOr(intake.condition, target.condition, 0, 1)
+        end
+    end
+
+    local gmd = ModData.getOrCreate(Constants.WATERPIPES_STATE_KEY)
+    local water = state.bunker.modules.water
+    local pump, changed = WaterpipesAdapter.ensureBunkerPump(
+        gmd, WaterpipesAdapter.isPhysicalPumpLoaded(), water.requested and water.powerAllocated
+    )
+    if WaterpipesAdapter.ensureBunkerInfrastructure(gmd) then changed = true end
+    if changed and type(TransmitWPModData) == "function" then TransmitWPModData() end
+    context.waterPhysical = WaterpipesAdapter.sample(gmd)
+    IntegrationState.data.waterpipes.initialized = pump ~= nil
+    IntegrationState.data.waterpipes.lastPumpFound = pump ~= nil
+    IntegrationState.data.waterpipes.lastFlowPerMinute = context.waterPhysical.flowPerMinute
+end
+
+local function actuateLifeSupport(state, context)
+    local gmd = ModData.getOrCreate(Constants.WATERPIPES_STATE_KEY)
+    local water = state.bunker.modules.water
+    local selected = water.sources and water.sources[water.selectedSource]
+    local sourceAvailable = selected and selected.enabled
+        and (selected.renewable or (tonumber(selected.availableLiters) or 0) > 0)
+    local shouldOperate = water.requested and water.powerAllocated and sourceAvailable
+        and water.pump.condition > 0.05
+    local changed = WaterpipesAdapter.setBunkerPumpOperating(
+        gmd, shouldOperate, water.selectedSource, water.treatment.bypass
+    )
+    if changed and type(TransmitWPModData) == "function" then TransmitWPModData() end
+    context.waterPhysical = WaterpipesAdapter.sample(gmd)
+end
+
+local function raiseStat(stats, stat, target, step)
+    if not stats or not stat then return end
+    local current = stats:get(stat)
+    if current < target then stats:set(stat, math.min(target, current + step)) end
+end
+
+local function lowerStat(stats, stat, target, step)
+    if not stats or not stat then return end
+    local current = stats:get(stat)
+    if current > target then stats:set(stat, math.max(target, current - step)) end
+end
+
+local function applyCo2Effects()
+    if not getOnlinePlayers or type(CharacterStat) ~= "table" then return end
+    local campaign = CampaignState.get()
+    local ventilation = campaign and campaign.bunker.modules.ventilation
+    if not ventilation then return end
+    local players = getOnlinePlayers()
+    for index = 0, players:size() - 1 do
+        local player = players:get(index)
+        local definition = player and BunkerCampaign.RoomRegistry.find(player:getX(), player:getY(), player:getZ())
+        local room = definition and ventilation.rooms[definition.id]
+        local co2 = tonumber(room and room.co2) or 0
+        if player and not player:isDead() and co2 > 1000 then
+            pcall(function()
+                local stats = player:getStats()
+                if co2 > 1000 then raiseStat(stats, CharacterStat.FATIGUE, 0.40, 0.02) end
+                if co2 > 2000 then raiseStat(stats, CharacterStat.PAIN, 50, 1) end
+                if co2 > 5000 then
+                    raiseStat(stats, CharacterStat.FOOD_SICKNESS, 55, 1)
+                    lowerStat(stats, CharacterStat.ENDURANCE, 0.70, 0.03)
+                end
+                if co2 > 10000 then
+                    raiseStat(stats, CharacterStat.INTOXICATION, 80, 3)
+                    raiseStat(stats, CharacterStat.PANIC, 50, 5)
+                end
+                if co2 > 30000 then
+                    local bodyDamage = player:getBodyDamage()
+                    bodyDamage:setOverallBodyHealth(math.max(0,
+                        bodyDamage:getOverallBodyHealth() - math.min(12, (co2 - 30000) / 5000)))
+                end
+            end)
+        end
+    end
+end
+
+local function finishLifeSupport()
+    mirrorToArk()
+    applyCo2Effects()
 end
 
 function IntegrationState.snapshot()
@@ -237,9 +439,21 @@ function IntegrationState.initialize(isNewGame)
     prepare(data)
     IntegrationState.data = data
 
+    local roomCount = registerArkRooms()
+
     if not IntegrationState.powerListenerRegistered then
         CampaignState.addPowerListener(syncWaterpipes)
         IntegrationState.powerListenerRegistered = true
+    end
+    if not IntegrationState.lifeSupportRegistered then
+        CampaignState.addLifeSupportListener("sample", sampleLifeSupport)
+        CampaignState.addLifeSupportListener("postPower", actuateLifeSupport)
+        CampaignState.addLifeSupportListener("postSimulation", finishLifeSupport)
+        IntegrationState.lifeSupportRegistered = true
+    end
+    if not IntegrationState.toxicProviderRegistered then
+        ToxicServer.addAmbientProvider(bunkerAirContamination)
+        IntegrationState.toxicProviderRegistered = true
     end
 
     importArkVentilationOnce()
@@ -249,14 +463,17 @@ function IntegrationState.initialize(isNewGame)
     mirrorToArk()
     syncWaterpipes()
 
-    print("[BunkerCampaignIntegration] ready zones=" .. tostring(#data.toxicZones.zones))
+    print("[BunkerCampaignIntegration] ready zones=" .. tostring(#data.toxicZones.zones)
+        .. " rooms=" .. tostring(roomCount))
 end
 
+-- Kept as a deterministic compatibility hook for tests and admin diagnostics.
+-- The live server uses CampaignState's phased life-support tick instead.
 function IntegrationState.updateOneMinute()
     if not IntegrationState.data or not CampaignState.get() then return end
     updateExternalContamination()
-    mirrorToArk()
     syncWaterpipes()
+    mirrorToArk()
 end
 
 function IntegrationState.onClientCommand(module, command, player, args)
@@ -287,7 +504,6 @@ function IntegrationState.onClientCommand(module, command, player, args)
 end
 
 Events.OnInitGlobalModData.Add(IntegrationState.initialize)
-Events.EveryOneMinute.Add(IntegrationState.updateOneMinute)
 Events.OnClientCommand.Add(IntegrationState.onClientCommand)
 
 BunkerCampaignIntegration.IntegrationState = IntegrationState

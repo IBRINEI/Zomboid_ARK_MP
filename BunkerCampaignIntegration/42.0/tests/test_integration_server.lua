@@ -32,6 +32,13 @@ BunkerCampaign.CampaignState.initialize(true)
 BunkerCampaignIntegration.IntegrationState.initialize(true)
 
 local campaign = BunkerCampaign.CampaignState.get()
+assert(BunkerCampaign.RoomRegistry.get("laboratory"), "Ark laboratory must be discovered declaratively")
+assert(BunkerCampaign.RoomRegistry.get("garage"), "future Ark garage must be discovered without simulation edits")
+assert(campaign.bunker.modules.ventilation.rooms.laboratory
+    and campaign.bunker.modules.ventilation.rooms.garage,
+    "discovered rooms must receive ventilation state")
+assert(BunkerCampaign.RoomRegistry.get("laboratory").connections[1] == "garage",
+    "touching Ark rooms must receive inferred adjacency")
 assert(campaign.bunker.modules.ventilation.enabled == false, "initial The Ark enabled state must be imported")
 assert(campaign.bunker.modules.ventilation.co2 == 900, "initial The Ark CO2 must be imported")
 assert(campaign.bunker.modules.ventilation.filterRemaining == 0.8, "initial The Ark filter must be imported")
