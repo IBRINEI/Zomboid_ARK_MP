@@ -1,3 +1,5 @@
+require "BunkerCampaignIntegration/ManualWashActions"
+
 if isClient() then return end
 
 require "BunkerCampaign/CampaignState"

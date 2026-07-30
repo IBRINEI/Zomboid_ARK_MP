@@ -4,6 +4,7 @@ require "TimedActions/ISWashYourself"
 require "TimedActions/ISTimedActionQueue"
 require "ISUI/ISWorldObjectContextMenu"
 require "BunkerCampaignIntegration/Constants"
+require "BunkerCampaignIntegration/ManualWashActions"
 require "BunkerCampaignToxicMP/Constants"
 
 BunkerCampaignIntegration = BunkerCampaignIntegration or {}
@@ -69,30 +70,6 @@ local function consumeAdditionalSoap(soaps, required)
         end
     end
     return remaining <= 0
-end
-
-local function sendVanillaCompletion(character, sink, target, item)
-    if not character then return end
-    local square = sink and sink:getSquare() or nil
-    sendClientCommand(character, IntegrationConstants.DECON_NETWORK_MODULE, "manualWashVanilla", {
-        target=target,
-        itemId=item and item:getID() or nil,
-        sourceX=square and square:getX() or nil,
-        sourceY=square and square:getY() or nil,
-        sourceZ=square and square:getZ() or nil,
-    })
-end
-
-local function sendVanillaStart(character, sink, target, item)
-    if not character then return end
-    local square = sink and sink:getSquare() or nil
-    sendClientCommand(character, IntegrationConstants.DECON_NETWORK_MODULE, "manualWashVanillaStart", {
-        target=target,
-        itemId=item and item:getID() or nil,
-        sourceX=square and square:getX() or nil,
-        sourceY=square and square:getY() or nil,
-        sourceZ=square and square:getZ() or nil,
-    })
 end
 
 if not BunkerCampaignIntegration.ManualWashPatched then
@@ -219,54 +196,6 @@ local function soapList(player)
     return addBleachToSoapList(player, player:getInventory():getSoapList(nil, true))
 end
 
-ISRadioactiveWashBegin = ISBaseTimedAction:derive("ISRadioactiveWashBegin")
-
-function ISRadioactiveWashBegin:isValid()
-    return self.character and not self.character:isDead()
-end
-
-function ISRadioactiveWashBegin:complete()
-    sendVanillaStart(self.character, self.sink, self.target, self.item)
-    return true
-end
-
-function ISRadioactiveWashBegin:perform()
-    ISBaseTimedAction.perform(self)
-end
-
-function ISRadioactiveWashBegin:new(character, sink, target, item)
-    local action = ISBaseTimedAction.new(self, character)
-    action.sink = sink
-    action.target = target
-    action.item = item
-    action.maxTime = 1
-    return action
-end
-
-ISRadioactiveWashFinalize = ISBaseTimedAction:derive("ISRadioactiveWashFinalize")
-
-function ISRadioactiveWashFinalize:isValid()
-    return self.character and not self.character:isDead()
-end
-
-function ISRadioactiveWashFinalize:complete()
-    sendVanillaCompletion(self.character, self.sink, self.target, self.item)
-    return true
-end
-
-function ISRadioactiveWashFinalize:perform()
-    ISBaseTimedAction.perform(self)
-end
-
-function ISRadioactiveWashFinalize:new(character, sink, target, item)
-    local action = ISBaseTimedAction.new(self, character)
-    action.sink = sink
-    action.target = target
-    action.item = item
-    action.maxTime = 1
-    return action
-end
-
 local function queueVanillaItemWash(player, sink, item)
     if not luautils.walkAdjObject(player, sink, true, true) then return end
     ISTimedActionQueue.add(ISRadioactiveWashBegin:new(player, sink, "item", item))
@@ -316,70 +245,6 @@ local function addExternalWaterMenu(playerNum, context, worldObjects, test)
         option.notAvailable = sink:getFluidAmount() < ISWashClothing.GetRequiredWater(item)
             or availableSoap < ISWashClothing.GetRequiredSoap(item)
     end
-end
-
-ISBunkerManualWash = ISBaseTimedAction:derive("ISBunkerManualWash")
-
-function ISBunkerManualWash:isValid()
-    return self.character and not self.character:isDead()
-end
-
-function ISBunkerManualWash:start()
-    self.startedAt = getTimestampMs()
-    if self.target == "body" then
-        self:setActionAnim("WashFace")
-        self:setOverrideHandModels(nil, nil)
-    else
-        self:setActionAnim("ScrubClothWithSoap")
-        self:setOverrideHandModels(getScriptManager():FindItem("Soap2"):getStaticModel(),
-            getScriptManager():FindItem("DishCloth"):getStaticModel())
-        if self.item then self.item:setJobDelta(0) end
-    end
-    self.character:reportEvent("EventWashClothing")
-end
-
-function ISBunkerManualWash:update()
-    if self.item then self.item:setJobDelta(self:getJobDelta()) end
-    self.character:setMetabolicTarget(Metabolics.HeavyDomestic)
-    local timedOut = self.startedAt and getTimestampMs() - self.startedAt >= 15000
-    if not self.forcedCompletion and (self:getJobDelta() >= 0.99 or timedOut) then
-        self.forcedCompletion = true
-        self:forceComplete()
-    end
-end
-
-function ISBunkerManualWash:stop()
-    if self.item then self.item:setJobDelta(0) end
-    self.character:resetModel()
-    self.character:resetModelNextFrame()
-    ISBaseTimedAction.stop(self)
-end
-
-function ISBunkerManualWash:complete()
-    sendClientCommand(self.character, IntegrationConstants.DECON_NETWORK_MODULE, "manualWashBunker", {
-        target=self.target,
-        itemId=self.item and self.item:getID() or nil,
-    })
-    return true
-end
-
-function ISBunkerManualWash:perform()
-    if self.item then self.item:setJobDelta(0) end
-    self.character:resetModel()
-    self.character:resetModelNextFrame()
-    ISBaseTimedAction.perform(self)
-end
-
-function ISBunkerManualWash:new(character, target, item, value)
-    local action = ISBaseTimedAction.new(self, character)
-    action.character = character
-    action.target = target
-    action.item = item
-    action.stopOnWalk = true
-    action.stopOnRun = true
-    action.forceProgressBar = true
-    action.maxTime = math.max(Rules.MANUAL_WASH.minimumDuration, math.floor((tonumber(value) or 0) * 3))
-    return action
 end
 
 function ManualWashClient.addBunkerOptions(menu, player, status)
