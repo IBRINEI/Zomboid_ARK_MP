@@ -1,6 +1,6 @@
 # Bunker Campaign handoff
 
-Last updated: 2026-07-29 (Europe/Moscow)
+Last updated: 2026-07-30 (Europe/Moscow)
 
 ## Read this first
 
@@ -182,3 +182,109 @@ Implemented after the accepted infrastructure tag:
 This section records code completion and automated regression results only. Do
 not tag the second slice as accepted until the administrator + ordinary-client
 dedicated-server procedure passes and the user explicitly accepts it.
+
+## Remaining work inside the second slice
+
+The current manual-wash implementation is an explicitly accepted temporary
+fallback, not the final design. Bunker-water manual cleaning is an immediate
+server transaction because custom timed actions are unreliable in Build 42.19.
+Washing at an ordinary water source uses the vanilla shared timed action and
+applies radioactive cleaning from its authoritative server `complete()`.
+
+Complete the remaining work in the following dependency order.
+
+### S2.1. Hazard-zone data model
+
+- Extend a zone beyond the current name + rectangle representation. Persist at
+  least its airborne intensity, surface-deposition intensity, external dose
+  rate or an explicit zero value, contamination type, vertical bounds and
+  overlap priority.
+- Keep the design specification's hazard channels separate. A gas mask/filter
+  may mitigate airborne exposure, but it must not silently protect against
+  external radiation. Surface deposition must remain a separate value.
+- Define deterministic overlap and boundary behavior before placing real
+  zones. Zone data must remain server authoritative, bounded and safely
+  migratable from existing `ToxicZone` data.
+- Make the rates consume the zone values: airborne exposure, body/gear/item
+  deposition and the zone-dependent part of filter drain. Preserve a small
+  baseline filter drain whenever a mask is worn, as already accepted by the
+  user.
+
+### S2.2. Real map placement and level tuning
+
+- Replace the single temporary exterior QA rectangle with a version-controlled
+  zone manifest for the actual campaign map.
+- Survey the bunker surroundings and important settlements, industrial,
+  scientific and military destinations before committing coordinates. Reuse
+  useful zone/map data from installed mods where possible.
+- Place and tune the intended progression rings: moderate bunker surroundings,
+  nearby settlements, high-intensity industrial areas, scientific/military
+  hotspots and deep-expedition areas.
+- Explicitly protect the bunker interior, entry transition and intended safe
+  routes from accidental surface-zone overlap. Test every boundary on all used
+  Z levels.
+- Calibrate rates with real travel times, physical activity, mask condition,
+  filter capacity and return/decontamination costs. The result must not be a
+  set of arbitrary levels that was tested only with QA teleporting.
+
+### S2.3. Final manual decontamination workflow
+
+- Replace the instant bunker fallback with a Build-42-safe, time-consuming
+  workflow. Do not reintroduce the removed custom timed actions or
+  `forceComplete()` workaround without first proving their dedicated-server
+  synchronization.
+- Prefer a server-owned job/deadline with client presentation, or a proven
+  shared vanilla action whose server `complete()` owns the transaction. Define
+  cancellation, movement, damage, death, disconnect and reconnect behavior.
+- Calculate duration, water and cleaning-agent use per target rather than only
+  from one contamination percentage. Account for item category, covered body
+  area/size, layers, material or an explicit material class, and contamination
+  amount.
+- Make body washing longer than washing one ordinary garment and give it its
+  own resource formula. Large coats, full suits, footwear and backpacks must
+  cost more than small garments; tiny items must cost less.
+- Decide and document whether manual cleaning is all-or-nothing or progressive.
+  Resource reservation/consumption and cleaning must be one authoritative
+  transaction, including interruption and two players attempting operations
+  at the same time.
+- Use the same cost model at the bunker chamber and ordinary water sources,
+  while preserving their different water owners. Keep the chamber's instant
+  operation only until this replacement passes MP testing.
+
+### S2.4. Consequences and feedback for contamination
+
+- Surface contamination currently persists, transfers and drives clean-side
+  warnings, but needs explicit gameplay consequences. Define bounded secondary
+  exposure/contact effects and thresholds without conflating it with airborne
+  exposure or external dose.
+- Finish the dirty/chamber/clean-area loop: contaminated players and objects
+  raise local contamination, local contamination can affect later occupants,
+  and successful cleaning reduces the authoritative room value.
+- Show the zone level/hazard channels and relevant protection result clearly
+  enough to explain why exposure, deposition and filter drain differ. Runtime
+  strings must remain English.
+- Review protective clothing coefficients so coverage/material/condition can
+  affect deposition and later manual-cleaning cost without scanning every item
+  against every other item each tick.
+
+### S2.5. Balance, regression and slice closure
+
+- Add automated tests for zone migration, overlap priority, intensity-scaled
+  rates, manual-job interruption, exact per-item resource debit and duplicate
+  completion/reconnect protection.
+- Repeat dedicated-server acceptance with an administrator and ordinary
+  client: zone boundaries, several hazard levels, body versus garment timing,
+  concurrent attempts, death, reconnect and server restart.
+- Remove the temporary test zone from normal campaign initialization. Keep QA
+  teleport/create/remove/resource actions administrator-only and clearly
+  temporary until the slice is accepted.
+- Update the complete and retest documents with the final zone manifest,
+  formulas and measured expected values. Only then tag the second slice as
+  accepted.
+
+The following design items are deliberately outside this slice unless the user
+later changes the boundary: vehicle/cargo decontamination, filter regeneration,
+radiation medicines and long-term dose treatment, weather-driven moving zones,
+protective-suit repair progression, skill/specialization bonuses, and campaign
+missions/unlocks. The second-slice data model should leave room for them but
+must not implement them prematurely.
