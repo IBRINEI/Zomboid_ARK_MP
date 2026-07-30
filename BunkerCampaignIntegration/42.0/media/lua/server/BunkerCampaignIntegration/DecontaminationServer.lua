@@ -371,8 +371,11 @@ local function finishCycle(cycle)
     state.roomContamination = math.max(0, state.roomContamination * (1 - mode.bodyRemoval))
     state.areas.chamber = math.max(0, state.areas.chamber * (1 - mode.bodyRemoval))
     local worldItems, corpses = 0, 0
-    if cycle.mode == "automatic" then
-        local worldOk, cleanedWorldItems, cleanedCorpses = ToxicServer.cleanWorldInBounds(Rules.ROOM, 1)
+    local worldRemoval = tonumber(mode.gearRemoval) or 0
+    if worldRemoval > 0 then
+        local worldOk, cleanedWorldItems, cleanedCorpses = ToxicServer.cleanWorldInBounds(
+            Rules.ROOM, worldRemoval
+        )
         if worldOk then
             worldItems = cleanedWorldItems or 0
             corpses = cleanedCorpses or 0

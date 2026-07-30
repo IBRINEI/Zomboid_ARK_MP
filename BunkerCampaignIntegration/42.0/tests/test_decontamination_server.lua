@@ -118,13 +118,15 @@ local qaMutations = 0
 BunkerCampaignToxicMP = BunkerCampaignToxicMP or {}
 BunkerCampaignToxicMP.Constants = { SURFACE_DIRTY=40, SURFACE_TRACE=0.5 }
 local cleanedWorldItems, cleanedCorpses = 0, 0
+local worldRemovalFractions = {}
 BunkerCampaignToxicMP.Server = {
     getPlayerRecord=function() return {surfaceContamination=80,gearContamination=80} end,
     cleanPlayer=function() cleaned = cleaned + 1; return true end,
     setPlayerSurfaceContamination=function() qaMutations = qaMutations + 1; return true end,
     applySurfaceContact=function() return true end,
     ensureZone=function() return true end,
-    cleanWorldInBounds=function()
+    cleanWorldInBounds=function(bounds, removalFraction)
+        worldRemovalFractions[#worldRemovalFractions + 1] = removalFraction
         cleanedWorldItems, cleanedCorpses = 3, 1
         return true, cleanedWorldItems, cleanedCorpses
     end,
@@ -181,8 +183,24 @@ BunkerCampaignIntegration.DecontaminationServer.update()
 assert(cleaned == 2, "one completed chamber cycle must clean every player who was inside at its start")
 assert(cleanedWorldItems == 3 and cleanedCorpses == 1,
     "automatic cycle must clean loose world items and corpse containers")
+assert(worldRemovalFractions[1] == 1,
+    "automatic cycle must fully clean world items and corpse containers")
 assert(decon.activeCycle == nil and decon.status == "idle", "completed cycle must release the chamber")
 assert(not power.consumers.decontamination.requested, "completed cycle must release the power consumer")
+
+BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
+    "BunkerCampaignDecontamination", "startCycle", player, {mode="emergency"}
+)
+assert(decon.activeCycle and decon.activeCycle.mode == "emergency",
+    "valid resources must start an emergency cycle")
+BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
+    "BunkerCampaignDecontamination", "qaFinishCycle", player, {}
+)
+now = now + 1000
+BunkerCampaignIntegration.DecontaminationServer.update()
+assert(worldRemovalFractions[2] == 0.5,
+    "emergency cycle must apply its fifty-percent gear cleaning to world items and corpses")
+persisted.WaterPipes.Barrels.bunker.w = 1000
 
 BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
     "BunkerCampaignDecontamination", "manualWashBunker", player, {target="item", itemId=991}

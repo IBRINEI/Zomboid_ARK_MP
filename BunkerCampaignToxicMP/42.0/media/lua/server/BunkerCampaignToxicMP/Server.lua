@@ -520,7 +520,10 @@ function Server.cleanWorldInBounds(bounds, removalFraction)
                             local count, scanned = Server.cleanContainer(container, removalFraction, remaining, true)
                             cleanedItems = cleanedItems + count
                             remaining = remaining - scanned
-                            object:getModData()[Constants.CONTAMINATION_MODDATA_KEY] = 0
+                            local data = object:getModData()
+                            data[Constants.CONTAMINATION_MODDATA_KEY] = ContaminationModel.clean(
+                                data[Constants.CONTAMINATION_MODDATA_KEY], removalFraction
+                            )
                             pcall(object.transmitModData, object)
                             cleanedCorpses = cleanedCorpses + 1
                         end

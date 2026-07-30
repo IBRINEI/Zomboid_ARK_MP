@@ -133,7 +133,7 @@ local function applyWorldCleanup(args)
                         if remaining <= 0 then break end
                         local object = staticObjects:get(index)
                         if object and instanceof(object, "IsoDeadBody") then
-                            object:getModData()[Constants.CONTAMINATION_MODDATA_KEY] = 0
+                            cleanLocalItem(object, removalFraction)
                             remaining = remaining - visitContainer(object:getContainer(), function(item)
                                 cleanLocalItem(item, removalFraction)
                             end, remaining)

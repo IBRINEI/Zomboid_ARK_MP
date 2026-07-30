@@ -7,6 +7,14 @@ assert(ClientCleanupCarriedData()[key] == 0,
     "an accepted manual wash must immediately refresh the owning client's item modData")
 
 handler(module, "worldContaminationCleaned", {
+    x1=1, x2=1, y1=1, y2=1, z=0, removalFraction=0.5,
+})
+assert(ClientCleanupFloorData()[key] == 40 and ClientCleanupNestedData()[key] == 27.5,
+    "emergency cleanup must immediately show partial cleaning of floor and nested items")
+assert(ClientCleanupCorpseItemData()[key] == 32.5 and ClientCleanupCorpseData()[key] == 45,
+    "emergency cleanup must immediately show partial cleaning of corpse contents and surface")
+
+handler(module, "worldContaminationCleaned", {
     x1=1, x2=1, y1=1, y2=1, z=0, removalFraction=1,
 })
 assert(ClientCleanupFloorData()[key] == 0 and ClientCleanupNestedData()[key] == 0,

@@ -49,17 +49,27 @@ sendServerCommand = function(player, module, command, args)
 end
 
 local ok, cleanedItems, cleanedCorpses = BunkerCampaignToxicMP.Server.cleanWorldInBounds(
+    {x1=1,x2=1,y1=1,y2=1,z=0}, 0.5
+)
+assert(ok and cleanedItems == 3 and cleanedCorpses == 1,
+    "emergency chamber cleanup must include floor items, nested items and corpse contents")
+assert(floorData[key] == 40 and nestedData[key] == 27.5 and corpseItemData[key] == 35,
+    "emergency cleanup must remove half of world and corpse inventory contamination")
+assert(corpseData[key] == 45 and corpse.transmitted == true,
+    "emergency cleanup must partially clean and transmit the corpse surface")
+
+ok, cleanedItems, cleanedCorpses = BunkerCampaignToxicMP.Server.cleanWorldInBounds(
     {x1=1,x2=1,y1=1,y2=1,z=0}, 1
 )
 assert(ok and cleanedItems == 3 and cleanedCorpses == 1,
     "full chamber cleanup must include floor items, nested items and corpse contents")
 assert(floorData[key] == 0 and nestedData[key] == 0 and corpseItemData[key] == 0,
-    "all world and corpse inventory contamination must be removed")
-assert(corpseData[key] == 0 and corpse.transmitted == true,
-    "corpse surface state must be cleared and transmitted")
+    "full cleanup must remove all world and corpse inventory contamination")
+assert(corpseData[key] == 0,
+    "full cleanup must remove the remaining corpse surface contamination")
 assert(invalidOwnerSyncs == 0,
     "world cleanup must not call player-relative modData synchronization with a nil owner")
-assert(cleanupBroadcasts == 1,
-    "world cleanup must tell nearby clients to refresh their local floor and corpse copies")
+assert(cleanupBroadcasts == 2,
+    "each world cleanup must tell nearby clients to refresh their local floor and corpse copies")
 
 print("BunkerCampaignToxicMP world cleanup tests passed")

@@ -156,7 +156,8 @@ Timed action заканчивается самостоятельно, персо
 1. Загрязнить несколько предметов, положить их на разные тайлы внутри камеры,
    в том числе загрязнённый рюкзак с предметами внутри.
 2. Поместить в камеру труп с загрязнённой одеждой/инвентарём.
-3. Запустить `Automatic full cycle`.
+3. Запустить `Emergency rinse`, записать значения предметов и трупа.
+4. Затем снова загрязнить их и запустить `Automatic full cycle`.
 
 Ожидается:
 
@@ -167,7 +168,9 @@ Timed action заканчивается самостоятельно, персо
   поверхность трупа и содержимое трупа;
 - открытые tooltip и окно инвентаря трупа сразу показывают чистое состояние;
   поднимать предмет или закрывать и заново открывать контейнер не требуется;
-- аварийный цикл не выполняет полную очистку предметов/трупов на полу.
+- аварийный цикл снимает 50% текущего загрязнения с предметов на полу,
+  содержимого незапечатанных рюкзаков, поверхности трупа и его инвентаря;
+  полный цикл после этого снимает оставшееся загрязнение целиком.
 
 ### 7.2. Контактная передача между игроками
 
@@ -245,6 +248,7 @@ NBC transaction and passive sync: PASS/FAIL
 Single shared chamber cycle: PASS/FAIL
 All chamber occupants cleaned: PASS/FAIL
 Floor items/corpses/nested contents cleaned: PASS/FAIL
+Emergency world-item 50% cleaning: PASS/FAIL
 Immediate floor/corpse tooltip refresh: PASS/FAIL
 Mist effect and pause/resume: PASS/FAIL
 Cycle HUD limited to chamber occupants: PASS/FAIL
