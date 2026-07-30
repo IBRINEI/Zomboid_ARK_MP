@@ -42,7 +42,9 @@ Constants.DECONTAMINATION = {
     REAGENT_STORAGE = { x=9950.5, y=12621.5, z=-5 },
     EXTERIOR_TEST = { x=9928.5, y=12625.5, z=0 },
     TEST_ZONE_NAME = "BunkerCampaignExteriorQA",
-    TEST_ZONE = { startX=9918, startY=12618, endX=9943, endY=12632 },
+    TEST_ZONE = { startX=9918, startY=12618, endX=9943, endY=12632, startZ=0, endZ=0 },
+    INTAKE_TEST_ZONE_NAME = "BunkerCampaignIntakeQA",
+    INTAKE_TEST_ZONE = { startX=9938, startY=12631, endX=9943, endY=12636, startZ=0, endZ=0 },
     MAX_REAGENT_UNITS = 100,
     TABLET_UNITS = 50,
     MANUAL_WASH = {

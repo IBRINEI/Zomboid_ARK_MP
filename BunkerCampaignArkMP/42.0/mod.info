@@ -1,7 +1,7 @@
 name=Bunker Campaign: The Ark MP Fork
 id=BunkerCampaignArkMP
 description=Multiplayer-safe local fork of The Ark resources and bunker systems for Build 42.19. Original single-player story and menu patches are excluded.
-version=0.4.5
+version=0.4.5.1
 versionMin=42.19
 poster=poster.png
 tiledef=theark 2281

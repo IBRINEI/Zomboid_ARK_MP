@@ -9,7 +9,7 @@ module Base
         inputs
         {
             item 1 [Base.PPM88NoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -29,7 +29,7 @@ module Base
         outputs
         {
             item 1 Base.PPM88NoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -41,7 +41,7 @@ module Base
         inputs
         {
             item 1 [Base.GP10ZNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -61,7 +61,7 @@ module Base
         outputs
         {
             item 1 Base.GP10ZNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -73,7 +73,7 @@ module Base
         inputs
         {
             item 1 [Base.SovietPMGNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -93,7 +93,7 @@ module Base
         outputs
         {
             item 1 Base.SovietPMGNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -105,7 +105,7 @@ module Base
         inputs
         {
             item 1 [Base.PBF1NoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -125,7 +125,7 @@ module Base
         outputs
         {
             item 1 Base.PBF1NoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -137,7 +137,7 @@ module Base
         inputs
         {
             item 1 [Base.PBF1CSNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -157,7 +157,7 @@ module Base
         outputs
         {
             item 1 Base.PBF1CSNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -169,7 +169,7 @@ module Base
         inputs
         {
             item 1 [Base.PBF1DutyNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -189,7 +189,7 @@ module Base
         outputs
         {
             item 1 Base.PBF1DutyNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -201,7 +201,7 @@ module Base
         inputs
         {
             item 1 [Base.PBF1FreedomNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -221,7 +221,7 @@ module Base
         outputs
         {
             item 1 Base.PBF1FreedomNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -233,7 +233,7 @@ module Base
         inputs
         {
             item 1 [Base.PBF2NoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -253,7 +253,7 @@ module Base
         outputs
         {
             item 1 Base.PBF2NoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -265,7 +265,7 @@ module Base
         inputs
         {
             item 1 [Base.PBF2CSNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -285,7 +285,7 @@ module Base
         outputs
         {
             item 1 Base.PBF2CSNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -297,7 +297,7 @@ module Base
         inputs
         {
             item 1 [Base.PBF2DutyNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -317,7 +317,7 @@ module Base
         outputs
         {
             item 1 Base.PBF2DutyNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -329,7 +329,7 @@ module Base
         inputs
         {
             item 1 [Base.PBF2FreedomNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -349,7 +349,7 @@ module Base
         outputs
         {
             item 1 Base.PBF2FreedomNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -361,7 +361,7 @@ module Base
         inputs
         {
             item 1 [Base.RespiratorGoldNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -381,7 +381,7 @@ module Base
         outputs
         {
             item 1 Base.RespiratorGoldNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -393,7 +393,7 @@ module Base
         inputs
         {
             item 1 [Base.RespiratorSilverNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -413,7 +413,7 @@ module Base
         outputs
         {
             item 1 Base.RespiratorSilverNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -425,7 +425,7 @@ module Base
         inputs
         {
             item 1 [Base.RespiratorDutyNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -445,7 +445,7 @@ module Base
         outputs
         {
             item 1 Base.RespiratorDutyNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -457,7 +457,7 @@ module Base
         inputs
         {
             item 1 [Base.RespiratorFreedomNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -477,7 +477,7 @@ module Base
         outputs
         {
             item 1 Base.RespiratorFreedomNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -489,7 +489,7 @@ module Base
         inputs
         {
             item 1 [Base.RespiratorMonolithNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -509,7 +509,7 @@ module Base
         outputs
         {
             item 1 Base.RespiratorMonolithNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -521,7 +521,7 @@ module Base
         inputs
         {
             item 1 [Base.RespiratorCSNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -541,7 +541,7 @@ module Base
         outputs
         {
             item 1 Base.RespiratorCSNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -553,7 +553,7 @@ module Base
         inputs
         {
             item 1 [Base.SphereM12HelmetNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -573,7 +573,7 @@ module Base
         outputs
         {
             item 1 Base.SphereM12HelmetNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -585,7 +585,7 @@ module Base
         inputs
         {
             item 1 [Base.SphereM12HelmetCSNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -605,7 +605,7 @@ module Base
         outputs
         {
             item 1 Base.SphereM12HelmetCSNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -617,7 +617,7 @@ module Base
         inputs
         {
             item 1 [Base.SphereM12HelmetDutyNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -637,7 +637,7 @@ module Base
         outputs
         {
             item 1 Base.SphereM12HelmetDutyNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -649,7 +649,7 @@ module Base
         inputs
         {
             item 1 [Base.SphereM12HelmetFreedomNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -669,7 +669,7 @@ module Base
         outputs
         {
             item 1 Base.SphereM12HelmetFreedomNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -681,7 +681,7 @@ module Base
         inputs
         {
             item 1 [Base.SphereM12HelmetMercsNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -701,7 +701,7 @@ module Base
         outputs
         {
             item 1 Base.SphereM12HelmetMercsNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -713,7 +713,7 @@ module Base
         inputs
         {
             item 1 [Base.SphereM12HelmetMonolithNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -733,7 +733,7 @@ module Base
         outputs
         {
             item 1 Base.SphereM12HelmetMonolithNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -745,7 +745,7 @@ module Base
         inputs
         {
             item 1 [Base.ExohelmNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -765,7 +765,7 @@ module Base
         outputs
         {
             item 1 Base.ExohelmNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -777,7 +777,7 @@ module Base
         inputs
         {
             item 1 [Base.ExohelmBanditNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -797,7 +797,7 @@ module Base
         outputs
         {
             item 1 Base.ExohelmBanditNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -809,7 +809,7 @@ module Base
         inputs
         {
             item 1 [Base.ExohelmCSNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -829,7 +829,7 @@ module Base
         outputs
         {
             item 1 Base.ExohelmCSNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -841,7 +841,7 @@ module Base
         inputs
         {
             item 1 [Base.ExohelmDutyNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -861,7 +861,7 @@ module Base
         outputs
         {
             item 1 Base.ExohelmDutyNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -873,7 +873,7 @@ module Base
         inputs
         {
             item 1 [Base.ExohelmEcologistsNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -893,7 +893,7 @@ module Base
         outputs
         {
             item 1 Base.ExohelmEcologistsNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -905,7 +905,7 @@ module Base
         inputs
         {
             item 1 [Base.ExohelmFreedomNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -925,7 +925,7 @@ module Base
         outputs
         {
             item 1 Base.ExohelmFreedomNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -937,7 +937,7 @@ module Base
         inputs
         {
             item 1 [Base.ExohelmLonerNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -957,7 +957,7 @@ module Base
         outputs
         {
             item 1 Base.ExohelmLonerNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -969,7 +969,7 @@ module Base
         inputs
         {
             item 1 [Base.ExohelmMercsNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -989,7 +989,7 @@ module Base
         outputs
         {
             item 1 Base.ExohelmMercsNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1001,7 +1001,7 @@ module Base
         inputs
         {
             item 1 [Base.ExohelmMilitaryNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1021,7 +1021,7 @@ module Base
         outputs
         {
             item 1 Base.ExohelmMilitaryNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1033,7 +1033,7 @@ module Base
         inputs
         {
             item 1 [Base.ExohelmMonolithNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1053,7 +1053,7 @@ module Base
         outputs
         {
             item 1 Base.ExohelmMonolithNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1065,7 +1065,7 @@ module Base
         inputs
         {
             item 1 [Base.SEVAHelmNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1085,7 +1085,7 @@ module Base
         outputs
         {
             item 1 Base.SEVAHelmNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1097,7 +1097,7 @@ module Base
         inputs
         {
             item 1 [Base.SEVAHelmBanditNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1117,7 +1117,7 @@ module Base
         outputs
         {
             item 1 Base.SEVAHelmBanditNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1129,7 +1129,7 @@ module Base
         inputs
         {
             item 1 [Base.SEVAHelmCSNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1149,7 +1149,7 @@ module Base
         outputs
         {
             item 1 Base.SEVAHelmCSNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1161,7 +1161,7 @@ module Base
         inputs
         {
             item 1 [Base.SEVAHelmDutyNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1181,7 +1181,7 @@ module Base
         outputs
         {
             item 1 Base.SEVAHelmDutyNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1193,7 +1193,7 @@ module Base
         inputs
         {
             item 1 [Base.SEVAHelmEcologistNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1213,7 +1213,7 @@ module Base
         outputs
         {
             item 1 Base.SEVAHelmEcologistNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1225,7 +1225,7 @@ module Base
         inputs
         {
             item 1 [Base.SEVAHelmFreedomNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1245,7 +1245,7 @@ module Base
         outputs
         {
             item 1 Base.SEVAHelmFreedomNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1257,7 +1257,7 @@ module Base
         inputs
         {
             item 1 [Base.SEVAHelmMercsNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1277,7 +1277,7 @@ module Base
         outputs
         {
             item 1 Base.SEVAHelmMercsNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1289,7 +1289,7 @@ module Base
         inputs
         {
             item 1 [Base.SEVAHelmMonolithGreenNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1309,7 +1309,7 @@ module Base
         outputs
         {
             item 1 Base.SEVAHelmMonolithGreenNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1321,7 +1321,7 @@ module Base
         inputs
         {
             item 1 [Base.SEVAHelmMonolithNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1341,7 +1341,7 @@ module Base
         outputs
         {
             item 1 Base.SEVAHelmMonolithNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1353,7 +1353,7 @@ module Base
         inputs
         {
             item 1 [Base.Sphere08HelmetMercsNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1373,7 +1373,7 @@ module Base
         outputs
         {
             item 1 Base.Sphere08HelmetMercsNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1385,7 +1385,7 @@ module Base
         inputs
         {
             item 1 [Base.Sphere08HelmetMilitaryNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1405,7 +1405,7 @@ module Base
         outputs
         {
             item 1 Base.Sphere08HelmetMilitaryNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1417,7 +1417,7 @@ module Base
         inputs
         {
             item 1 [Base.Sphere08HelmetCSNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1437,7 +1437,7 @@ module Base
         outputs
         {
             item 1 Base.Sphere08HelmetCSNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1449,7 +1449,7 @@ module Base
         inputs
         {
             item 1 [Base.Sphere08HelmetDutyNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1469,7 +1469,7 @@ module Base
         outputs
         {
             item 1 Base.Sphere08HelmetDutyNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1481,7 +1481,7 @@ module Base
         inputs
         {
             item 1 [Base.Sphere08HelmetFreedomNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1501,7 +1501,7 @@ module Base
         outputs
         {
             item 1 Base.Sphere08HelmetFreedomNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1513,7 +1513,7 @@ module Base
         inputs
         {
             item 1 [Base.Sphere08HelmetMonolithNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1533,7 +1533,7 @@ module Base
         outputs
         {
             item 1 Base.Sphere08HelmetMonolithNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1545,7 +1545,7 @@ module Base
         inputs
         {
             item 1 [Base.SteelHelmMaskNoFilter] mode:destroy,
-            item 1 [Base.GasMaskFilter] mode:destroy,
+            item 1 tags[base:gasmaskfilter] mode:destroy,
         }
         outputs
         {
@@ -1565,7 +1565,7 @@ module Base
         outputs
         {
             item 1 Base.SteelHelmMaskNoFilter,
-            item 1 Base.GasMaskFilter,
+            item 1 Base.GasmaskFilter,
         }
     }
 
@@ -1609,7 +1609,7 @@ module Base
             inputs
             {
                 item 1 [Base.CS2aGasMaskNoFilter] mode:destroy,
-                item 1 [Base.GasMaskFilter] mode:destroy,
+                item 1 tags[base:gasmaskfilter] mode:destroy,
             }
             outputs
             {
@@ -1625,7 +1625,7 @@ module Base
             inputs
             {
                 item 1 [Base.GP5GasMaskNoFilter] mode:destroy,
-                item 1 [Base.GasMaskFilter] mode:destroy,
+                item 1 tags[base:gasmaskfilter] mode:destroy,
             }
             outputs
             {
@@ -1641,7 +1641,7 @@ module Base
             inputs
             {
                 item 1 [Base.M40GasMaskNoFilter] mode:destroy,
-                item 1 [Base.GasMaskFilter] mode:destroy,
+                item 1 tags[base:gasmaskfilter] mode:destroy,
             }
             outputs
             {
@@ -1661,7 +1661,7 @@ module Base
             outputs
             {
                 item 1 Base.CS2aGasMaskNoFilter,
-                item 1 Base.GasMaskFilter,
+                item 1 Base.GasmaskFilter,
             }
         }
 
@@ -1677,7 +1677,7 @@ module Base
             outputs
             {
                 item 1 Base.GP5GasMaskNoFilter,
-                item 1 Base.GasMaskFilter,
+                item 1 Base.GasmaskFilter,
             }
         }
 
@@ -1693,7 +1693,7 @@ module Base
             outputs
             {
                 item 1 Base.M40GasMaskNoFilter,
-                item 1 Base.GasMaskFilter,
+                item 1 Base.GasmaskFilter,
             }
         }
 

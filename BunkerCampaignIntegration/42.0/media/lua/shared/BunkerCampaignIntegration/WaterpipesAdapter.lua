@@ -268,6 +268,39 @@ function WaterpipesAdapter.fillBunkerWater(gmd)
     return changed
 end
 
+function WaterpipesAdapter.setBunkerStorageForQa(gmd, medium, fillFraction)
+    fillFraction = Util.numberOr(fillFraction, 0, 0, 1)
+    if medium ~= nil and medium ~= "Water" and medium ~= "TaintedWater" then return false end
+    local changed, found = false, false
+    for _, entry in ipairs(sortedBunkerBarrels(gmd, false)) do
+        found = true
+        local barrel = entry.barrel
+        local capacity = Util.numberOr(barrel.wmax, 0, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE)
+        local amount = capacity * fillFraction
+        local targetMedium = amount > 0 and medium or nil
+        if barrel.w ~= amount or barrel.m ~= targetMedium then
+            barrel.w = amount
+            barrel.m = targetMedium
+            changed = true
+        end
+    end
+    return found, changed
+end
+
+function WaterpipesAdapter.setBunkerPumpForQa(gmd, condition, filterRemaining, burn)
+    local pumps = type(gmd) == "table" and type(gmd.Pumps) == "table" and gmd.Pumps or {}
+    local pump = pumps[coordsId(Constants.BUNKER_WATER_PUMP)]
+    if type(pump) ~= "table" then return false end
+    if condition ~= nil then pump.efficiency = Util.numberOr(condition, 1, 0, 1) * 100 end
+    if filterRemaining ~= nil then
+        pump.filter = Util.numberOr(filterRemaining, 1, 0, 1) * 100
+        pump.BunkerCampaignStoredFilter = nil
+        pump.BunkerCampaignBypass = false
+    end
+    if type(burn) == "boolean" then pump.burn = burn end
+    return true
+end
+
 function WaterpipesAdapter.sample(gmd)
     local result = {
         adapterOnline = type(gmd) == "table",

@@ -332,3 +332,30 @@ Architecture and extension contract:
 
 Dedicated MP acceptance procedure:
 `BunkerCampaignIntegration/42.0/docs/THIRD_SLICE_TESTING.md`.
+
+### Third-slice MP correction pass (2026-07-30)
+
+The first manual pass found stale room occupancy, unbounded vertical QA zones,
+two conflicting hard-coded zone buttons, cached intake hazards, drainable
+ventilation cartridges incorrectly mapped to item condition, no entry-door
+breach state, opaque purge progress and Waterpipes controls that were
+overridden by campaign authority.
+
+Patch versions are Core 0.5.1, ArkMP 0.4.5.1, ToxicMP 0.5.1 and Integration
+0.7.1. Occupancy now resets from the current online-player sample. Zones carry
+explicit Z bounds and the unified admin QA menu places a single-level zone
+around the selected tile or directly over surface intakes. ToxicMP notifies the
+integration immediately after any zone mutation. The vanilla drainable
+`Base.GasmaskFilter` now preserves `UsedDelta`/Remaining and is never charged
+through Condition. ToxicMP mask recipes and bunker ventilation now consume the
+same vanilla filter type; the former non-drainable `Base.GasMaskFilter` remains
+defined only so existing saved items do not disappear.
+
+The integration samples all three Ark entrance doors. A completely open,
+fully loaded path is reported as `BREACHED`, permits direct exterior exchange
+into the entrance/decontamination rooms and pauses purge until containment is
+restored. The systems panel reports current-room CO2/contamination/occupancy,
+worst-room values, entry-path state, filter use per minute and purge progress.
+The physical pump tile now changes the same authoritative request as the
+systems panel. The admin QA water submenu creates clean, tainted, empty,
+damaged-filter, damaged-pump and finite-external-source test states.

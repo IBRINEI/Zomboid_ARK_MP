@@ -9,10 +9,10 @@ Enable the accepted local forks and dependencies:
 
 - `Bandits2`;
 - `Waterpipes`;
-- `BunkerCampaign` 0.5.0;
-- `BunkerCampaignArkMP` 0.4.5 or the current accepted build;
-- `BunkerCampaignToxicMP` 0.5.0;
-- `BunkerCampaignIntegration` 0.7.0.
+- `BunkerCampaign` 0.5.1;
+- `BunkerCampaignArkMP` 0.4.5.1 (the stable 0.4.5 lighting code plus QA-menu cleanup);
+- `BunkerCampaignToxicMP` 0.5.1;
+- `BunkerCampaignIntegration` 0.7.1.
 
 Keep the original The Ark, original Toxic Zones, Bandits Day One/Week One and
 Cryogenic Winter disabled.
@@ -20,6 +20,32 @@ Cryogenic Winter disabled.
 The server log should report integration initialization and a non-zero room
 count. It must not produce an error every tick or register two independent
 life-support minute loops.
+
+## Administrator QA menu
+
+Right-click any world tile and open `Bunker Campaign: QA tools`.
+
+`Atmosphere and airlock` provides a single-Z 11x11 toxic zone centered on the
+selected tile, a dedicated zone over all surface air intakes, room CO2 and
+airborne-contamination setters, ventilation-filter setters, purge completion
+and a compact server report. QA zone changes reach ventilation immediately;
+no separate refresh command is required.
+
+`Water system` can fill the real bunker Waterpipes storage with clean or
+tainted water, empty it, damage/repair the physical pump, set its real
+treatment filter, add/select a finite external source and print a compact
+server report. These controls exist only to create known test states quickly.
+
+The physical installation being tested consists of the Ark water-pump object
+at `9950,12616,-4`, its Waterpipes record, the short pipe run and flowmeter,
+and every Waterpipes barrel/receiver discovered inside bunker bounds. The
+campaign panel does not create a second invisible tank: its clean/tainted and
+capacity values are a view of those physical Waterpipes containers.
+
+Right-clicking the physical pump tile also exposes `Bunker Campaign: Enable
+physical water pump` or `Disable physical water pump`. This changes the same
+campaign request as the systems panel; the next power-allocation phase decides
+whether the pump can actually operate.
 
 ## 1. Save migration and access
 
@@ -69,8 +95,8 @@ garage or laboratory appears without adding its name to simulation code.
 
 ## 4. Intake contamination and filter bank
 
-1. With administrator QA actions, create an exterior toxic zone over one or
-   more Ark intake tiles.
+1. Use `Create toxic zone over all air intakes (Z=0)` in the administrator QA
+   menu.
 2. Run external filtration and observe intake contamination, filtered internal
    contamination and filter percentage.
 3. Confirm the filter drains only in proportion to contaminated airflow.
@@ -80,11 +106,13 @@ garage or laboratory appears without adding its name to simulation code.
    separate water test below. Verify airborne contamination enters affected
    rooms after ventilation protection is lost.
 6. Confirm ToxicMP increases player exposure inside contaminated rooms and a
-   worn functioning gas mask reduces that exposure while consuming its own
-   mask filter.
+   worn functioning gas mask reduces that exposure while consuming the same
+   vanilla drainable `Base.GasmaskFilter` resource used by bunker ventilation.
 7. Carry one `Base.GasmaskFilter`, use `Replace vent filter`, and verify exactly
    one inventory filter is consumed. If the removed bunker filter still had
-   charge, verify it is returned as a used filter rather than becoming full.
+   charge, verify its native `Remaining` value is preserved instead of becoming
+   full. Insert and remove the same item type from a mask and confirm that charge
+   is transferred through `Remaining`, without a second Condition-based meter.
 
 Expected: ToxicMP, not the ventilation simulation, owns player exposure and
 mask consumption. Runtime strings are English.
@@ -103,8 +131,33 @@ state.
 
 ## 6. Water sources, pump and treatment
 
+Fast administrator pass from `Bunker Campaign: QA tools` -> `Water system`:
+
+1. Select `Fill bunker storage with clean water`, `Repair physical pump to
+   100%`, `Set Waterpipes treatment filter to 100%`, then `Request bunker water
+   pump ON` and `Report physical water state`. Expect an operational pump,
+   clean storage and non-zero flow when bunker power is allocated.
+2. Right-click the physical pump tile and use `Bunker Campaign: Disable
+   physical water pump`. Report again and expect both the campaign request and
+   physical pump to be off. Re-enable it from the same tile.
+3. Select `Set physical pump condition to 25%`, then repair it to 100%; the
+   report and Waterpipes UI must agree after each action.
+4. Select `Fill bunker storage with tainted water`, set the treatment filter to
+   10%, then restore it to 100%. This isolates storage quality and treatment
+   state without waiting for normal consumption.
+5. Select `Empty bunker water storage`, then `Add and select 100 L external
+   tainted supply` to test a finite source. Request the pump and confirm actual
+   produced liters reduce the external supply rather than creating water.
+
+The bunker water system consists of the physical Waterpipes pump, its connected
+pipes/flowmeter and Waterpipes storage barrels, plus the campaign power request,
+selected source and treatment/bypass state. The campaign panel is a server-owned
+summary; it is not a second independent pump.
+
 1. Inspect the physical Waterpipes pump, connected storage and installed
    filter. Request the bunker water pump.
+   Use `Report physical water state` if the physical Waterpipes values are not
+   obvious from its own context UI.
 2. Confirm stored volume and water type in Waterpipes match the campaign panel.
 3. With a valid source, pump condition and allocated power, verify flow and
    storage growth. With any one prerequisite removed, verify physical pumping

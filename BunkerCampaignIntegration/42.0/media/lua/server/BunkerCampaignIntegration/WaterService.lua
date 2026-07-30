@@ -85,6 +85,23 @@ function WaterService.fillForQa()
     return changed
 end
 
+local function finishQaMutation(actor)
+    if type(TransmitWPModData) == "function" then TransmitWPModData() end
+    CampaignState.setWaterSnapshot(Adapter.sample(waterData()), actor or "QA water mutation")
+end
+
+function WaterService.setStorageForQa(medium, fillFraction)
+    local found, changed = Adapter.setBunkerStorageForQa(waterData(), medium, fillFraction)
+    if found then finishQaMutation("QA water storage") end
+    return found, changed
+end
+
+function WaterService.setPumpForQa(condition, filterRemaining, burn)
+    local found = Adapter.setBunkerPumpForQa(waterData(), condition, filterRemaining, burn)
+    if found then finishQaMutation("QA water pump") end
+    return found
+end
+
 function WaterService.sample()
     return Adapter.sample(waterData())
 end

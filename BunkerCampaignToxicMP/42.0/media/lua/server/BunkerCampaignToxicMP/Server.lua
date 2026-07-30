@@ -13,6 +13,7 @@ local Server = {
     lastTickMs = 0,
     statusAccumulator = 0,
     ambientProviders = {},
+    zoneListeners = {},
 }
 
 local function finite(value)
@@ -27,13 +28,19 @@ local function sanitizeZones(raw)
         if type(zone) == "table" then
             local x1, y1 = tonumber(zone.startX), tonumber(zone.startY)
             local x2, y2 = tonumber(zone.endX), tonumber(zone.endY)
+            local z1 = tonumber(zone.startZ)
+            local z2 = tonumber(zone.endZ)
+            if not finite(z1) then z1 = 0 end
+            if not finite(z2) then z2 = z1 end
             if finite(x1) and finite(y1) and finite(x2) and finite(y2)
                 and math.abs(x2 - x1) <= Constants.MAX_ZONE_SPAN
-                and math.abs(y2 - y1) <= Constants.MAX_ZONE_SPAN then
+                and math.abs(y2 - y1) <= Constants.MAX_ZONE_SPAN
+                and z1 >= -32 and z1 <= 32 and z2 >= -32 and z2 <= 32 then
                 zones[#zones + 1] = {
                     name=tostring(name),
                     x1=math.min(x1, x2), y1=math.min(y1, y2),
                     x2=math.max(x1, x2), y2=math.max(y1, y2),
+                    z1=math.floor(math.min(z1, z2)), z2=math.floor(math.max(z1, z2)),
                 }
             end
         end
@@ -45,9 +52,11 @@ local function refreshZones()
     Server.zones = sanitizeZones(ModData.getOrCreate(Constants.ZONES_KEY))
 end
 
-local function zoneAt(x, y)
+local function zoneAt(x, y, z)
+    z = math.floor(tonumber(z) or 0)
     for _, zone in ipairs(Server.zones) do
-        if x >= zone.x1 and x <= zone.x2 and y >= zone.y1 and y <= zone.y2 then return zone end
+        if x >= zone.x1 and x <= zone.x2 and y >= zone.y1 and y <= zone.y2
+            and z >= zone.z1 and z <= zone.z2 then return zone end
     end
     return nil
 end
@@ -302,7 +311,7 @@ local function updatePlayer(player, elapsed, scanCarried, carriedElapsed)
         print("[BunkerCampaignToxicMP] exposure reset for respawn player=" .. username)
     end
 
-    local zone = zoneAt(player:getX(), player:getY())
+    local zone = zoneAt(player:getX(), player:getY(), player:getZ())
     local ambient = ambientAt(player)
     local airborne = zone and 1 or ambient
     local level, mask, observedCharge, hasCloth = classifyProtection(player)
@@ -387,6 +396,17 @@ function Server.addAmbientProvider(provider)
     return true
 end
 
+function Server.addZoneListener(listener)
+    if type(listener) ~= "function" then return false end
+    for _, current in ipairs(Server.zoneListeners) do if current == listener then return true end end
+    Server.zoneListeners[#Server.zoneListeners + 1] = listener
+    return true
+end
+
+local function notifyZoneListeners()
+    for _, listener in ipairs(Server.zoneListeners) do pcall(listener) end
+end
+
 function Server.ensureZone(name, bounds)
     if type(name) ~= "string" or type(bounds) ~= "table" then return false, "invalid_zone" end
     local candidate = {
@@ -395,6 +415,8 @@ function Server.ensureZone(name, bounds)
             startY=bounds.startY,
             endX=bounds.endX,
             endY=bounds.endY,
+            startZ=bounds.startZ,
+            endZ=bounds.endZ,
         },
     }
     if #sanitizeZones(candidate) ~= 1 then return false, "invalid_zone" end
@@ -402,15 +424,19 @@ function Server.ensureZone(name, bounds)
     zones[name] = candidate[name]
     refreshZones()
     if isServer() then ModData.transmit(Constants.ZONES_KEY) end
+    notifyZoneListeners()
     return true
 end
 
 function Server.removeZone(name)
     if type(name) ~= "string" then return false end
     local zones = ModData.getOrCreate(Constants.ZONES_KEY)
+    local existed = zones[name] ~= nil
     zones[name] = nil
+    if not existed then return true end
     refreshZones()
     if isServer() then ModData.transmit(Constants.ZONES_KEY) end
+    notifyZoneListeners()
     return true
 end
 

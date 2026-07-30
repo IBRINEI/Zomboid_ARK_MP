@@ -23,6 +23,7 @@ local IntegrationState = {
     powerListenerRegistered = false,
     lifeSupportRegistered = false,
     toxicProviderRegistered = false,
+    toxicZoneListenerRegistered = false,
 }
 local getArkState
 
@@ -240,6 +241,67 @@ local function mirrorToArk()
     IntegrationState.data.theArk.lastMirroredRevision = campaign.revision
 end
 
+local function doorStateAt(definition)
+    local cell = getCell and getCell() or nil
+    local square = cell and cell:getGridSquare(definition.x, definition.y, definition.z) or nil
+    if not square or not square:getChunk() or not square.getObjects then
+        return { id=definition.id, x=definition.x, y=definition.y, z=definition.z, loaded=false, open=false }
+    end
+    local objects = square:getObjects()
+    for index = 0, objects:size() - 1 do
+        local object = objects:get(index)
+        local isDoor = false
+        if type(instanceof) == "function" then
+            isDoor = instanceof(object, "IsoDoor")
+                or (instanceof(object, "IsoThumpable") and object.isDoor and object:isDoor())
+        elseif object and object.IsOpen then
+            isDoor = true
+        end
+        if isDoor and object.IsOpen then
+            return {
+                id=definition.id, x=definition.x, y=definition.y, z=definition.z,
+                loaded=true, open=object:IsOpen() == true,
+            }
+        end
+    end
+    return { id=definition.id, x=definition.x, y=definition.y, z=definition.z, loaded=true, open=false, missing=true }
+end
+
+local function sampleEntryPath(zones)
+    local definitions = {}
+    local entrance = type(BWOARooms) == "table" and BWOARooms.Entrance or nil
+    if entrance and type(entrance.Init) == "function" then pcall(entrance.Init) end
+    for index, door in ipairs(entrance and type(entrance.doors) == "table" and entrance.doors or {}) do
+        definitions[#definitions + 1] = {
+            id="entry_door_" .. tostring(index), x=door.x, y=door.y, z=door.z,
+        }
+    end
+    local result = {
+        sampled=#definitions > 0,
+        breached=false,
+        allOpen=false,
+        openCount=0,
+        loadedCount=0,
+        total=#definitions,
+        externalContamination=0,
+        doors={},
+    }
+    for _, definition in ipairs(definitions) do
+        local state = doorStateAt(definition)
+        result.doors[#result.doors + 1] = state
+        if state.loaded then
+            result.loadedCount = result.loadedCount + 1
+            if state.open then result.openCount = result.openCount + 1 end
+        end
+    end
+    result.allOpen = result.total > 0 and result.loadedCount == result.total
+        and result.openCount == result.total
+    result.breached = result.allOpen
+    local exterior = Constants.DECONTAMINATION.EXTERIOR_TEST
+    result.externalContamination = ZoneSampler.isPointToxic(zones, exterior.x, exterior.y, exterior.z) and 1 or 0
+    return result
+end
+
 local function syncWaterpipes()
     local gmd = ModData.getOrCreate(Constants.WATERPIPES_STATE_KEY)
     local ark = getArkState()
@@ -293,6 +355,7 @@ local function sampleLifeSupport(state, context)
     local detailed, activeCount, toxicCount = ZoneSampler.sampleAirIntakesDetailed(zones, ark.airintakes)
     context.intakeContamination = detailed
     context.externalContamination = activeCount > 0 and toxicCount / activeCount or 0
+    context.entryPath = sampleEntryPath(zones)
     IntegrationState.data.toxicZones.lastActiveIntakes = activeCount
     IntegrationState.data.toxicZones.lastToxicIntakes = toxicCount
 
@@ -455,6 +518,12 @@ function IntegrationState.initialize(isNewGame)
         ToxicServer.addAmbientProvider(bunkerAirContamination)
         IntegrationState.toxicProviderRegistered = true
     end
+    if not IntegrationState.toxicZoneListenerRegistered and type(ToxicServer.addZoneListener) == "function" then
+        ToxicServer.addZoneListener(function()
+            IntegrationState.refreshToxicZones("ToxicMP zone change")
+        end)
+        IntegrationState.toxicZoneListenerRegistered = true
+    end
 
     importArkVentilationOnce()
     importArkPowerOnce()
@@ -476,7 +545,29 @@ function IntegrationState.updateOneMinute()
     mirrorToArk()
 end
 
+function IntegrationState.refreshToxicZones(actor)
+    if not IntegrationState.data then return false end
+    importToxicZones(actor or "integration refresh")
+    updateExternalContamination()
+    mirrorToArk()
+    return true
+end
+
 function IntegrationState.onClientCommand(module, command, player, args)
+    if module == "Commands" and command == "PumpMod" and type(args) == "table"
+        and type(args.active) == "boolean" then
+        local pump = Constants.BUNKER_WATER_PUMP
+        local isBunkerPump = math.floor(tonumber(args.x) or 0) == pump.x
+            and math.floor(tonumber(args.y) or 0) == pump.y
+            and math.floor(tonumber(args.z) or 0) == pump.z
+        local nearby = player and math.abs(player:getX() - pump.x) <= 4
+            and math.abs(player:getY() - pump.y) <= 4
+            and math.floor(player:getZ()) == pump.z
+        if isBunkerPump and (nearby or (player and player:isAccessLevel("admin"))) then
+            CampaignState.setConsumerRequested("water", args.active, player:getUsername())
+        end
+        return
+    end
     if module ~= Constants.NETWORK_MODULE then return end
 
     if command == "requestStatus" then

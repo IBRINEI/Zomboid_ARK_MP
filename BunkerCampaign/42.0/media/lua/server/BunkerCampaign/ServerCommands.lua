@@ -72,13 +72,24 @@ local function startAirlockPurge(player, args)
 end
 
 local function filterCharge(item)
-    local md = item and item:getModData() or nil
-    local charge = md and tonumber(md.percent) or nil
-    if charge then return math.max(0, math.min(1, charge)) end
-    if item and item.getCondition and item.getConditionMax and item:getConditionMax() > 0 then
-        return math.max(0, math.min(1, item:getCondition() / item:getConditionMax()))
+    if item and type(item.getUsedDelta) == "function" then
+        local ok, remaining = pcall(item.getUsedDelta, item)
+        if ok and tonumber(remaining) then return math.max(0, math.min(1, tonumber(remaining))) end
     end
+    local md = item and item:getModData() or nil
+    local charge = md and tonumber(md.BunkerCampaignVentFilterRemaining or md.percent) or nil
+    if charge then return math.max(0, math.min(1, charge)) end
     return 1
+end
+
+local function applyVentilationFilterCharge(item, charge)
+    if not item then return end
+    charge = math.max(0, math.min(1, tonumber(charge) or 0))
+    if type(item.setUsedDelta) == "function" then item:setUsedDelta(charge) end
+    local md = item:getModData()
+    md.BunkerCampaignVentFilterRemaining = nil
+    md.percent = nil
+    if type(item.syncItemFields) == "function" then item:syncItemFields() end
 end
 
 local function replaceVentilationFilter(player)
@@ -96,10 +107,7 @@ local function replaceVentilationFilter(player)
     if previous > 0.001 then
         local used = inventory:AddItem("Base.GasmaskFilter")
         if used then
-            used:getModData().percent = previous
-            if used.getConditionMax and used.setCondition then
-                used:setCondition(math.max(1, math.floor(used:getConditionMax() * previous)))
-            end
+            applyVentilationFilterCharge(used, previous)
             if type(sendAddItemToContainer) == "function" then sendAddItemToContainer(inventory, used) end
         end
     end

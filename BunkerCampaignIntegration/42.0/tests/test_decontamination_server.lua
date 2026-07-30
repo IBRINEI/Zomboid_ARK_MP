@@ -239,7 +239,7 @@ assert(manualItemContamination == 0,
 BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
     "BunkerCampaignDecontamination", "qaGiveSupplies", player, {}
 )
-assert(addedItems == 6 and syncedAddedItems == 6,
+assert(addedItems == 10 and syncedAddedItems == 10,
     "QA supplies must be added on the server and explicitly synchronized to the client")
 
 BunkerCampaignIntegration.DecontaminationServer.onClientCommand(

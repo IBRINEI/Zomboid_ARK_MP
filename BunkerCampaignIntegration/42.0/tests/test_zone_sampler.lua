@@ -7,6 +7,8 @@ assert(sourceCount == 2, "all source zones must be counted")
 assert(#zones == 1, "only valid zones must be imported")
 assert(rejectedCount == 1, "invalid zones must be rejected")
 assert(BunkerCampaignIntegration.ZoneSampler.isPointToxic(zones, 5, 5), "reversed coordinates must normalize")
+assert(not BunkerCampaignIntegration.ZoneSampler.isPointToxic(zones, 5, 5, -4),
+    "legacy 2D zones must default to the surface instead of extending into the bunker")
 assert(not BunkerCampaignIntegration.ZoneSampler.isPointToxic(zones, 50, 50), "outside point must be clean")
 
 local contamination, activeCount, toxicCount = BunkerCampaignIntegration.ZoneSampler.sampleAirIntakes(zones, {

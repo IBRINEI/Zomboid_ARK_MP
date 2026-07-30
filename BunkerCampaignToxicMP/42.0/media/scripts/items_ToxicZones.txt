@@ -38,6 +38,7 @@ module Base
 		MetalValue = 2,
 		SurvivalGear = TRUE,
 		Medical = TRUE,
+		Tags = base:gasmaskfilter,
 		WorldStaticModel = GasMaskFilter,
 	}
 }

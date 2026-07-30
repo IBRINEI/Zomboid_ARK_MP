@@ -11,7 +11,8 @@ Events = { OnInitGlobalModData=event() }
 local persisted = {
     ["BunkerCampaign.IntegrationState"]={},
     WaterPipes={
-        Pumps={}, Pipes={}, Valves={}, Flowmeters={}, Sprinklers={}, Buildings={},
+        Pumps={ ["9950-12616--4"]={x=9950,y=12616,z=-4,efficiency=100,filter=100,active=false,source="TaintedWater"} },
+        Pipes={}, Valves={}, Flowmeters={}, Sprinklers={}, Buildings={},
         Barrels={ clean={x=9952,y=12603,z=-5,w=1000,wmax=2000,m="Water"} },
     },
 }

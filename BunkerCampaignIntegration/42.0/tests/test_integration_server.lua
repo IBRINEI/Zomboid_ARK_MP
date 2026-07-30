@@ -56,12 +56,29 @@ BunkerCampaignIntegration.IntegrationState.updateOneMinute()
 assert(ark.ventilation.co2 == 1200, "authoritative CO2 must mirror to The Ark")
 assert(ark.ventilation.filter == 50, "authoritative filter must mirror to The Ark percent")
 
-local function testPlayer(name, admin)
+local function testPlayer(name, admin, x, y, z)
     return {
         getUsername = function(self) return name end,
         isAccessLevel = function(self, level) return admin and level == "admin" end,
+        getX = function(self) return x or 0 end,
+        getY = function(self) return y or 0 end,
+        getZ = function(self) return z or 0 end,
     }
 end
+
+local pumpPlayer = testPlayer("pump_operator", false, 9950, 12616, -4)
+BunkerCampaignIntegration.IntegrationState.onClientCommand(
+    "Commands", "PumpMod", pumpPlayer,
+    { x=9950, y=12616, z=-4, active=false }
+)
+assert(campaign.bunker.modules.power.consumers.water.requested == false,
+    "Waterpipes pump OFF must update the authoritative water consumer")
+BunkerCampaignIntegration.IntegrationState.onClientCommand(
+    "Commands", "PumpMod", pumpPlayer,
+    { x=9950, y=12616, z=-4, active=true }
+)
+assert(campaign.bunker.modules.power.consumers.water.requested == true,
+    "Waterpipes pump ON must update the authoritative water consumer")
 
 toxic.arkIntakes = { startX = 500, startY = 500, endX = 510, endY = 510 }
 BunkerCampaignIntegration.IntegrationState.onClientCommand(

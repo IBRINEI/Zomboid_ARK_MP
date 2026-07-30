@@ -62,8 +62,19 @@ function VentilationSimulation.createDefault()
             active=false,
             roomId="decontamination_chamber",
             remainingMinutes=0,
+            durationMinutes=Constants.VENTILATION.AIRLOCK_PURGE_MINUTES,
             status="idle",
             doorsInterlocked=true,
+        },
+        entryPath={
+            sampled=false,
+            breached=false,
+            allOpen=false,
+            openCount=0,
+            loadedCount=0,
+            total=0,
+            externalContamination=0,
+            doors={},
         },
         faults={},
         telemetry={
@@ -72,6 +83,7 @@ function VentilationSimulation.createDefault()
             totalOccupants=0,
             worstRoomId="",
             co2TrendPpmPerMinute=0,
+            filterUsePerMinute=0,
         },
     }
 end
@@ -142,8 +154,19 @@ function VentilationSimulation.normalize(ventilation)
     airlock.active = Util.booleanOr(airlock.active, false)
     airlock.roomId = type(airlock.roomId) == "string" and airlock.roomId or defaults.airlock.roomId
     airlock.remainingMinutes = Util.numberOr(airlock.remainingMinutes, 0, 0, 60)
+    airlock.durationMinutes = Util.numberOr(airlock.durationMinutes,
+        defaults.airlock.durationMinutes, 0.01, 60)
     airlock.status = type(airlock.status) == "string" and airlock.status or "idle"
     airlock.doorsInterlocked = Util.booleanOr(airlock.doorsInterlocked, true)
+    local entryPath = ensureTable(ventilation, "entryPath")
+    entryPath.sampled = Util.booleanOr(entryPath.sampled, false)
+    entryPath.breached = Util.booleanOr(entryPath.breached, false)
+    entryPath.allOpen = Util.booleanOr(entryPath.allOpen, false)
+    entryPath.openCount = math.floor(Util.numberOr(entryPath.openCount, 0, 0, 100))
+    entryPath.loadedCount = math.floor(Util.numberOr(entryPath.loadedCount, 0, 0, 100))
+    entryPath.total = math.floor(Util.numberOr(entryPath.total, 0, 0, 100))
+    entryPath.externalContamination = Util.numberOr(entryPath.externalContamination, 0, 0, 1)
+    entryPath.doors = type(entryPath.doors) == "table" and entryPath.doors or {}
     ensureTable(ventilation, "faults")
     local telemetry = ensureTable(ventilation, "telemetry")
     telemetry.activeIntakes = math.floor(Util.numberOr(telemetry.activeIntakes, 0, 0, 1000))
@@ -151,6 +174,7 @@ function VentilationSimulation.normalize(ventilation)
     telemetry.totalOccupants = math.floor(Util.numberOr(telemetry.totalOccupants, 0, 0, 1000))
     telemetry.worstRoomId = type(telemetry.worstRoomId) == "string" and telemetry.worstRoomId or ""
     telemetry.co2TrendPpmPerMinute = Util.numberOr(telemetry.co2TrendPpmPerMinute, 0, -10000, 10000)
+    telemetry.filterUsePerMinute = Util.numberOr(telemetry.filterUsePerMinute, 0, 0, 1)
     ventilation.powerDemandKw = VentilationSimulation.powerDemand(ventilation.requestedMode)
     return ventilation
 end
@@ -182,6 +206,7 @@ function VentilationSimulation.startAirlockPurge(ventilation, roomId)
     ventilation.airlock.active = true
     ventilation.airlock.roomId = roomId
     ventilation.airlock.remainingMinutes = Constants.VENTILATION.AIRLOCK_PURGE_MINUTES
+    ventilation.airlock.durationMinutes = Constants.VENTILATION.AIRLOCK_PURGE_MINUTES
     ventilation.airlock.status = "waiting_for_power"
     ventilation.airlock.doorsInterlocked = true
     return true
@@ -263,10 +288,15 @@ function VentilationSimulation.update(ventilation, deltaMinutes, context)
     local oldCo2 = ventilation.co2
     local storedOutside = ventilation.externalContamination
 
-    local occupancy = type(context.occupancyByRoom) == "table" and context.occupancyByRoom or {}
-    for id, room in pairs(ventilation.rooms) do
-        room.occupants = math.max(0, math.floor(Util.numberOr(occupancy[id], room.occupants or 0, 0, 1000)))
+    if type(context.occupancyByRoom) == "table" then
+        for id, room in pairs(ventilation.rooms) do
+            room.occupants = math.max(0, math.floor(Util.numberOr(context.occupancyByRoom[id], 0, 0, 1000)))
+        end
     end
+    if type(context.entryPath) == "table" then
+        ventilation.entryPath = context.entryPath
+    end
+    ventilation.airlock.doorsInterlocked = ventilation.entryPath.breached ~= true
     if type(context.intakeContamination) == "table" then
         for id, value in pairs(context.intakeContamination) do
             if ventilation.intakes[id] then
@@ -328,7 +358,15 @@ function VentilationSimulation.update(ventilation, deltaMinutes, context)
             room.contamination = room.contamination + (outside - room.contamination) * exchange
         end
 
-        if ventilation.airlock.active and ventilation.airlock.roomId == id and ventilation.operating then
+        if ventilation.entryPath.breached and (id == "entrance" or id == "decontamination_chamber") then
+            local breach = math.min(1, rules.ENTRY_BREACH_EXCHANGE_PER_MINUTE * deltaMinutes)
+            local breachOutside = Util.numberOr(ventilation.entryPath.externalContamination, outside, 0, 1)
+            room.co2 = room.co2 + (rules.EXTERNAL_CO2_PPM - room.co2) * breach
+            room.contamination = room.contamination + (breachOutside - room.contamination) * breach
+        end
+
+        if ventilation.airlock.active and ventilation.airlock.roomId == id
+            and ventilation.operating and ventilation.airlock.doorsInterlocked then
             local purge = math.min(1, 0.65 * deltaMinutes)
             room.contamination = room.contamination * (1 - purge)
             room.co2 = room.co2 + (rules.EXTERNAL_CO2_PPM - room.co2) * purge
@@ -359,7 +397,9 @@ function VentilationSimulation.update(ventilation, deltaMinutes, context)
     ventilation.internalContamination = totalVolume > 0 and weightedContamination / totalVolume or 0
 
     if ventilation.airlock.active then
-        if ventilation.operating then
+        if not ventilation.airlock.doorsInterlocked then
+            ventilation.airlock.status = "waiting_for_doors"
+        elseif ventilation.operating then
             ventilation.airlock.status = "purging"
             ventilation.airlock.remainingMinutes = math.max(0, ventilation.airlock.remainingMinutes - deltaMinutes)
             if ventilation.airlock.remainingMinutes <= 0 then
@@ -382,6 +422,8 @@ function VentilationSimulation.update(ventilation, deltaMinutes, context)
     ventilation.telemetry.totalOccupants = totalOccupants
     ventilation.telemetry.worstRoomId = worstRoomId
     ventilation.telemetry.co2TrendPpmPerMinute = deltaMinutes > 0 and (ventilation.co2 - oldCo2) / deltaMinutes or 0
+    ventilation.telemetry.filterUsePerMinute = deltaMinutes > 0
+        and math.max(0, oldFilter - filter.remaining) / deltaMinutes or 0
     ventilation.enabled = ventilation.requestedMode ~= "off" and ventilation.requestedMode ~= "sealed"
     ventilation.powerDemandKw = VentilationSimulation.powerDemand(ventilation.requestedMode)
 

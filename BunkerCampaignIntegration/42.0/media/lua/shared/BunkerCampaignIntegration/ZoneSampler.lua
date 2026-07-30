@@ -28,6 +28,10 @@ function ZoneSampler.sanitize(source)
             local x2 = normalizeCoordinate(raw.endX)
             local y1 = normalizeCoordinate(raw.startY)
             local y2 = normalizeCoordinate(raw.endY)
+            local z1 = normalizeCoordinate(raw.startZ)
+            local z2 = normalizeCoordinate(raw.endZ)
+            if z1 == nil then z1 = 0 end
+            if z2 == nil then z2 = z1 end
 
             if x1 and x2 and y1 and y2 then
                 if x1 > x2 then x1, x2 = x2, x1 end
@@ -38,6 +42,8 @@ function ZoneSampler.sanitize(source)
                     startY = y1,
                     endX = x2,
                     endY = y2,
+                    startZ = math.floor(math.min(z1, z2)),
+                    endZ = math.floor(math.max(z1, z2)),
                 }
             else
                 rejectedCount = rejectedCount + 1
@@ -50,10 +56,12 @@ function ZoneSampler.sanitize(source)
     return result, sourceCount, rejectedCount
 end
 
-function ZoneSampler.isPointToxic(zones, x, y)
+function ZoneSampler.isPointToxic(zones, x, y, z)
     if type(zones) ~= "table" or not Util.isFiniteNumber(x) or not Util.isFiniteNumber(y) then return false end
+    z = math.floor(tonumber(z) or 0)
     for _, zone in ipairs(zones) do
-        if x >= zone.startX and x <= zone.endX and y >= zone.startY and y <= zone.endY then
+        if x >= zone.startX and x <= zone.endX and y >= zone.startY and y <= zone.endY
+            and z >= (zone.startZ or 0) and z <= (zone.endZ or 0) then
             return true
         end
     end
@@ -68,7 +76,7 @@ function ZoneSampler.sampleAirIntakes(zones, airIntakes)
     for _, intake in pairs(airIntakes) do
         if type(intake) == "table" and intake.broken ~= true and Util.isFiniteNumber(intake.x) and Util.isFiniteNumber(intake.y) then
             activeCount = activeCount + 1
-            if ZoneSampler.isPointToxic(zones, intake.x, intake.y) then
+            if ZoneSampler.isPointToxic(zones, intake.x, intake.y, intake.z) then
                 toxicCount = toxicCount + 1
             end
         end
@@ -96,7 +104,7 @@ function ZoneSampler.sampleAirIntakesDetailed(zones, airIntakes)
         local id = "intake_" .. tostring(index)
         if intake.broken ~= true then
             activeCount = activeCount + 1
-            local value = ZoneSampler.isPointToxic(zones, intake.x, intake.y) and 1 or 0
+            local value = ZoneSampler.isPointToxic(zones, intake.x, intake.y, intake.z) and 1 or 0
             result[id] = value
             if value > 0 then toxicCount = toxicCount + 1 end
         else

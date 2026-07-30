@@ -498,7 +498,67 @@ local function qaGiveSupplies(player)
     if not add("Base.CleaningLiquid2") then return false end
     if not add("Base.Bleach") then return false end
     if not add("Base.Soap2") then return false end
+    for _ = 1, 4 do if not add("Base.GasmaskFilter") then return false end end
     return true
+end
+
+local function qaZoneAt(args, player)
+    local x = tonumber(args and args.x) or (player and player:getX())
+    local y = tonumber(args and args.y) or (player and player:getY())
+    local z = tonumber(args and args.z) or (player and player:getZ())
+    local radius = math.max(1, math.min(20, math.floor(tonumber(args and args.radius) or 5)))
+    if not x or not y or not z then return nil end
+    x, y, z = math.floor(x), math.floor(y), math.floor(z)
+    return {
+        startX=x - radius, startY=y - radius, endX=x + radius, endY=y + radius,
+        startZ=z, endZ=z,
+    }
+end
+
+local function qaSetRoomAir(player, args)
+    local definition = BunkerCampaign.RoomRegistry.find(player:getX(), player:getY(), player:getZ())
+    local campaign = CampaignState.get()
+    local ventilation = campaign and campaign.bunker.modules.ventilation
+    local room = definition and ventilation and ventilation.rooms[definition.id]
+    if not room then return false, "player_not_in_registered_room" end
+    if args and args.co2 ~= nil then
+        room.co2 = Util.clamp(tonumber(args.co2) or BunkerCampaign.Constants.VENTILATION.MIN_CO2,
+            BunkerCampaign.Constants.VENTILATION.MIN_CO2, BunkerCampaign.Constants.VENTILATION.MAX_CO2)
+    end
+    if args and args.contamination ~= nil then
+        room.contamination = Util.clamp(tonumber(args.contamination) or 0, 0, 1)
+    end
+    CampaignState.touch()
+    CampaignState.broadcast()
+    return true
+end
+
+local function sendQaReport(player, kind)
+    local campaign = CampaignState.get()
+    local ventilation = campaign and campaign.bunker.modules.ventilation or {}
+    local definition = BunkerCampaign.RoomRegistry.find(player:getX(), player:getY(), player:getZ())
+    local room = definition and ventilation.rooms and ventilation.rooms[definition.id] or nil
+    local water = WaterService.sample()
+    sendServerCommand(player, Constants.DECON_NETWORK_MODULE, "qaReport", {
+        kind=kind,
+        roomId=definition and definition.id or "outside",
+        roomCo2=room and room.co2 or 0,
+        roomContamination=room and room.contamination or 0,
+        roomOccupants=room and room.occupants or 0,
+        entryPath=ventilation.entryPath,
+        filterRemaining=ventilation.filterBank and ventilation.filterBank.remaining or 0,
+        filterUsePerMinute=ventilation.telemetry and ventilation.telemetry.filterUsePerMinute or 0,
+        airlock=ventilation.airlock,
+        water=water,
+    })
+end
+
+local function refreshLifeSupportZones(player)
+    local integrationState = BunkerCampaignIntegration.IntegrationState
+    if integrationState and not integrationState.toxicZoneListenerRegistered
+        and type(integrationState.refreshToxicZones) == "function" then
+        integrationState.refreshToxicZones(actor(player))
+    end
 end
 
 local function runQa(player, command, args)
@@ -514,7 +574,10 @@ local function runQa(player, command, args)
         }
         local target = targets[targetId]
         if not target then return false, "unknown_target" end
-        if targetId == "exterior" then ToxicServer.ensureZone(Rules.TEST_ZONE_NAME, Rules.TEST_ZONE) end
+        if targetId == "exterior" then
+            ToxicServer.ensureZone(Rules.TEST_ZONE_NAME, Rules.TEST_ZONE)
+            refreshLifeSupportZones(player)
+        end
         nativeTeleport(player, target)
         return true
     elseif command == "qaContaminate" then
@@ -543,9 +606,55 @@ local function runQa(player, command, args)
         cycle.remainingSeconds = 0
         return true
     elseif command == "qaCreateZone" then
-        return ToxicServer.ensureZone(Rules.TEST_ZONE_NAME, Rules.TEST_ZONE)
+        local bounds = qaZoneAt(args, player)
+        if not bounds then return false, "invalid_zone" end
+        local ok, code = ToxicServer.ensureZone(Rules.TEST_ZONE_NAME, bounds)
+        if ok then refreshLifeSupportZones(player) end
+        return ok, code
+    elseif command == "qaCreateIntakeZone" then
+        local ok, code = ToxicServer.ensureZone(Rules.INTAKE_TEST_ZONE_NAME, Rules.INTAKE_TEST_ZONE)
+        if ok then refreshLifeSupportZones(player) end
+        return ok, code
     elseif command == "qaRemoveZone" then
-        return ToxicServer.removeZone(Rules.TEST_ZONE_NAME)
+        ToxicServer.removeZone(Rules.TEST_ZONE_NAME)
+        ToxicServer.removeZone(Rules.INTAKE_TEST_ZONE_NAME)
+        ToxicServer.removeZone("MPForkTest")
+        refreshLifeSupportZones(player)
+        return true
+    elseif command == "qaSetRoomAir" then
+        return qaSetRoomAir(player, args)
+    elseif command == "qaSetVentFilter" then
+        local ventilation = CampaignState.get().bunker.modules.ventilation
+        local remaining = Util.clamp(tonumber(args and args.remaining) or 1, 0, 1)
+        ventilation.filterBank.remaining = remaining
+        ventilation.filterRemaining = remaining
+        CampaignState.touch()
+        CampaignState.broadcast()
+        return true
+    elseif command == "qaFinishPurge" then
+        local airlock = CampaignState.get().bunker.modules.ventilation.airlock
+        if not airlock.active then return false, "no_active_purge" end
+        airlock.remainingMinutes = 0
+        airlock.active = false
+        airlock.status = "complete"
+        CampaignState.touch()
+        CampaignState.broadcast()
+        return true
+    elseif command == "qaWaterStorage" then
+        local medium = args and args.medium or nil
+        local fraction = tonumber(args and args.fillFraction) or 0
+        local found = WaterService.setStorageForQa(medium, fraction)
+        return found, "no_bunker_storage"
+    elseif command == "qaWaterPump" then
+        local found = WaterService.setPumpForQa(args and args.condition,
+            args and args.filterRemaining, args and args.burn)
+        return found, "bunker_pump_missing"
+    elseif command == "qaExternalWater" then
+        CampaignState.addWaterSource("external_tank", 100, 0.55, actor(player))
+        return CampaignState.setWaterSource("external_tank", actor(player))
+    elseif command == "qaReport" then
+        sendQaReport(player, args and args.kind or "all")
+        return true
     end
     return false, "unknown_qa_command"
 end

@@ -33,6 +33,11 @@ assert(ventilation.rooms.laboratory.co2 > BunkerCampaign.Constants.VENTILATION.M
     "occupied room must generate CO2")
 assert(ventilation.filterBank.remaining < filterBefore, "outside contamination must load the filter")
 
+VentilationSimulation.update(ventilation, 1, {occupancyByRoom={}})
+assert(ventilation.telemetry.totalOccupants == 0
+    and ventilation.rooms.laboratory.occupants == 0 and ventilation.rooms.garage.occupants == 0,
+    "leaving a room must reset its occupant count instead of accumulating visits")
+
 assert(VentilationSimulation.setMode(ventilation, "sealed"))
 VentilationSimulation.update(ventilation, 1, {occupancyByRoom={laboratory=2}})
 assert(ventilation.activeMode == "sealed" and ventilation.airflowM3PerMinute == 0,
@@ -41,7 +46,17 @@ assert(ventilation.activeMode == "sealed" and ventilation.airflowM3PerMinute == 
 ventilation.rooms.laboratory.contamination = 0.8
 assert(VentilationSimulation.setMode(ventilation, "emergency_ventilation"))
 assert(VentilationSimulation.startAirlockPurge(ventilation, "laboratory"))
-VentilationSimulation.update(ventilation, 2, {externalContamination=0})
+VentilationSimulation.update(ventilation, 1, {
+    externalContamination=0,
+    entryPath={sampled=true,breached=true,allOpen=true,openCount=3,loadedCount=3,total=3,doors={}},
+})
+assert(ventilation.airlock.active and ventilation.airlock.status == "waiting_for_doors"
+    and ventilation.airlock.remainingMinutes == BunkerCampaign.Constants.VENTILATION.AIRLOCK_PURGE_MINUTES,
+    "purge must pause while the complete entry door path is open")
+VentilationSimulation.update(ventilation, 2, {
+    externalContamination=0,
+    entryPath={sampled=true,breached=false,allOpen=false,openCount=1,loadedCount=3,total=3,doors={}},
+})
 assert(not ventilation.airlock.active and ventilation.airlock.status == "complete",
     "powered purge must complete")
 assert(ventilation.rooms.laboratory.contamination < 0.8, "purge must clean its target room")

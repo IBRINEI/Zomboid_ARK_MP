@@ -9,6 +9,10 @@ end
 
 local function remaining(item)
     if not item then return nil end
+    if type(item.getUsedDelta) == "function" then
+        local value = tonumber(item:getUsedDelta())
+        if value ~= nil then return math.max(0, math.min(1, value)) end
+    end
     local md = item:getModData()
     local value = tonumber(md and md.percent)
     if not value and type(item.getConditionMax) == "function" and type(item.getCondition) == "function" then
@@ -20,6 +24,12 @@ local function remaining(item)
 end
 
 local function applyCharge(item, charge)
+    local fullType = item:getFullType()
+    if fullType == "Base.GasmaskFilter" and type(item.setUsedDelta) == "function" then
+        item:setUsedDelta(charge)
+        item:getModData().percent = nil
+        return
+    end
     item:getModData().percent = charge
     if type(item.getConditionMax) == "function" and type(item.setCondition) == "function" then
         local maximum = tonumber(item:getConditionMax()) or 0
@@ -53,7 +63,8 @@ function BunkerCampaignToxicMP.OnCreateFilterRecipe(data, character)
         if not item then return end
         local fullType = item:getFullType()
         local md = item:getModData()
-        if fullType == "Base.GasMaskFilter" or (md and md.percent ~= nil) then
+        if fullType == "Base.GasmaskFilter" or fullType == "Base.GasMaskFilter"
+            or (md and md.percent ~= nil) then
             charge = remaining(item)
         end
     end)
@@ -62,7 +73,8 @@ function BunkerCampaignToxicMP.OnCreateFilterRecipe(data, character)
     eachJavaList(data:getAllCreatedItems(), function(item)
         if not item then return end
         local fullType = item:getFullType()
-        if fullType == "Base.GasMaskFilter" or BunkerCampaignToxicMP.Constants.PROTECTIVE_MASKS[item:getType()] then
+        if fullType == "Base.GasmaskFilter" or fullType == "Base.GasMaskFilter"
+            or BunkerCampaignToxicMP.Constants.PROTECTIVE_MASKS[item:getType()] then
             applyCharge(item, charge)
             if character and type(syncItemModData) == "function" then
                 pcall(syncItemModData, character, item)

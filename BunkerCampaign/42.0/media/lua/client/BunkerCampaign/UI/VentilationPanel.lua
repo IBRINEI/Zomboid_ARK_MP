@@ -27,6 +27,23 @@ local function canControl()
         and bounds.levels[z] == true
 end
 
+local function roomAtPlayer(rooms, player)
+    if type(rooms) ~= "table" or not player then return nil end
+    local x, y, z = player:getX(), player:getY(), math.floor(player:getZ())
+    local best, bestArea = nil, math.huge
+    for _, room in pairs(rooms) do
+        local bounds = room.bounds
+        if type(bounds) == "table" and z == math.floor(tonumber(bounds.z) or 0)
+            and x >= (tonumber(bounds.x1) or 0) and x <= (tonumber(bounds.x2) or 0) + 0.9999
+            and y >= (tonumber(bounds.y1) or 0) and y <= (tonumber(bounds.y2) or 0) + 0.9999 then
+            local area = ((tonumber(bounds.x2) or 0) - (tonumber(bounds.x1) or 0) + 1)
+                * ((tonumber(bounds.y2) or 0) - (tonumber(bounds.y1) or 0) + 1)
+            if area < bestArea then best, bestArea = room, area end
+        end
+    end
+    return best
+end
+
 function VentilationPanel:createChildren()
     ISCollapsableWindow.createChildren(self)
 
@@ -220,9 +237,10 @@ function VentilationPanel:render()
 
     local ventilation = snapshot.ventilation
     local function drawRows(rows)
+        local valueOffset = x < 500 and 190 or 150
         for _, row in ipairs(rows) do
             self:drawText(row[1] .. ":", x, y, 0.75, 0.80, 0.85, 1, UIFont.Small)
-            self:drawText(row[2], 230, y, 1, 1, 1, 1, UIFont.Small)
+            self:drawText(row[2], x + valueOffset, y, 1, 1, 1, 1, UIFont.Small)
             y = y + lineHeight
         end
     end
@@ -256,6 +274,29 @@ function VentilationPanel:render()
     end
     self:drawText(getText("UI_BC_VentilationSection"), x, y, 0.35, 0.75, 1, 1, UIFont.Small)
     y = y + lineHeight
+    local rooms = ventilation.rooms or {}
+    local currentRoom = roomAtPlayer(rooms, getSpecificPlayer(self.playerNum))
+    local worstId = ventilation.telemetry and ventilation.telemetry.worstRoomId or ""
+    local worstRoom = rooms[worstId]
+    local currentRoomText = currentRoom and (tostring(currentRoom.label or currentRoom.id)
+        .. " | CO2 " .. number(currentRoom.co2, 0) .. " | air "
+        .. percent(currentRoom.contamination) .. " | occ "
+        .. tostring(currentRoom.occupants or 0)) or "outside registered rooms"
+    local worstRoomText = worstRoom and (tostring(worstRoom.label or worstId)
+        .. " | CO2 " .. number(worstRoom.co2, 0) .. " | air "
+        .. percent(worstRoom.contamination)) or "-"
+    local airlock = ventilation.airlock or {}
+    local purgeText = tostring(airlock.status or "-")
+    if airlock.active then
+        local duration = math.max(0.01, tonumber(airlock.durationMinutes) or 1)
+        local progress = math.max(0, math.min(1, 1 - (tonumber(airlock.remainingMinutes) or 0) / duration))
+        purgeText = purgeText .. " | " .. percent(progress) .. " | "
+            .. number(airlock.remainingMinutes, 1) .. " min | " .. tostring(airlock.roomId or "-")
+    end
+    local entryPath = ventilation.entryPath or {}
+    local entryText = entryPath.sampled and ((entryPath.breached and "BREACHED" or "contained")
+        .. " | " .. tostring(entryPath.openCount or 0) .. "/" .. tostring(entryPath.loadedCount or 0)
+        .. " open | outside " .. percent(entryPath.externalContamination)) or "not sampled"
     drawRows({
         { getText("UI_BC_RequestedMode"), tostring(ventilation.requestedMode or "-") },
         { getText("UI_BC_ActiveMode"), tostring(ventilation.activeMode or "-") },
@@ -265,16 +306,21 @@ function VentilationPanel:render()
         { getText("UI_BC_Status"), tostring(ventilation.status or "-") },
         { getText("UI_BC_Condition"), percent(ventilation.condition) },
         { getText("UI_BC_Filter"), percent(ventilation.filterRemaining) },
+        { getText("UI_BC_FilterUse"), percent(ventilation.telemetry and ventilation.telemetry.filterUsePerMinute or 0) .. "/min" },
         { getText("UI_BC_Airflow"), number(ventilation.airflowM3PerMinute, 0) .. " m3/min" },
         { getText("UI_BC_CO2"), number(ventilation.co2, 0) .. " ppm" },
         { getText("UI_BC_ExternalContamination"), percent(ventilation.externalContamination) },
         { getText("UI_BC_InternalContamination"), percent(ventilation.internalContamination) },
         { getText("UI_BC_Occupants"), tostring(ventilation.telemetry and ventilation.telemetry.totalOccupants or 0) },
-        { getText("UI_BC_WorstRoom"), tostring(ventilation.telemetry and ventilation.telemetry.worstRoomId or "-") },
-        { getText("UI_BC_Airlock"), tostring(ventilation.airlock and ventilation.airlock.status or "-") },
+        { getText("UI_BC_CurrentRoom"), currentRoomText },
+        { getText("UI_BC_WorstRoom"), worstRoomText },
+        { getText("UI_BC_EntryPath"), entryText },
+        { getText("UI_BC_Airlock"), purgeText },
     })
 
     local water = snapshot.water
+    x = 590
+    y = self:titleBarHeight() + 12
     if water then
         y = y + 5
         self:drawText(getText("UI_BC_WaterSection"), x, y, 0.35, 0.75, 1, 1, UIFont.Small)
@@ -326,8 +372,8 @@ function VentilationPanel:close()
 end
 
 function VentilationPanel:new(x, y, playerNum)
-    local width = 500
-    local height = 1010
+    local width = 980
+    local height = 760
     local panel = ISCollapsableWindow:new(x, y, width, height)
     setmetatable(panel, self)
     self.__index = self
@@ -342,8 +388,8 @@ function VentilationPanel.open(playerNum)
         VentilationPanel.instance:close()
     end
 
-    local width = 500
-    local height = 1010
+    local width = 980
+    local height = 760
     local x = (getCore():getScreenWidth() - width) / 2
     local y = (getCore():getScreenHeight() - height) / 2
     local panel = VentilationPanel:new(x, y, playerNum or 0)

@@ -94,6 +94,32 @@ assert(not invalidWater, "malformed water snapshot must be rejected")
 local normalPlayer = player("survivor", false)
 local adminPlayer = player("administrator", true, 9966, 12622, -4)
 local bunkerPlayer = player("bunker-survivor", false, 9966, 12622, -4)
+local filterPlayer = player("filter-technician", false, 9966, 12622, -4)
+local incomingFilter
+local returnedFilterDelta = nil
+local filterInventory = {}
+incomingFilter = {
+    getUsedDelta=function() return 0.37 end,
+    getModData=function() return {} end,
+    getContainer=function() return filterInventory end,
+}
+filterInventory.getFirstTypeRecurse=function(self, itemType)
+    return itemType == "Base.GasmaskFilter" and incomingFilter or nil
+end
+filterInventory.Remove=function(self, item) assert(item == incomingFilter); incomingFilter = nil end
+filterInventory.AddItem=function(self, itemType)
+    assert(itemType == "Base.GasmaskFilter")
+    local md = {}
+    return {
+        getModData=function() return md end,
+        setUsedDelta=function(self, value) returnedFilterDelta = value end,
+        setName=function() end,
+        syncItemFields=function() end,
+    }
+end
+filterPlayer.getInventory=function() return filterInventory end
+sendRemoveItemFromContainer=function() end
+sendAddItemToContainer=function() end
 local enabledBeforeAttack = firstReference.bunker.modules.ventilation.enabled
 BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "setVentilation", normalPlayer, { enabled = true })
 assert(firstReference.bunker.modules.ventilation.enabled == enabledBeforeAttack, "non-admin mutation must be rejected")
@@ -115,6 +141,13 @@ assert(firstReference.bunker.modules.ventilation.operating == true, "ventilation
 
 BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "setConsumer", bunkerPlayer, { id = "water", requested = false })
 assert(firstReference.bunker.modules.power.consumers.water.requested == false, "ordinary players inside the bunker must operate infrastructure")
+
+local previousVentFilter = firstReference.bunker.modules.ventilation.filterBank.remaining
+BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "replaceVentilationFilter", filterPlayer, {})
+assert(firstReference.bunker.modules.ventilation.filterBank.remaining == 0.37,
+    "ventilation replacement must read the vanilla drainable Remaining value")
+assert(math.abs(returnedFilterDelta - previousVentFilter) < 0.0001,
+    "removed ventilation cartridge must preserve Remaining instead of Condition")
 
 local packetsBeforeRequest = #packets
 BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "requestState", normalPlayer, {})
