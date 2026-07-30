@@ -1,4 +1,3 @@
-require "TimedActions/ISBaseTimedAction"
 require "TimedActions/ISWashClothing"
 require "TimedActions/ISWashYourself"
 require "TimedActions/ISTimedActionQueue"
@@ -11,155 +10,8 @@ BunkerCampaignIntegration = BunkerCampaignIntegration or {}
 
 local IntegrationConstants = BunkerCampaignIntegration.Constants
 local ToxicConstants = BunkerCampaignToxicMP.Constants
-local Rules = IntegrationConstants.DECONTAMINATION
+local ManualWashShared = BunkerCampaignIntegration.ManualWashShared
 local ManualWashClient = {}
-
-local function contamination(item)
-    if not item or not item.getModData then return 0 end
-    return math.max(0, math.min(100,
-        tonumber(item:getModData()[ToxicConstants.CONTAMINATION_MODDATA_KEY]) or 0))
-end
-
-local function contaminationUses(value)
-    if value <= ToxicConstants.SURFACE_TRACE then return 0 end
-    return math.max(1, math.ceil(value / Rules.MANUAL_WASH.contaminationPerAgentUse))
-end
-
-local function additionalWater(value)
-    if value <= ToxicConstants.SURFACE_TRACE then return 0 end
-    return Rules.MANUAL_WASH.baseWaterLiters
-        + math.ceil(value / Rules.MANUAL_WASH.contaminationPerAdditionalLiter)
-end
-
-local function cleaningFluidPerUse()
-    return math.max(0.001, tonumber(ZomboidGlobals and ZomboidGlobals.CleanStainCleaningFluidAmount) or 0.1)
-end
-
-local function addBleachToSoapList(character, soaps)
-    if not character or not soaps then return soaps end
-    local all = character:getInventory():getAllTypeRecurse("Base.Bleach")
-    if all then
-        for index = 0, all:size() - 1 do
-            local item = all:get(index)
-            if item and not soaps:contains(item) then soaps:add(item) end
-        end
-    end
-    return soaps
-end
-
-local function consumeAdditionalSoap(soaps, required)
-    local remaining = math.max(0, math.floor(tonumber(required) or 0))
-    if not soaps then return false end
-    for index = 0, soaps:size() - 1 do
-        if remaining <= 0 then break end
-        local soap = soaps:get(index)
-        if instanceof(soap, "DrainableComboItem") then
-            local take = math.min(remaining, math.max(0, soap:getCurrentUses()))
-            for _ = 1, take do soap:UseAndSync() end
-            remaining = remaining - take
-        elseif soap:getFluidContainer() and soap:getFluidContainer():getAmount() > 0 then
-            local fluid = soap:getFluidContainer()
-            local take = math.min(remaining,
-                math.floor(fluid:getAmount() / cleaningFluidPerUse() + 0.0001))
-            if take > 0 then
-                local nextAmount = math.max(0, fluid:getAmount() - take * cleaningFluidPerUse())
-                if nextAmount <= 0.001 then fluid:Empty() else fluid:adjustAmount(nextAmount) end
-                sendItemStats(soap)
-                remaining = remaining - take
-            end
-        end
-    end
-    return remaining <= 0
-end
-
-if not BunkerCampaignIntegration.ManualWashPatched then
-    BunkerCampaignIntegration.ManualWashPatched = true
-
-    local vanillaClothingSoap = ISWashClothing.GetRequiredSoap
-    local vanillaClothingWater = ISWashClothing.GetRequiredWater
-    local vanillaSoapRemaining = ISWashClothing.GetSoapRemaining
-    local vanillaClothingNew = ISWashClothing.new
-    local vanillaClothingComplete = ISWashClothing.complete
-
-    ISWashClothing.GetRequiredSoap = function(item)
-        return vanillaClothingSoap(item) + contaminationUses(contamination(item))
-    end
-
-    ISWashClothing.GetRequiredWater = function(item)
-        return math.max(vanillaClothingWater(item), additionalWater(contamination(item)))
-    end
-
-    ISWashClothing.GetSoapRemaining = function(soaps)
-        local total = vanillaSoapRemaining(soaps)
-        if soaps then
-            for index = 0, soaps:size() - 1 do
-                local item = soaps:get(index)
-                if item and item:getFullType() == "Base.Bleach" and item:getFluidContainer() then
-                    local fluid = item:getFluidContainer()
-                    if not fluid:contains(Fluid.CleaningLiquid) then
-                        total = total + math.floor(fluid:getAmount() / cleaningFluidPerUse() + 0.0001)
-                    end
-                end
-            end
-        end
-        return total
-    end
-
-    ISWashClothing.new = function(self, character, sink, item, bloodAmount, dirtAmount, noSoap)
-        local action = vanillaClothingNew(self, character, sink, item, bloodAmount, dirtAmount, noSoap)
-        action.soaps = addBleachToSoapList(character, action.soaps)
-        return action
-    end
-
-    ISWashClothing.complete = function(self)
-        local radioactive = contamination(self.item)
-        local result = vanillaClothingComplete(self)
-        if result and radioactive > ToxicConstants.SURFACE_TRACE then
-            consumeAdditionalSoap(self.soaps, contaminationUses(radioactive))
-        end
-        return result
-    end
-
-    local vanillaBodySoap = ISWashYourself.GetRequiredSoap
-    local vanillaBodyWater = ISWashYourself.GetRequiredWater
-    local vanillaBodyNew = ISWashYourself.new
-    local vanillaBodyComplete = ISWashYourself.complete
-
-    ISWashYourself.GetRequiredSoap = function(character)
-        local status = BunkerCampaignToxicMP.Client and BunkerCampaignToxicMP.Client.status
-        local radioactive = tonumber(status and status.surfaceContamination) or 0
-        return vanillaBodySoap(character) + contaminationUses(radioactive)
-    end
-
-    ISWashYourself.GetRequiredWater = function(character)
-        local status = BunkerCampaignToxicMP.Client and BunkerCampaignToxicMP.Client.status
-        local radioactive = tonumber(status and status.surfaceContamination) or 0
-        return math.max(vanillaBodyWater(character), additionalWater(radioactive))
-    end
-
-    ISWashYourself.new = function(self, character, sink)
-        local action = vanillaBodyNew(self, character, sink)
-        action.soaps = addBleachToSoapList(character, action.soaps)
-        return action
-    end
-
-    ISWashYourself.complete = function(self)
-        local status = BunkerCampaignToxicMP.Client and BunkerCampaignToxicMP.Client.status
-        local radioactive = tonumber(status and status.surfaceContamination) or 0
-        local waterBefore = self.sink:getFluidAmount()
-        local result = vanillaBodyComplete(self)
-        if result and radioactive > ToxicConstants.SURFACE_TRACE then
-            local consumed = math.max(0, waterBefore - self.sink:getFluidAmount())
-            local water = math.max(0, additionalWater(radioactive) - consumed)
-            if water > 0 and self.sink:useFluid(water) > 0
-                and not instanceof(self.sink, "IsoWorldInventoryObject") then
-                self.sink:transmitModData()
-            end
-            consumeAdditionalSoap(self.soaps, contaminationUses(radioactive))
-        end
-        return result
-    end
-end
 
 local function collectCarriedItems(player, limit)
     local result = {}
@@ -192,24 +44,16 @@ local function findWaterSource(worldObjects)
     return nil
 end
 
-local function soapList(player)
-    return addBleachToSoapList(player, player:getInventory():getSoapList(nil, true))
-end
-
 local function queueVanillaItemWash(player, sink, item)
     if not luautils.walkAdjObject(player, sink, true, true) then return end
-    ISTimedActionQueue.add(ISRadioactiveWashBegin:new(player, sink, "item", item))
     local action = ISWashClothing:new(player, sink, item, 0, 0, false)
-    action.soaps = soapList(player)
+    action.soaps = ManualWashShared.soapList(player, true)
     ISTimedActionQueue.add(action)
-    ISTimedActionQueue.add(ISRadioactiveWashFinalize:new(player, sink, "item", item))
 end
 
 local function queueVanillaBodyWash(player, sink)
     if not luautils.walkAdjObject(player, sink, true, true) then return end
-    ISTimedActionQueue.add(ISRadioactiveWashBegin:new(player, sink, "body", nil))
     ISTimedActionQueue.add(ISWashYourself:new(player, sink))
-    ISTimedActionQueue.add(ISRadioactiveWashFinalize:new(player, sink, "body", nil))
 end
 
 local function addExternalWaterMenu(playerNum, context, worldObjects, test)
@@ -220,25 +64,26 @@ local function addExternalWaterMenu(playerNum, context, worldObjects, test)
 
     local items = {}
     for _, item in ipairs(collectCarriedItems(player, ToxicConstants.MAX_CARRIED_ITEMS_PER_SCAN)) do
-        if contamination(item) > ToxicConstants.SURFACE_TRACE then items[#items + 1] = item end
+        if ManualWashShared.contamination(item) > ToxicConstants.SURFACE_TRACE then
+            items[#items + 1] = item
+        end
     end
-    local toxicStatus = BunkerCampaignToxicMP.Client and BunkerCampaignToxicMP.Client.status
-    local body = tonumber(toxicStatus and toxicStatus.surfaceContamination) or 0
+    local body = ManualWashShared.bodyContamination(player)
     if #items == 0 and body <= ToxicConstants.SURFACE_TRACE then return end
 
     local root = context:addOption("Wash radioactive contamination")
     local menu = ISContextMenu:getNew(context)
     context:addSubMenu(root, menu)
-    local availableSoap = ISWashClothing.GetSoapRemaining(soapList(player))
+    local availableSoap = ISWashClothing.GetSoapRemaining(ManualWashShared.soapList(player, true))
 
     if body > ToxicConstants.SURFACE_TRACE then
         local option = menu:addOption(string.format("Body (%.1f%%)", body), player,
             function(p) queueVanillaBodyWash(p, sink) end)
-        option.notAvailable = sink:getFluidAmount() < additionalWater(body)
-            or availableSoap < ISWashYourself.GetRequiredSoap(player)
+        option.notAvailable = sink:getFluidAmount() < ManualWashShared.requiredBodyWater(player)
+            or availableSoap < ManualWashShared.requiredBodySoap(player)
     end
     for _, item in ipairs(items) do
-        local value = contamination(item)
+        local value = ManualWashShared.contamination(item)
         local option = menu:addOption(string.format("%s (%.1f%%)", item:getName(), value), player,
             function(p) queueVanillaItemWash(p, sink, item) end)
         option.itemForTexture = item
@@ -247,25 +92,33 @@ local function addExternalWaterMenu(playerNum, context, worldObjects, test)
     end
 end
 
+local function requestBunkerWash(player, target, item)
+    if not player or not isClient() then return end
+    sendClientCommand(player, IntegrationConstants.DECON_NETWORK_MODULE, "manualWashBunker", {
+        target=target,
+        itemId=item and item:getID() or nil,
+    })
+end
+
 function ManualWashClient.addBunkerOptions(menu, player, status)
-    local root = menu:addOption("Manual radioactive wash (bunker water)")
+    local root = menu:addOption("Manual radioactive wash (bunker water, instant)")
     local washMenu = ISContextMenu:getNew(menu)
     menu:addSubMenu(root, washMenu)
     local body = tonumber(status and status.surfaceContamination) or 0
     local added = 0
     if body > ToxicConstants.SURFACE_TRACE then
         washMenu:addOption(string.format("Body (%.1f%%, %d L, %d agent uses)",
-            body, additionalWater(body), contaminationUses(body)), player, function(p)
-            ISTimedActionQueue.add(ISBunkerManualWash:new(p, "body", nil, body))
-        end)
+            body, ManualWashShared.additionalWater(body), ManualWashShared.contaminationUses(body)),
+            player, function(p) requestBunkerWash(p, "body", nil) end)
         added = added + 1
     end
     for _, item in ipairs(collectCarriedItems(player, ToxicConstants.MAX_CARRIED_ITEMS_PER_SCAN)) do
-        local value = contamination(item)
+        local value = ManualWashShared.contamination(item)
         if value > ToxicConstants.SURFACE_TRACE then
             local option = washMenu:addOption(string.format("%s (%.1f%%, %d L, %d agent uses)",
-                item:getName(), value, additionalWater(value), contaminationUses(value)), player,
-                function(p) ISTimedActionQueue.add(ISBunkerManualWash:new(p, "item", item, value)) end)
+                item:getName(), value, ManualWashShared.additionalWater(value),
+                ManualWashShared.contaminationUses(value)), player,
+                function(p) requestBunkerWash(p, "item", item) end)
             option.itemForTexture = item
             added = added + 1
         end

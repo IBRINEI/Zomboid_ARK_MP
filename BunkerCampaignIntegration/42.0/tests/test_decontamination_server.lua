@@ -211,20 +211,16 @@ assert(persisted.WaterPipes.Barrels.bunker.w == 100,
     "individual bunker wash must consume nine liters from bunker storage")
 
 manualItemContamination = 50
-local vanillaArgs = {target="item", itemId=991, sourceX=9946, sourceY=12625, sourceZ=-4}
 BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
-    "BunkerCampaignDecontamination", "manualWashVanilla", player, vanillaArgs
+    "BunkerCampaignDecontamination", "manualWashVanilla", player, {target="item", itemId=991}
 )
 assert(manualItemContamination == 50,
-    "a forged vanilla wash completion without a matching timed-action start must be rejected")
-BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
-    "BunkerCampaignDecontamination", "manualWashVanillaStart", player, vanillaArgs
-)
-BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
-    "BunkerCampaignDecontamination", "manualWashVanilla", player, vanillaArgs
-)
+    "legacy forged vanilla wash commands must be ignored")
+assert(BunkerCampaignIntegration.ManualWashShared.getBodyContamination(player) == 80,
+    "the shared vanilla action must read authoritative body contamination")
+BunkerCampaignIntegration.ManualWashShared.onVanillaComplete(player, "item", manualItem)
 assert(manualItemContamination == 0,
-    "a matching vanilla wash start and completion must clean the selected item")
+    "server completion of a vanilla wash must clean the selected item")
 
 BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
     "BunkerCampaignDecontamination", "qaGiveSupplies", player, {}

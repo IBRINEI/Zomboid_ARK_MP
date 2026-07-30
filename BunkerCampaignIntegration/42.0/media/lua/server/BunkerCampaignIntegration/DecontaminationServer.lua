@@ -17,6 +17,7 @@ local Constants = BunkerCampaignIntegration.Constants
 local Model = BunkerCampaignIntegration.DecontaminationModel
 local WaterpipesAdapter = BunkerCampaignIntegration.WaterpipesAdapter
 local ToxicServer = BunkerCampaignToxicMP.Server
+local ManualWashShared = BunkerCampaignIntegration.ManualWashShared
 local Rules = Constants.DECONTAMINATION
 
 local Server = {
@@ -24,12 +25,29 @@ local Server = {
     lastTickMs = 0,
     lastStatusMs = 0,
     startingCycle = false,
-    manualCompletions = {},
-    manualStarts = {},
 }
 
 local function actor(player)
     return player and player:getUsername() or "unknown"
+end
+
+ManualWashShared.getBodyContamination = function(player)
+    local record = ToxicServer.getPlayerRecord(player)
+    return tonumber(record and record.surfaceContamination) or 0
+end
+
+ManualWashShared.onVanillaComplete = function(player, target, item)
+    if not player or player:isDead() then return false end
+    if target == "body" then
+        ToxicServer.cleanPlayer(player, 1, 0, false)
+    elseif target == "item" and item then
+        ToxicServer.cleanItem(player, item, 1)
+    else
+        return false
+    end
+    CampaignState.appendLog("decontamination",
+        "vanilla manual wash target=" .. tostring(target), actor(player))
+    return true
 end
 
 local function isAdmin(player)
@@ -457,87 +475,6 @@ local function manualWashBunker(player, args)
     return true
 end
 
-local function validateVanillaWaterSource(player, args)
-    if type(args) ~= "table" or player:isDead() then return false, "invalid_manual_wash" end
-    local x, y, z = tonumber(args.sourceX), tonumber(args.sourceY), tonumber(args.sourceZ)
-    if not x or not y or not z or math.abs(player:getZ() - z) >= 0.1 then
-        return false, "water_source_required"
-    end
-    local dx, dy = player:getX() - (x + 0.5), player:getY() - (y + 0.5)
-    if dx * dx + dy * dy > 9 then return false, "water_source_required" end
-    local square = getCell() and getCell():getGridSquare(x, y, z) or nil
-    if not square then return false, "water_source_required" end
-    return true, nil, x, y, z
-end
-
-local function sameManualTarget(left, right)
-    return left and right and left.target == right.target
-        and tonumber(left.itemId) == tonumber(right.itemId)
-        and tonumber(left.sourceX) == tonumber(right.sourceX)
-        and tonumber(left.sourceY) == tonumber(right.sourceY)
-        and tonumber(left.sourceZ) == tonumber(right.sourceZ)
-end
-
-local function manualWashVanillaStart(player, args)
-    local valid, code = validateVanillaWaterSource(player, args)
-    if not valid then return false, code end
-    if args.target == "body" then
-        local record = ToxicServer.getPlayerRecord(player)
-        if (tonumber(record and record.surfaceContamination) or 0)
-            <= BunkerCampaignToxicMP.Constants.SURFACE_TRACE then return false, "already_clean" end
-    elseif args.target == "item" then
-        local item = ToxicServer.findCarriedItem(player, args.itemId)
-        if not item then return false, "item_unavailable" end
-        if ToxicServer.getItemContamination(item)
-            <= BunkerCampaignToxicMP.Constants.SURFACE_TRACE then return false, "already_clean" end
-    else
-        return false, "unknown_manual_target"
-    end
-    Server.manualStarts[actor(player)] = {
-        target=args.target,
-        itemId=args.itemId,
-        sourceX=args.sourceX,
-        sourceY=args.sourceY,
-        sourceZ=args.sourceZ,
-        startedAt=getTimestampMs(),
-    }
-    return true
-end
-
-local function manualWashVanilla(player, args)
-    local valid, code = validateVanillaWaterSource(player, args)
-    if not valid then return false, code end
-
-    local username = actor(player)
-    local now = getTimestampMs()
-    local started = Server.manualStarts[username]
-    Server.manualStarts[username] = nil
-    if not sameManualTarget(started, args) or now - (tonumber(started and started.startedAt) or now) > 180000 then
-        return false, "manual_wash_not_started"
-    end
-    if now - (tonumber(Server.manualCompletions[username]) or 0) < 500 then
-        return false, "manual_wash_rate_limited"
-    end
-    Server.manualCompletions[username] = now
-
-    if args.target == "body" then
-        local record = ToxicServer.getPlayerRecord(player)
-        if (tonumber(record and record.surfaceContamination) or 0)
-            <= BunkerCampaignToxicMP.Constants.SURFACE_TRACE then return false, "already_clean" end
-        ToxicServer.cleanPlayer(player, 1, 0, false)
-    elseif args.target == "item" then
-        local item = ToxicServer.findCarriedItem(player, args.itemId)
-        if not item then return false, "item_unavailable" end
-        if ToxicServer.getItemContamination(item)
-            <= BunkerCampaignToxicMP.Constants.SURFACE_TRACE then return false, "already_clean" end
-        ToxicServer.cleanItem(player, item, 1)
-    else
-        return false, "unknown_manual_target"
-    end
-    CampaignState.appendLog("decontamination", "vanilla manual wash target=" .. tostring(args.target), username)
-    return true
-end
-
 local function nativeTeleport(player, target)
     local native = false
     if GameServer and GameServer.sendTeleport then
@@ -689,16 +626,6 @@ function Server.onClientCommand(module, command, player, args)
     if command == "requestStatus" then sendStatus(player); return end
     if command == "manualWashBunker" then
         local ok, code = manualWashBunker(player, args)
-        sendResult(player, ok, command, code)
-        return
-    end
-    if command == "manualWashVanillaStart" then
-        local ok, code = manualWashVanillaStart(player, args)
-        if not ok then sendResult(player, false, command, code) end
-        return
-    end
-    if command == "manualWashVanilla" then
-        local ok, code = manualWashVanilla(player, args)
         sendResult(player, ok, command, code)
         return
     end
