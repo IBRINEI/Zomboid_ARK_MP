@@ -37,6 +37,14 @@ assert(not rejected and empty.Barrels.inside.w == 100, "failed reservation must 
 BunkerCampaignIntegration.WaterpipesAdapter.fillBunkerWater(empty)
 assert(empty.Barrels.inside.w == empty.Barrels.inside.wmax and empty.Barrels.inside.m == "Water",
     "QA fill must restore bunker barrels with clean water")
+local fullFilter = pump.filter
+sample = BunkerCampaignIntegration.WaterpipesAdapter.sample(empty)
+assert(sample.storageFull and sample.flowPerMinute == 0,
+    "a full bunker reserve must report zero accepted pump flow")
+local fullFilterChanged, fullFilterUse =
+    BunkerCampaignIntegration.WaterpipesAdapter.consumeTreatmentFilter(empty, sample.flowPerMinute)
+assert(not fullFilterChanged and fullFilterUse == 0 and pump.filter == fullFilter,
+    "a full bunker reserve must not consume the treatment filter")
 
 pump.filter = 0
 sample = BunkerCampaignIntegration.WaterpipesAdapter.sample(empty)

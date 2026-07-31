@@ -558,7 +558,13 @@ function WaterpipesAdapter.sample(gmd)
     local meters = type(gmd.Flowmeters) == "table" and gmd.Flowmeters or {}
     local meter = meters[coordsId(Constants.BUNKER_WATER_FLOWMETER)]
     if result.pumpActive and type(meter) == "table" then
-        result.flowPerMinute = Util.numberOr(meter.f, 0, 0, BunkerCampaign.Constants.WATER.MAX_FLOW_PER_MINUTE) / 100
+        local measuredFlow = Util.numberOr(meter.f, 0, 0,
+            BunkerCampaign.Constants.WATER.MAX_FLOW_PER_MINUTE * 100) / 100
+        -- The WaterPipes flowmeter reports nominal pump throughput even when
+        -- every receiver is full.  Only water that can enter bunker storage is
+        -- produced or treated, so a full reserve must not consume the filter.
+        local freeCapacity = math.max(0, result.capacity - result.stored)
+        result.flowPerMinute = math.min(measuredFlow, freeCapacity)
     end
 
     if pump.burn == true or result.pumpCondition <= 0 or result.source == "invalid_fuel" or result.source == "none" then

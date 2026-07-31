@@ -207,6 +207,10 @@ function WaterSimulation.update(water, deltaMinutes, physical)
     water.pumpActive = water.operating
     water.pump.actualFlowLpm = water.operating
         and Util.numberOr(physical.flowPerMinute, 0, 0, Constants.WATER.MAX_FLOW_PER_MINUTE) or 0
+    if water.operating and deltaMinutes > 0 then
+        local freeCapacity = math.max(0, water.storage.capacityLiters - total)
+        water.pump.actualFlowLpm = math.min(water.pump.actualFlowLpm, freeCapacity / deltaMinutes)
+    end
     if water.operating and selected and not selected.renewable and selected.availableLiters >= 0
         and deltaMinutes > 0 then
         water.pump.actualFlowLpm = math.min(water.pump.actualFlowLpm,

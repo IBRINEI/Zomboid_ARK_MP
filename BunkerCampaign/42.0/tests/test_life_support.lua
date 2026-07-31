@@ -144,6 +144,20 @@ assert(water.telemetry.producedLiters == 6, "actual flow must drive production t
 assert(water.telemetry.treatmentFilterUsePerMinute == 0.012,
     "physical water-filter consumption must be visible in campaign telemetry")
 
+local fullWater = WaterSimulation.createDefault()
+fullWater.adapterOnline = true
+fullWater.physicallyAvailable = true
+fullWater.powerAllocated = true
+WaterSimulation.update(fullWater, 1, {
+    adapterOnline=true, physicallyAvailable=true, pumpPresent=true, pumpActive=true,
+    pumpCondition=1, filterRemaining=1, cleanStored=100, taintedStored=0,
+    capacity=100, flowPerMinute=6, storageFull=true,
+})
+assert(fullWater.pump.actualFlowLpm == 0 and fullWater.telemetry.producedLiters == 0,
+    "a full water reserve must not report phantom production")
+assert(fullWater.reason == "storage_full",
+    "a powered pump against full storage must report storage_full")
+
 water.powerAllocated = false
 WaterSimulation.update(water, 1, {adapterOnline=true, physicallyAvailable=true, pumpActive=false})
 assert(not water.operating and water.reason == "power_shed", "pump must stop after load shedding")
