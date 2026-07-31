@@ -153,5 +153,37 @@ local packetsBeforeRequest = #packets
 BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "requestState", normalPlayer, {})
 assert(#packets > packetsBeforeRequest, "state request must receive a targeted snapshot")
 
+local packetsBeforeEmptyBroadcast = #packets
+getOnlinePlayers = function()
+    return { size=function() return 0 end }
+end
+BunkerCampaign.CampaignState.broadcast()
+assert(#packets == packetsBeforeEmptyBroadcast,
+    "broadcast must not touch the dedicated-server network before players are available")
+getOnlinePlayers = nil
+
+local ventilation = firstReference.bunker.modules.ventilation
+BunkerCampaign.VentilationSimulation.setMode(ventilation, "external_filtration")
+BunkerCampaign.CampaignState.setGeneratorRequested("main", true, "test")
+local adapterFlow = 1
+BunkerCampaign.CampaignState.addPowerListener(function()
+    adapterFlow = adapterFlow + 1
+    BunkerCampaign.CampaignState.setWaterSnapshot({
+        adapterOnline=true, pumpActive=true, pumpCondition=1, status="operational",
+        filterRemaining=0.5, stored=100, capacity=500, contamination=0,
+        flowPerMinute=adapterFlow, powerDemandKw=1.5, source="underground_well",
+    }, "mid-tick test adapter")
+end)
+BunkerCampaign.CampaignState.minutesSinceSync = 0
+local packetsBeforeTick = #packets
+BunkerCampaign.CampaignState.updateOneMinute()
+assert(#packets == packetsBeforeTick + 1,
+    "mid-tick adapter changes must publish one atomic end-of-tick snapshot")
+local tickSnapshot = packets[#packets][3]
+assert(tickSnapshot.revision == firstReference.revision,
+    "published life-support snapshot must use the final tick revision")
+assert(tickSnapshot.ventilation.telemetry.outsideExchangeM3PerMinute > 0,
+    "published life-support snapshot must contain final ventilation telemetry")
+
 print("BunkerCampaign server-state tests passed")
 end

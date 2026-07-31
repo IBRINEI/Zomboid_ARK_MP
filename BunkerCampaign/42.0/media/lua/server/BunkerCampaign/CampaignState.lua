@@ -20,6 +20,8 @@ local RoomRegistry = BunkerCampaign.RoomRegistry
 local CampaignState = {
     data = nil,
     minutesSinceSync = 0,
+    deferBroadcast = false,
+    broadcastPending = false,
     powerListeners = {},
     lifeSupportListeners = {
         sample = {},
@@ -416,6 +418,14 @@ end
 
 function CampaignState.broadcast()
     if not CampaignState.data or not isServer() then return end
+    if CampaignState.deferBroadcast then
+        CampaignState.broadcastPending = true
+        return
+    end
+    if type(getOnlinePlayers) == "function" then
+        local players = getOnlinePlayers()
+        if not players or players:size() == 0 then return end
+    end
     sendServerCommand(Constants.NETWORK_MODULE, "stateSnapshot", CampaignState.snapshot())
 end
 
@@ -560,6 +570,9 @@ end
 function CampaignState.updateOneMinute()
     if not CampaignState.data then return end
 
+    CampaignState.deferBroadcast = true
+    CampaignState.broadcastPending = false
+
     local modules = CampaignState.data.bunker.modules
     local ventilation = modules.ventilation
     local water = modules.water
@@ -596,10 +609,14 @@ function CampaignState.updateOneMinute()
     end
 
     CampaignState.minutesSinceSync = CampaignState.minutesSinceSync + 1
-    if CampaignState.minutesSinceSync >= Constants.SYNC_INTERVAL_MINUTES then
+    local periodicSync = CampaignState.minutesSinceSync >= Constants.SYNC_INTERVAL_MINUTES
+    if periodicSync then
         CampaignState.minutesSinceSync = 0
-        CampaignState.broadcast()
     end
+    local publish = CampaignState.broadcastPending or periodicSync
+    CampaignState.deferBroadcast = false
+    CampaignState.broadcastPending = false
+    if publish then CampaignState.broadcast() end
 end
 
 Events.OnInitGlobalModData.Add(CampaignState.initialize)

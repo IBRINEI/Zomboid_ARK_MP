@@ -1,4 +1,33 @@
 require "Actions/TARepairPump"
+require "TimedActions/ISTakeWaterAction"
+
+BunkerCampaignIntegration = BunkerCampaignIntegration or {}
+
+local function effectiveWaterTaint(object, fallback)
+    local md = object and object.getModData and object:getModData() or nil
+    local medium = md and md.BunkerCampaignWaterMedium or nil
+    if medium == "TaintedWater" then return true end
+    if medium == "Water" then return false end
+    if type(fallback) == "boolean" then return fallback end
+    return object and object.isTaintedWater and object:isTaintedWater() or false
+end
+
+BunkerCampaignIntegration.effectiveWaterTaint = effectiveWaterTaint
+
+-- WaterPipes synchronizes object ModData in multiplayer, while the legacy
+-- sink taint flag lives in shared sprite properties and is not replicated per
+-- object.  Feed the authoritative per-object medium into the vanilla water
+-- action without mutating a sprite used by unrelated sinks.
+if ISTakeWaterAction and not ISTakeWaterAction.BunkerCampaignWaterMediumPatched then
+    local originalNew = ISTakeWaterAction.new
+
+    function ISTakeWaterAction:new(character, item, waterObject, waterTaintedCL)
+        return originalNew(self, character, item, waterObject,
+            effectiveWaterTaint(waterObject, waterTaintedCL))
+    end
+
+    ISTakeWaterAction.BunkerCampaignWaterMediumPatched = true
+end
 
 -- WaterPipes 42.19 increments pump efficiency only in the client's ModData
 -- during TARepairPump.  Starting the pump later causes the authoritative

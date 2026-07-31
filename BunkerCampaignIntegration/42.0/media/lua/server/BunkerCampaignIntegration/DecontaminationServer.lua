@@ -7,6 +7,7 @@ require "BunkerCampaign/Util"
 require "BunkerCampaignIntegration/Constants"
 require "BunkerCampaignIntegration/DecontaminationModel"
 require "BunkerCampaignIntegration/WaterService"
+require "BunkerCampaignIntegration/WaterTakeActionServerPatch"
 require "BunkerCampaignToxicMP/Server"
 
 BunkerCampaignIntegration = BunkerCampaignIntegration or {}

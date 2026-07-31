@@ -129,6 +129,9 @@ function ClientState.onServerCommand(module, command, args)
     if module ~= Constants.NETWORK_MODULE then return end
 
     if command == "stateSnapshot" and type(args) == "table" and type(args.ventilation) == "table" and type(args.power) == "table" then
+        local currentRevision = ClientState.snapshot and tonumber(ClientState.snapshot.revision) or nil
+        local incomingRevision = tonumber(args.revision)
+        if currentRevision and incomingRevision and incomingRevision < currentRevision then return end
         ClientState.snapshot = args
         ClientState.lastError = nil
         notifyListeners()

@@ -35,10 +35,6 @@ function RepairIntakeAction:perform()
     ISBaseTimedAction.perform(self)
 end
 
-function RepairIntakeAction:complete()
-    return true
-end
-
 function RepairIntakeAction:getDuration()
     if self.character:isTimedActionInstant() then return 1 end
     return 250
