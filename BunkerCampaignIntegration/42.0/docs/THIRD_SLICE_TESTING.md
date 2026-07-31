@@ -9,10 +9,10 @@ Enable the accepted local forks and dependencies:
 
 - `Bandits2`;
 - `Waterpipes`;
-- `BunkerCampaign` 0.5.3;
+- `BunkerCampaign` 0.5.4;
 - `BunkerCampaignArkMP` 0.4.5.1 (the stable 0.4.5 lighting code plus QA-menu cleanup);
 - `BunkerCampaignToxicMP` 0.5.1;
-- `BunkerCampaignIntegration` 0.7.4.
+- `BunkerCampaignIntegration` 0.7.5.
 
 Keep the original The Ark, original Toxic Zones, Bandits Day One/Week One and
 Cryogenic Winter disabled.
@@ -101,6 +101,10 @@ Expected: room occupancy follows actual player coordinates. A newly declared
 garage or laboratory appears without adding its name to simulation code. CO2
 generation is divided by actual room volume: the unique footprint tile count
 times declared room height, unless an addon explicitly supplies `volumeM3`.
+The panel's `Air exchange` row must distinguish the modes: Sealed has zero
+outside exchange and minimal passive room mixing; Off has measurable passive
+outside exchange; Internal recirculation has 450 m3/min powered internal flow,
+zero outside exchange and much faster volume-conserving room mixing.
 
 ## 4. Intake contamination and filter bank
 
@@ -112,6 +116,9 @@ times declared room height, unless an addon explicitly supplies `volumeM3`.
    captured. With clean intakes it intentionally stays fixed; the panel/report
    says `idle_intakes_clean`. A serviceable filter blocks intake contamination
    completely until it is exhausted or fails.
+   Whenever the displayed percentage falls, activity must read
+   `capturing_external_contamination` or `cleaning_internal_air`; it must never
+   simultaneously report zero capture.
 4. Switch to recirculation. It does not remove CO2, but it cleans existing
    airborne contamination; filter use and `recirc removal` remain zero once
    internal air is clean. The panel shows both the high-precision fraction and
@@ -182,6 +189,10 @@ broken intake, right-click its exact tile and choose `Repair bunker air intake
 (1 Scrap Metal)`. The timed action and material debit are validated by the
 server. With every intake broken, `450 m3/min internal | outside 0` is the
 automatic internal-recirculation fallback, not outside airflow.
+`intake_1` is deliberately failed in The Ark's initial bunker state. Its repair
+action must end normally and change the exact intake to operational. Right-click
+inside the air-vent module room (`9966..9970,12633..12636,-4`) to inspect mode,
+restriction, unit/fan condition, intake count, airflow, filter use and CO2.
 
 The bunker water system consists of the physical Waterpipes pump, its connected
 pipes/flowmeter and Waterpipes storage barrels, plus the campaign power request,
@@ -200,6 +211,9 @@ summary; it is not a second independent pump.
    and bunker panel must keep the repaired percentage after it is switched on.
 4. Introduce tainted/contaminated water. With treatment enabled, verify clean
    storage increases according to filter efficiency and treatment condition.
+   With the physical treatment filter at 0%, a connected FluidContainer-backed
+   tap must dispense actual `TaintedWater`; WaterPipes 42.19 must not convert it
+   to clean `Water` during receiver synchronization.
 5. Enable treatment bypass. Verify the real Waterpipes filter is removed from
    the active slot without being destroyed, output is classified tainted, and
    disabling bypass restores the same filter state.

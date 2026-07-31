@@ -114,6 +114,66 @@ local function setPhysicalWater(object, medium, amount, capacity)
     return true
 end
 
+-- WaterPipes 42.19 hard-codes FluidType.Water when synchronizing any receiver
+-- backed by a fluid container.  Its virtual barrel still says TaintedWater,
+-- but a connected sink therefore dispenses clean water.  Replace only the
+-- tainted bunker-container branch and leave every other WaterPipes network on
+-- the original implementation.
+function WaterpipesAdapter.installTaintedFluidSyncPatch()
+    if type(WPIso) ~= "table" or type(WPIso.SyncBarrel) ~= "function"
+        or type(WPIso.IsBarrel) ~= "function" or type(WPIso.GetWaterStatus) ~= "function" then
+        return false
+    end
+    if WPIso.BunkerCampaignTaintedFluidSyncPatched then return true end
+    local originalSyncBarrel = WPIso.SyncBarrel
+    WPIso.SyncBarrel = function(barrel)
+        if not isInsideBunker(barrel) or barrel.m ~= "TaintedWater" then
+            return originalSyncBarrel(barrel)
+        end
+        local cell = getCell and getCell() or nil
+        local square = cell and cell:getGridSquare(barrel.x, barrel.y, barrel.z) or nil
+        local isoBarrel = nil
+        local objects = square and square:getObjects() or nil
+        if objects then
+            for index = 0, objects:size() - 1 do
+                local candidate = objects:get(index)
+                if WPIso.IsBarrel(candidate) then isoBarrel = candidate; break end
+            end
+        end
+        if not isoBarrel or not isoBarrel:getFluidContainer() then
+            return originalSyncBarrel(barrel)
+        end
+        local rainSystem = SRainBarrelSystem and SRainBarrelSystem.instance or nil
+        if rainSystem and rainSystem:getLuaObjectAt(barrel.x, barrel.y, barrel.z) then
+            return originalSyncBarrel(barrel)
+        end
+        local amount, capacity = WPIso.GetWaterStatus(isoBarrel)
+        amount, capacity = tonumber(amount) or 0, tonumber(capacity) or 0
+        local available = Util.numberOr(barrel.w, 0, 0, 100000000) / 100
+        local add = math.min(math.max(0, capacity - amount), available)
+        local taintedType = FluidType and FluidType.TaintedWater or nil
+        if add <= 0 or not taintedType then return originalSyncBarrel(barrel) end
+
+        isoBarrel:addFluid(taintedType, add)
+        barrel.w = math.max(0, (tonumber(barrel.w) or 0) - add * 100)
+        local md = isoBarrel:getModData()
+        md.waterAmount = math.min(capacity, (tonumber(md.waterAmount) or amount) + add)
+        if not md.waterMaxAmount or tonumber(md.waterMaxAmount) == nil then
+            md.waterMaxAmount = math.max(40, capacity)
+        end
+        md.BunkerCampaignWaterMedium = "TaintedWater"
+        local sprite = isoBarrel:getSprite()
+        local properties = sprite and sprite:getProperties() or nil
+        if properties and IsoFlagType and IsoFlagType.taintedWater then
+            properties:set(IsoFlagType.taintedWater)
+        end
+        isoBarrel:transmitModData()
+        isoBarrel:sync()
+    end
+    WPIso.BunkerCampaignTaintedFluidSyncPatched = true
+    return true
+end
+
 function WaterpipesAdapter.prepareCollections(gmd)
     if type(gmd) ~= "table" then return false end
     local changed = false

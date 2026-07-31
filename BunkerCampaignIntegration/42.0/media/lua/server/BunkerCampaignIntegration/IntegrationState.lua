@@ -540,6 +540,7 @@ function IntegrationState.initialize(isNewGame)
     local data = ModData.getOrCreate(Constants.STATE_KEY)
     prepare(data)
     IntegrationState.data = data
+    WaterpipesAdapter.installTaintedFluidSyncPatch()
 
     local roomCount = registerArkRooms()
 

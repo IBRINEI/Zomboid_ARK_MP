@@ -142,6 +142,11 @@ local function roomStatusText(snapshot)
                 and ventilation.telemetry.recirculationRemovedM3PerMinute or 0, 2)
             .. " contaminated m3/min)"
             .. " <LINE>",
+        "Outside exchange: " .. number(ventilation.telemetry
+            and ventilation.telemetry.outsideExchangeM3PerMinute or 0, 2)
+            .. " m3/min | room mixing: " .. precisePercent(ventilation.telemetry
+                and ventilation.telemetry.roomMixFractionPerMinute or 0)
+            .. "/min <LINE>",
         "External filtration: filtered outside air lowers CO2. The filter loses charge only when contaminant is captured. <LINE>",
         "Internal recirculation: no fresh air and no CO2 removal; it cleans existing airborne contamination and loads the filter only while cleaning. <LINE>",
         "Sealed: fans off and intentional outside exchange is zero; occupant CO2 still rises. OFF: fans off, but passive room leakage remains. <LINE><LINE>",
@@ -452,6 +457,10 @@ function VentilationPanel:render()
             .. precisePercent(ventilation.telemetry and ventilation.telemetry.recirculationRemovalPerMinute or 0)
             .. "/min (" .. number(ventilation.telemetry
                 and ventilation.telemetry.recirculationRemovedM3PerMinute or 0, 2) .. " m3/min)" },
+        { "Air exchange", "outside " .. number(ventilation.telemetry
+            and ventilation.telemetry.outsideExchangeM3PerMinute or 0, 2)
+            .. " m3/min | room mix " .. precisePercent(ventilation.telemetry
+                and ventilation.telemetry.roomMixFractionPerMinute or 0) .. "/min" },
         { getText("UI_BC_CO2"), number(ventilation.co2, 0) .. " ppm" },
         { getText("UI_BC_ExternalContamination"), percent(ventilation.externalContamination) },
         { getText("UI_BC_InternalContamination"), percent(ventilation.internalContamination) },

@@ -319,14 +319,13 @@ local function selectedTile(playerNum, context, player, worldObjects)
     return {x=tileX, y=tileY, z=z, square=square}
 end
 
-local function brokenIntakeAt(selected)
+local function intakeAt(selected)
     local state = BunkerCampaign and BunkerCampaign.ClientState and BunkerCampaign.ClientState.snapshot
     local ventilation = state and state.ventilation
     for _, intake in pairs(ventilation and ventilation.intakes or {}) do
         if math.floor(tonumber(intake.x) or 0) == selected.x
             and math.floor(tonumber(intake.y) or 0) == selected.y
-            and math.floor(tonumber(intake.z) or 0) == selected.z
-            and intake.broken == true then
+            and math.floor(tonumber(intake.z) or 0) == selected.z then
             return intake
         end
     end
@@ -342,7 +341,13 @@ local function queueIntakeRepair(player, selected, scrap)
 end
 
 local function addIntakeRepair(context, player, selected)
-    if not brokenIntakeAt(selected) then return end
+    local intake = intakeAt(selected)
+    if not intake then return end
+    local info = context:addOption(string.format("Bunker air intake %s: %s | condition %.0f%%",
+        tostring(intake.id or "unknown"), tostring(intake.status or "unknown"),
+        (tonumber(intake.condition) or 0) * 100))
+    info.notAvailable = true
+    if intake.broken ~= true then return end
     local scrap = player:getInventory():getFirstTypeRecurse("Base.ScrapMetal")
     local option = context:addOption("Repair bunker air intake (1 Scrap Metal)", player,
         queueIntakeRepair, selected, scrap)
@@ -353,6 +358,50 @@ local function addIntakeRepair(context, player, selected)
         option.toolTip.description = scrap == nil and "Requires 1 Scrap Metal"
             or "The intake tile is not loaded"
     end
+end
+
+local function addVentilationModuleStatus(context, selected)
+    local bounds = Constants.VENTILATION_MODULE_BOUNDS
+    if selected.z ~= bounds.z or selected.x < bounds.x1 or selected.x > bounds.x2
+        or selected.y < bounds.y1 or selected.y > bounds.y2 then return end
+    local state = BunkerCampaign and BunkerCampaign.ClientState and BunkerCampaign.ClientState.snapshot
+    local ventilation = state and state.ventilation
+    if not ventilation then return end
+    local telemetry = ventilation.telemetry or {}
+    local intakeTotal = 0
+    for _ in pairs(ventilation.intakes or {}) do intakeTotal = intakeTotal + 1 end
+    local root = context:addOption("Bunker ventilation: " .. tostring(ventilation.status or "unknown")
+        .. " | " .. tostring(ventilation.activeMode or "off"))
+    local menu = ISContextMenu:getNew(context)
+    context:addSubMenu(root, menu)
+    local function statusLine(text)
+        local option = menu:addOption(text)
+        option.notAvailable = true
+    end
+    local modeEffect = {
+        off="fan off; passive outside leakage",
+        sealed="fan off; outside exchange isolated",
+        internal_recirculation="powered internal mixing and cleaning; no fresh air",
+        external_filtration="filtered fresh-air exchange",
+        emergency_ventilation="maximum filtered fresh-air exchange",
+    }
+    statusLine("Requested: " .. tostring(ventilation.requestedMode or "off")
+        .. " | restriction: " .. tostring(ventilation.reason or "none"))
+    statusLine("Effect: " .. tostring(modeEffect[ventilation.activeMode] or "unknown"))
+    statusLine(string.format("Unit %.0f%% | fan %.0f%% | intakes %d/%d",
+        (tonumber(ventilation.condition) or 0) * 100,
+        (tonumber(ventilation.fanCondition) or 0) * 100,
+        tonumber(telemetry.activeIntakes) or 0, intakeTotal))
+    statusLine(string.format("Airflow %.0f m3/min | outside exchange %.2f m3/min",
+        tonumber(ventilation.airflowM3PerMinute) or 0,
+        tonumber(telemetry.outsideExchangeM3PerMinute) or 0))
+    statusLine(string.format("Filter %.2f%% | use %.4f%%/min | %s",
+        (tonumber(ventilation.filterRemaining) or 0) * 100,
+        (tonumber(telemetry.filterUsePerMinute) or 0) * 100,
+        tostring(telemetry.filterActivity or "unknown")))
+    statusLine(string.format("CO2 %.0f ppm | internal air %.2f%%",
+        tonumber(ventilation.co2) or 0,
+        (tonumber(ventilation.internalContamination) or 0) * 100))
 end
 
 local function addPhysicalPumpControl(context, player, selected)
@@ -374,6 +423,7 @@ local function addContextOptions(playerNum, context, worldObjects, test)
     local selected = selectedTile(playerNum, context, player, worldObjects)
     if inside(Rules.INTERACTION, player) then addGameplayMenu(context, player) end
     addPhysicalPumpControl(context, player, selected)
+    addVentilationModuleStatus(context, selected)
     addIntakeRepair(context, player, selected)
     if isAdministrator() then addQaMenu(context, player, selected) end
 end

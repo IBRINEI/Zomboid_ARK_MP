@@ -19,6 +19,7 @@ Constants.BUNKER_BOUNDS = {
     levels = { [-4] = true, [-5] = true, [-7] = true },
 }
 Constants.BUNKER_WATER_PUMP = { x = 9950, y = 12616, z = -4 }
+Constants.VENTILATION_MODULE_BOUNDS = { x1=9966, x2=9970, y1=12633, y2=12636, z=-4 }
 Constants.ROOM_GEOMETRY = {
     Corridor = {
         -- The Ark corridor is a loop with a western stem, not one rectangle.

@@ -43,6 +43,9 @@ assert(ventilation.telemetry.totalOccupants == 3, "room occupants must be counte
 assert(ventilation.rooms.laboratory.co2 > BunkerCampaign.Constants.VENTILATION.MIN_CO2,
     "occupied room must generate CO2")
 assert(ventilation.filterBank.remaining < filterBefore, "outside contamination must load the filter")
+assert(ventilation.telemetry.filterUsePerMinute > 0
+    and ventilation.telemetry.filterActivity == "capturing_external_contamination",
+    "a falling ventilation-filter percentage must report active capture")
 assert(ventilation.rooms.laboratory.contamination == 0,
     "a healthy full-efficiency filter must not leak trace contamination into a clean room")
 ventilation.filterBank.condition = 0.5
@@ -82,12 +85,30 @@ ventilation.rooms.laboratory.contamination = 0
 VentilationSimulation.update(ventilation, 1, {occupancyByRoom={laboratory=2}})
 assert(ventilation.activeMode == "sealed" and ventilation.airflowM3PerMinute == 0,
     "sealed mode must stop mechanical airflow")
+assert(ventilation.telemetry.outsideExchangeM3PerMinute == 0,
+    "sealed mode must expose zero outside exchange")
 assert(ventilation.rooms.laboratory.contamination == 0,
     "sealed mode must block intentional outside contamination exchange")
 assert(VentilationSimulation.setMode(ventilation, "off"))
 VentilationSimulation.update(ventilation, 1, {occupancyByRoom={laboratory=2},externalContamination=1})
 assert(ventilation.rooms.laboratory.contamination > 0,
     "OFF must remain distinct from sealed by allowing passive room leakage")
+assert(ventilation.telemetry.outsideExchangeM3PerMinute > 0,
+    "OFF passive outside exchange must be explicit in telemetry")
+
+ventilation.rooms.laboratory.co2 = 3000
+ventilation.rooms.garage.co2 = 420
+ventilation.rooms.corridor.co2 = 420
+assert(VentilationSimulation.setMode(ventilation, "internal_recirculation"))
+local unequalCo2 = ventilation.rooms.laboratory.co2 - ventilation.rooms.garage.co2
+VentilationSimulation.update(ventilation, 1, {occupancyByRoom={},externalContamination=0})
+assert(ventilation.airflowM3PerMinute > 0
+    and ventilation.telemetry.outsideExchangeM3PerMinute == 0
+    and ventilation.telemetry.roomMixFractionPerMinute
+        == BunkerCampaign.Constants.VENTILATION.RECIRCULATION_ROOM_MIX_FRACTION_PER_MINUTE,
+    "internal recirculation must expose powered internal flow without outside exchange")
+assert(ventilation.rooms.laboratory.co2 - ventilation.rooms.garage.co2 < unequalCo2,
+    "internal recirculation must redistribute CO2 between connected rooms")
 
 ventilation.rooms.laboratory.contamination = 0.8
 assert(VentilationSimulation.setMode(ventilation, "emergency_ventilation"))

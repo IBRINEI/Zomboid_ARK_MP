@@ -29,13 +29,13 @@ function RepairIntakeAction:stop()
 end
 
 function RepairIntakeAction:perform()
+    sendClientCommand(self.character, "BunkerCampaignDecontamination", "repairIntake", {
+        x=self.x, y=self.y, z=self.z,
+    })
     ISBaseTimedAction.perform(self)
 end
 
 function RepairIntakeAction:complete()
-    sendClientCommand(self.character, "BunkerCampaignDecontamination", "repairIntake", {
-        x=self.x, y=self.y, z=self.z,
-    })
     return true
 end
 

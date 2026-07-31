@@ -26,7 +26,10 @@ Constants.VENTILATION = {
     -- Sealed is an intentional isolation state.  Passive leakage belongs to
     -- OFF; a breached entry path is handled separately and still overrides it.
     SEALED_LEAK_FRACTION_PER_MINUTE = 0,
+    OFF_MINIMUM_LEAK_FRACTION_PER_MINUTE = 0.01,
     ROOM_MIX_FRACTION_PER_MINUTE = 0.025,
+    SEALED_ROOM_MIX_FRACTION_PER_MINUTE = 0.005,
+    RECIRCULATION_ROOM_MIX_FRACTION_PER_MINUTE = 0.15,
     FILTER_EFFICIENCY = 1.0,
     FILTER_LOAD_CAPACITY = 150000,
     AIRBORNE_TRACE_CUTOFF = 0.02,

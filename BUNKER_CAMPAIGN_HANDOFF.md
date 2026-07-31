@@ -426,3 +426,27 @@ precision. Administrator QA can set the real treatment filter to 0%, and the
 tainted-fill action stops the pump first. Physical receivers retain their
 actual water-medium marker so a tainted sink does not silently become clean
 when WaterPipes drains its pending buffer.
+
+### Third-slice mode separation and tainted-fluid pass (2026-07-31)
+
+Core 0.5.4 and Integration 0.7.5 make the three closed-air modes observable
+and mechanically distinct. Off now exposes measurable passive outside leakage;
+Sealed has no outside exchange and only minimal passive room mixing; Internal
+recirculation consumes fan power, moves 450 m3/min internally, performs fast
+volume-conserving mixing and cleans airborne contamination without fresh air.
+The panel reports outside exchange and room-mixing rate explicitly. Filter
+activity is derived from the actual per-minute charge delta, so a falling
+percentage can no longer be paired with `no_filter_load`.
+
+The Ark intentionally initializes `intake_1` as failed. Intake context menus
+now display exact id/status/condition, and the ordinary timed repair sends its
+server request from Build 42's `perform()` path instead of waiting forever in
+an unused completion path. Right-clicking the air-vent room now opens a compact
+status submenu with active/requested modes, restriction, hardware, intakes,
+airflow, filter use and CO2.
+
+WaterPipes 42.19 hard-codes `FluidType.Water` when its receiver is backed by a
+FluidContainer, even when the virtual pipe medium is `TaintedWater`. The
+integration now replaces only that tainted bunker-receiver branch, adding real
+`FluidType.TaintedWater` and preserving the physical marker. Other WaterPipes
+networks and clean-water synchronization remain on the original code path.

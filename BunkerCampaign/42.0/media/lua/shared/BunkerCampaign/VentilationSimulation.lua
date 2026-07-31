@@ -86,6 +86,8 @@ function VentilationSimulation.createDefault()
             filterUsePerMinute=0,
             recirculationRemovalPerMinute=0,
             recirculationRemovedM3PerMinute=0,
+            outsideExchangeM3PerMinute=0,
+            roomMixFractionPerMinute=0,
             filterActivity="idle_clean_air",
         },
     }
@@ -185,6 +187,10 @@ function VentilationSimulation.normalize(ventilation)
         telemetry.recirculationRemovalPerMinute, 0, 0, 1)
     telemetry.recirculationRemovedM3PerMinute = Util.numberOr(
         telemetry.recirculationRemovedM3PerMinute, 0, 0, 1000000)
+    telemetry.outsideExchangeM3PerMinute = Util.numberOr(
+        telemetry.outsideExchangeM3PerMinute, 0, 0, 1000000)
+    telemetry.roomMixFractionPerMinute = Util.numberOr(
+        telemetry.roomMixFractionPerMinute, 0, 0, 1)
     telemetry.filterActivity = type(telemetry.filterActivity) == "string"
         and telemetry.filterActivity or "idle_clean_air"
     ventilation.powerDemandKw = VentilationSimulation.powerDemand(ventilation.requestedMode)
@@ -267,7 +273,16 @@ local function fallbackRoom(ventilation)
     }
 end
 
-local function applyConnectionMixing(ventilation, deltaMinutes)
+local function connectionMixFractionPerMinute(mode)
+    local rules = Constants.VENTILATION
+    if mode == "internal_recirculation" then
+        return rules.RECIRCULATION_ROOM_MIX_FRACTION_PER_MINUTE
+    end
+    if mode == "sealed" then return rules.SEALED_ROOM_MIX_FRACTION_PER_MINUTE end
+    return rules.ROOM_MIX_FRACTION_PER_MINUTE
+end
+
+local function applyConnectionMixing(ventilation, deltaMinutes, fractionPerMinute)
     local processed = {}
     for _, definition in ipairs(RoomRegistry.all()) do
         local left = ventilation.rooms[definition.id]
@@ -277,13 +292,18 @@ local function applyConnectionMixing(ventilation, deltaMinutes)
                 local right = ventilation.rooms[otherId]
                 if right and not processed[key] then
                     processed[key] = true
-                    local fraction = math.min(0.25, Constants.VENTILATION.ROOM_MIX_FRACTION_PER_MINUTE * deltaMinutes)
-                    local co2Delta = (right.co2 - left.co2) * fraction
-                    local contaminationDelta = (right.contamination - left.contamination) * fraction
-                    left.co2 = left.co2 + co2Delta
-                    right.co2 = right.co2 - co2Delta
-                    left.contamination = left.contamination + contaminationDelta
-                    right.contamination = right.contamination - contaminationDelta
+                    local fraction = math.min(0.50, fractionPerMinute * deltaMinutes)
+                    local leftVolume = math.max(1, tonumber(left.volumeM3) or 1)
+                    local rightVolume = math.max(1, tonumber(right.volumeM3) or 1)
+                    local exchangedVolume = math.min(leftVolume, rightVolume) * fraction
+                    local co2Difference = right.co2 - left.co2
+                    local contaminationDifference = right.contamination - left.contamination
+                    left.co2 = left.co2 + co2Difference * exchangedVolume / leftVolume
+                    right.co2 = right.co2 - co2Difference * exchangedVolume / rightVolume
+                    left.contamination = left.contamination
+                        + contaminationDifference * exchangedVolume / leftVolume
+                    right.contamination = right.contamination
+                        - contaminationDifference * exchangedVolume / rightVolume
                 end
             end
         end
@@ -342,6 +362,7 @@ function VentilationSimulation.update(ventilation, deltaMinutes, context)
     local efficiency = filterEffective and filter.efficiency or 0
     local capturedLoad = 0
     local recirculationRemoved = 0
+    local outsideExchangeVolume = 0
     local totalVolume, weightedCo2, weightedContamination = 0, 0, 0
     local totalOccupants, occupiedRooms, worstRoomId, worstScore = 0, 0, "", -1
 
@@ -355,6 +376,7 @@ function VentilationSimulation.update(ventilation, deltaMinutes, context)
 
         if ventilation.activeMode == "external_filtration" or ventilation.activeMode == "emergency_ventilation" then
             local exchange = math.min(1, roomFlow * deltaMinutes / volume)
+            outsideExchangeVolume = outsideExchangeVolume + exchange * volume
             room.co2 = room.co2 + (rules.EXTERNAL_CO2_PPM - room.co2) * exchange
             room.co2 = room.co2 + generatedCo2 * (1 - exchange * 0.5)
             local supplied = outside * (1 - efficiency)
@@ -374,14 +396,17 @@ function VentilationSimulation.update(ventilation, deltaMinutes, context)
         else
             room.co2 = room.co2 + generatedCo2
             local leak = ventilation.activeMode == "sealed" and 0
-                or math.max(0, room.leakRate or 0)
-            local exchange = math.min(0.25, leak * deltaMinutes * (room.sealed and 1 or 8))
+                or math.max(rules.OFF_MINIMUM_LEAK_FRACTION_PER_MINUTE,
+                    math.max(0, room.leakRate or 0) * (room.sealed and 1 or 8))
+            local exchange = math.min(0.25, leak * deltaMinutes)
             room.co2 = room.co2 + (rules.EXTERNAL_CO2_PPM - room.co2) * exchange
             room.contamination = room.contamination + (outside - room.contamination) * exchange
+            outsideExchangeVolume = outsideExchangeVolume + exchange * volume
         end
 
         if ventilation.entryPath.breached and (id == "entrance" or id == "decontamination_chamber") then
             local breach = math.min(1, rules.ENTRY_BREACH_EXCHANGE_PER_MINUTE * deltaMinutes)
+            outsideExchangeVolume = outsideExchangeVolume + breach * volume
             local breachOutside = Util.numberOr(ventilation.entryPath.externalContamination, outside, 0, 1)
             room.co2 = room.co2 + (rules.EXTERNAL_CO2_PPM - room.co2) * breach
             room.contamination = room.contamination + (breachOutside - room.contamination) * breach
@@ -410,7 +435,8 @@ function VentilationSimulation.update(ventilation, deltaMinutes, context)
         if score > worstScore then worstScore, worstRoomId = score, id end
     end
 
-    applyConnectionMixing(ventilation, deltaMinutes)
+    local roomMixFraction = connectionMixFractionPerMinute(ventilation.activeMode)
+    applyConnectionMixing(ventilation, deltaMinutes, roomMixFraction)
     if filterEffective and capturedLoad > 0 then
         filter.remaining = math.max(0, filter.remaining - capturedLoad / rules.FILTER_LOAD_CAPACITY)
     end
@@ -450,15 +476,20 @@ function VentilationSimulation.update(ventilation, deltaMinutes, context)
         and recirculationRemoved / math.max(1, totalVolume) / deltaMinutes or 0
     ventilation.telemetry.recirculationRemovedM3PerMinute = deltaMinutes > 0
         and recirculationRemoved / deltaMinutes or 0
+    ventilation.telemetry.outsideExchangeM3PerMinute = deltaMinutes > 0
+        and outsideExchangeVolume / deltaMinutes or 0
+    ventilation.telemetry.roomMixFractionPerMinute = roomMixFraction
+    local actualFilterUse = ventilation.telemetry.filterUsePerMinute
     if not filterEffective then
         ventilation.telemetry.filterActivity = filter.bypass and "bypassed" or "unavailable"
-    elseif capturedLoad > 0 then
+    elseif actualFilterUse > 0 then
         ventilation.telemetry.filterActivity = ventilation.activeMode == "internal_recirculation"
             and "cleaning_internal_air" or "capturing_external_contamination"
     elseif ventilation.activeMode == "internal_recirculation" then
         ventilation.telemetry.filterActivity = "idle_internal_air_clean"
     elseif ventilation.activeMode == "external_filtration" or ventilation.activeMode == "emergency_ventilation" then
-        ventilation.telemetry.filterActivity = outside > 0 and "no_filter_load" or "idle_intakes_clean"
+        ventilation.telemetry.filterActivity = outside > 0
+            and "contaminated_intakes_zero_capture" or "idle_intakes_clean"
     else
         ventilation.telemetry.filterActivity = "inactive"
     end
