@@ -26,6 +26,61 @@ local function normalizePercent(value)
     return Util.clamp(Util.numberOr(value, 0, 0, 100) / 100, 0, 1)
 end
 
+local function physicalReceiver(record)
+    if not getCell or type(WPIso) ~= "table" or type(WPIso.GetBarrel) ~= "function" then return nil end
+    local cell = getCell()
+    local square = cell and cell:getGridSquare(record.x, record.y, record.z) or nil
+    return square and WPIso.GetBarrel(square) or nil
+end
+
+local function physicalWater(record)
+    local object = physicalReceiver(record)
+    if not object then return nil, 0, 0, nil end
+    local amount, capacity
+    if type(WPIso.GetWaterStatus) == "function" then
+        -- WaterPipes treats sinks with pre-shutoff sprite values, post-shutoff
+        -- ModData values, and real fluid containers differently.  Its own
+        -- accessor is the only reliable way to cover all three cases.
+        amount, capacity = WPIso.GetWaterStatus(object)
+    else
+        amount = object.getFluidAmount and tonumber(object:getFluidAmount()) or 0
+        capacity = object.getFluidCapacity and tonumber(object:getFluidCapacity()) or nil
+    end
+    local md = object.getModData and object:getModData() or nil
+    capacity = capacity or tonumber(md and (md.waterMaxAmount or md.waterMax)) or 0
+    local medium = amount > 0 and object.isTaintedWater and object:isTaintedWater()
+        and "TaintedWater" or (amount > 0 and "Water" or nil)
+    return object, math.max(0, tonumber(amount) or 0), math.max(0, tonumber(capacity) or 0), medium
+end
+
+local function setPhysicalWater(object, medium, amount, capacity)
+    if not object then return false end
+    amount, capacity = math.max(0, tonumber(amount) or 0), math.max(0, tonumber(capacity) or 0)
+    if object.emptyFluid then object:emptyFluid()
+    elseif object.getFluidContainer and object:getFluidContainer() then object:getFluidContainer():Empty() end
+    local fluidType = FluidType and FluidType[medium] or nil
+    if amount > 0 and fluidType and object.addFluid then
+        object:addFluid(fluidType, amount)
+    end
+    local md = object.getModData and object:getModData() or nil
+    if md then
+        md.waterAmount = amount
+        if capacity > 0 then md.waterMaxAmount = capacity end
+    end
+    local sprite = object.getSprite and object:getSprite() or nil
+    local properties = sprite and sprite.getProperties and sprite:getProperties() or nil
+    if properties and IsoFlagType and IsoFlagType.taintedWater then
+        if amount > 0 and medium == "TaintedWater" then
+            properties:set(IsoFlagType.taintedWater)
+        else
+            properties:unset(IsoFlagType.taintedWater)
+        end
+    end
+    if object.transmitModData then object:transmitModData() end
+    if object.sync then object:sync() end
+    return true
+end
+
 function WaterpipesAdapter.prepareCollections(gmd)
     if type(gmd) ~= "table" then return false end
     local changed = false
@@ -214,11 +269,11 @@ function WaterpipesAdapter.ensureBunkerInfrastructure(gmd)
     return changed
 end
 
-local function sortedBunkerBarrels(gmd, cleanOnly)
+local function sortedBunkerBarrels(gmd)
     local result = {}
     local barrels = type(gmd) == "table" and type(gmd.Barrels) == "table" and gmd.Barrels or {}
     for key, barrel in pairs(barrels) do
-        if isInsideBunker(barrel) and (not cleanOnly or barrel.m == "Water") then
+        if isInsideBunker(barrel) then
             result[#result + 1] = { key=tostring(key), barrel=barrel }
         end
     end
@@ -227,61 +282,75 @@ local function sortedBunkerBarrels(gmd, cleanOnly)
 end
 
 function WaterpipesAdapter.availableBunkerWater(gmd, cleanOnly)
-    local raw = 0
-    for _, entry in ipairs(sortedBunkerBarrels(gmd, cleanOnly == true)) do
-        raw = raw + Util.numberOr(entry.barrel.w, 0, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE)
+    local liters = 0
+    for _, entry in ipairs(sortedBunkerBarrels(gmd)) do
+        local barrel = entry.barrel
+        local _, physicalAmount, _, physicalMedium = physicalWater(barrel)
+        local pendingAmount = Util.numberOr(barrel.w, 0, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE) / 100
+        if not cleanOnly or barrel.m == "Water" then liters = liters + pendingAmount end
+        if not cleanOnly or physicalMedium == "Water" then liters = liters + physicalAmount end
     end
-    return raw / 100
+    return liters
 end
 
 function WaterpipesAdapter.consumeBunkerWater(gmd, liters, cleanOnly)
     liters = Util.numberOr(liters, 0, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE)
-    local required = liters * 100
-    if WaterpipesAdapter.availableBunkerWater(gmd, cleanOnly == true) * 100 + 0.0001 < required then
+    local required = liters
+    if WaterpipesAdapter.availableBunkerWater(gmd, cleanOnly == true) + 0.0001 < required then
         return false, 0
     end
 
     local remaining = required
-    for _, entry in ipairs(sortedBunkerBarrels(gmd, cleanOnly == true)) do
+    for _, entry in ipairs(sortedBunkerBarrels(gmd)) do
         if remaining <= 0 then break end
         local barrel = entry.barrel
-        local available = Util.numberOr(barrel.w, 0, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE)
-        local used = math.min(available, remaining)
-        barrel.w = available - used
-        if barrel.w <= 0 then barrel.w = 0; barrel.m = nil end
-        remaining = remaining - used
+        local pending = Util.numberOr(barrel.w, 0, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE) / 100
+        if not cleanOnly or barrel.m == "Water" then
+            local used = math.min(pending, remaining)
+            barrel.w = math.max(0, (pending - used) * 100)
+            if barrel.w <= 0.0001 then barrel.w = 0; barrel.m = nil end
+            remaining = remaining - used
+        end
+        if remaining > 0 then
+            local object, physicalAmount, capacity, physicalMedium = physicalWater(barrel)
+            if object and (not cleanOnly or physicalMedium == "Water") then
+                local used = math.min(physicalAmount, remaining)
+                setPhysicalWater(object, physicalMedium or "Water", physicalAmount - used, capacity)
+                remaining = remaining - used
+            end
+        end
     end
-    return remaining <= 0.0001, (required - remaining) / 100
+    return remaining <= 0.0001, required - remaining
 end
 
 function WaterpipesAdapter.fillBunkerWater(gmd)
-    local changed = false
-    for _, entry in ipairs(sortedBunkerBarrels(gmd, false)) do
-        local barrel = entry.barrel
-        local capacity = Util.numberOr(barrel.wmax, 0, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE)
-        if barrel.w ~= capacity or barrel.m ~= "Water" then
-            barrel.w = capacity
-            barrel.m = "Water"
-            changed = true
-        end
-    end
-    return changed
+    local found, changed = WaterpipesAdapter.setBunkerStorageForQa(gmd, "Water", 1)
+    return found and changed
 end
 
 function WaterpipesAdapter.setBunkerStorageForQa(gmd, medium, fillFraction)
     fillFraction = Util.numberOr(fillFraction, 0, 0, 1)
     if medium ~= nil and medium ~= "Water" and medium ~= "TaintedWater" then return false end
     local changed, found = false, false
-    for _, entry in ipairs(sortedBunkerBarrels(gmd, false)) do
+    for _, entry in ipairs(sortedBunkerBarrels(gmd)) do
         found = true
         local barrel = entry.barrel
-        local capacity = Util.numberOr(barrel.wmax, 0, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE)
+        local object, _, physicalCapacity = physicalWater(barrel)
+        local rawCapacity = Util.numberOr(barrel.wmax, 0, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE)
+        local capacity = physicalCapacity > 0 and physicalCapacity or rawCapacity / 100
         local amount = capacity * fillFraction
         local targetMedium = amount > 0 and medium or nil
-        if barrel.w ~= amount or barrel.m ~= targetMedium then
-            barrel.w = amount
-            barrel.m = targetMedium
+        if object then
+            setPhysicalWater(object, targetMedium or "Water", amount, capacity)
+            barrel.w, barrel.m = 0, nil
             changed = true
+        else
+            local rawAmount = amount * 100
+            if barrel.w ~= rawAmount or barrel.m ~= targetMedium then
+                barrel.w = rawAmount
+                barrel.m = targetMedium
+                changed = true
+            end
         end
     end
     return found, changed
@@ -351,17 +420,22 @@ function WaterpipesAdapter.sample(gmd)
     for _, barrel in pairs(barrels) do
         if isInsideBunker(barrel) then
             local rawCapacity = Util.numberOr(barrel.wmax, 0, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE)
-            local rawStored = Util.numberOr(barrel.w, 0, 0, rawCapacity)
-            local capacity = rawCapacity / 100
-            local stored = rawStored / 100
+            local rawStored = Util.numberOr(barrel.w, 0, 0, rawCapacity) / 100
+            local _, physicalAmount, physicalCapacity, physicalMedium = physicalWater(barrel)
+            local capacity = math.max(rawCapacity / 100, physicalCapacity)
+            local stored = math.min(capacity, rawStored + physicalAmount)
             result.capacity = result.capacity + capacity
             result.stored = result.stored + stored
-            if barrel.m == "TaintedWater" then
-                taintedStored = taintedStored + stored
-                result.taintedStored = result.taintedStored + stored
-            elseif barrel.m == "Water" then
-                result.cleanStored = result.cleanStored + stored
-            end
+            local pendingTainted = barrel.m == "TaintedWater" and rawStored or 0
+            local pendingClean = barrel.m == "Water" and rawStored or 0
+            local physicalTainted = physicalMedium == "TaintedWater" and physicalAmount or 0
+            local physicalClean = physicalMedium == "Water" and physicalAmount or 0
+            local scale = rawStored + physicalAmount > capacity and capacity / (rawStored + physicalAmount) or 1
+            local tainted = (pendingTainted + physicalTainted) * scale
+            local clean = (pendingClean + physicalClean) * scale
+            taintedStored = taintedStored + tainted
+            result.taintedStored = result.taintedStored + tainted
+            result.cleanStored = result.cleanStored + clean
         end
     end
     result.capacity = Util.clamp(result.capacity, 0, BunkerCampaign.Constants.WATER.MAX_STORAGE)

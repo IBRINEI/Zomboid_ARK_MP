@@ -26,4 +26,17 @@ local sample = service.sample()
 assert(sample.pumpCondition == 0.25 and sample.filterRemaining == 0.10,
     "QA pump control must mutate physical Waterpipes condition and filter")
 
+WaterServiceEnablePhysicalReceiver()
+assert(service.setStorageForQa("TaintedWater", 0.5), "QA must find a loaded physical receiver")
+local physicalAmount, physicalMedium = WaterServicePhysicalState()
+assert(physicalAmount == 10 and physicalMedium == "TaintedWater",
+    "tainted QA fill must update the actual sink fluid, not only Waterpipes ModData")
+local physicalSample = service.sample()
+assert(physicalSample.taintedStored == 20 and physicalSample.cleanStored == 0,
+    "physical sink contents must be included in the authoritative water snapshot")
+assert(service.setStorageForQa(nil, 0), "QA empty must find the physical receiver")
+physicalAmount = WaterServicePhysicalState()
+assert(physicalAmount == 0 and service.sample().stored == 0,
+    "QA empty must drain both virtual buffers and physical sinks")
+
 print("BunkerCampaign water-service tests passed")

@@ -1,4 +1,5 @@
 require "ISUI/ISContextMenu"
+require "ISUI/ISModalRichText"
 require "BunkerCampaignIntegration/Constants"
 require "BunkerCampaignIntegration/ManualWashClient"
 require "BunkerCampaignIntegration/DecontaminationEffects"
@@ -34,6 +35,72 @@ local function notify(player, message)
     if player and HaloTextHelper then HaloTextHelper.addText(player, tostring(message)) end
 end
 
+local function showQaReport(args)
+    local kind = tostring(args.kind or "all")
+    local lines = { "<H1> Bunker Campaign QA report <LINE><LINE>" }
+    if kind ~= "water" then
+        local entry = args.entryPath or {}
+        local airlock = args.airlock or {}
+        lines[#lines + 1] = string.format(
+            "<H2> Atmosphere <LINE><TEXT> Room: %s | CO2 %.0f ppm | air %.2f%% | occupants %d <LINE>",
+            tostring(args.roomId or "outside"), tonumber(args.roomCo2) or 0,
+            (tonumber(args.roomContamination) or 0) * 100, tonumber(args.roomOccupants) or 0)
+        lines[#lines + 1] = string.format(
+            "Vent filter: %.2f%% | use %.4f%%/min | activity %s <LINE>",
+            (tonumber(args.filterRemaining) or 0) * 100,
+            (tonumber(args.filterUsePerMinute) or 0) * 100,
+            tostring(args.filterActivity or "unknown"))
+        lines[#lines + 1] = string.format("Entry: %s | %d/%d open, %d/%d loaded <LINE>",
+            entry.breached and "BREACHED" or "contained", tonumber(entry.openCount) or 0,
+            tonumber(entry.total) or 0, tonumber(entry.loadedCount) or 0, tonumber(entry.total) or 0)
+        for _, door in ipairs(type(entry.doors) == "table" and entry.doors or {}) do
+            lines[#lines + 1] = string.format("%s (%d,%d,Z%d): %s <LINE>",
+                tostring(door.label or door.id), tonumber(door.x) or 0, tonumber(door.y) or 0,
+                tonumber(door.z) or 0, not door.loaded and "not loaded" or (door.open and "OPEN" or "closed"))
+        end
+        lines[#lines + 1] = string.format("Purge: %s | %.2f min remaining <LINE>",
+            tostring(airlock.status or "idle"), tonumber(airlock.remainingMinutes) or 0)
+        lines[#lines + 1] = "<LINE><H2> Air intakes <LINE>"
+        local intakes = {}
+        for _, intake in pairs(type(args.intakes) == "table" and args.intakes or {}) do
+            intakes[#intakes + 1] = intake
+        end
+        table.sort(intakes, function(left, right) return tostring(left.id) < tostring(right.id) end)
+        for _, intake in ipairs(intakes) do
+            lines[#lines + 1] = string.format("%s (%d,%d,Z%d): %s | contamination %.1f%% <LINE>",
+                tostring(intake.id), tonumber(intake.x) or 0, tonumber(intake.y) or 0,
+                tonumber(intake.z) or 0, tostring(intake.status or "unknown"),
+                (tonumber(intake.externalContamination) or 0) * 100)
+        end
+    end
+    if kind ~= "atmosphere" then
+        local water = args.water or {}
+        lines[#lines + 1] = string.format(
+            "<H2> Water <LINE><TEXT> Status: %s | reason: %s <LINE>Requested: %s | powered: %s | physical pump: %s <LINE>",
+            tostring(water.status or "offline"), tostring(water.reason or "none"),
+            water.pumpRequested and "yes" or "no", water.powerAllocated and "yes" or "no",
+            water.pumpActive and "ON" or "OFF")
+        lines[#lines + 1] = string.format(
+            "Pump condition: %.1f%% | treatment filter: %.1f%% | flow: %.2f L/min <LINE>",
+            (tonumber(water.pumpCondition) or 0) * 100,
+            (tonumber(water.filterRemaining) or 0) * 100, tonumber(water.flowPerMinute) or 0)
+        lines[#lines + 1] = string.format(
+            "Storage: %.2f / %.2f L | clean %.2f L | tainted %.2f L <LINE>Source: %s <LINE>",
+            tonumber(water.stored) or 0, tonumber(water.capacity) or 0,
+            tonumber(water.cleanStored) or 0, tonumber(water.taintedStored) or 0,
+            tostring(water.source or "none"))
+    end
+    local width, height = 780, 560
+    local modal = ISModalRichText:new((getCore():getScreenWidth() - width) / 2,
+        (getCore():getScreenHeight() - height) / 2, width, height,
+        table.concat(lines), false, nil, nil, 0)
+    modal:initialise()
+    modal.backgroundColor = {r=0, g=0, b=0, a=0.94}
+    modal.destroyOnClick = true
+    modal.alwaysOnTop = true
+    modal:addToUIManager()
+end
+
 local function onCreatePlayer(playerIndex, player)
     Client.status = nil
     if player then send(player, "requestStatus", {}) end
@@ -57,22 +124,7 @@ local function onServerCommand(module, command, args)
             player:teleportTo(args.x, args.y, args.z)
         end
     elseif command == "qaReport" then
-        local water = args.water or {}
-        local entry = args.entryPath or {}
-        local airlock = args.airlock or {}
-        local message = string.format(
-            "QA %s | room=%s CO2=%.0f ppm air=%.1f%% occ=%d | entry=%s %d/%d | vent filter=%.1f%% use=%.3f%%/min | purge=%s %.1f min | water=%s %.1f/%.1f L flow=%.2f",
-            tostring(args.kind or "report"), tostring(args.roomId or "outside"),
-            tonumber(args.roomCo2) or 0, (tonumber(args.roomContamination) or 0) * 100,
-            tonumber(args.roomOccupants) or 0, entry.breached and "BREACHED" or "contained",
-            tonumber(entry.openCount) or 0, tonumber(entry.loadedCount) or 0,
-            (tonumber(args.filterRemaining) or 0) * 100,
-            (tonumber(args.filterUsePerMinute) or 0) * 100,
-            tostring(airlock.status or "idle"), tonumber(airlock.remainingMinutes) or 0,
-            tostring(water.status or "offline"), tonumber(water.stored) or 0,
-            tonumber(water.capacity) or 0, tonumber(water.flowPerMinute) or 0
-        )
-        notify(player, message)
+        showQaReport(args)
     end
 end
 
@@ -134,6 +186,7 @@ local function addQaMenu(context, player, selected)
     end
 
     teleport("[QA] Exterior toxic zone", "exterior")
+    teleport("[QA] Surface air intakes", "intakes")
     teleport("[QA] Dirty entrance", "dirty")
     teleport("[QA] Decontamination chamber", "chamber")
     teleport("[QA] Clean-side exit", "clean")
@@ -156,6 +209,12 @@ local function addQaMenu(context, player, selected)
         send(p, "qaCreateIntakeZone", {})
     end)
     atmosphere:addOption("Remove campaign QA toxic zones", player, function(p) send(p, "qaRemoveZone", {}) end)
+    atmosphere:addOption("Break air intake on selected tile", player, function(p)
+        send(p, "qaSetIntake", {x=selected.x, y=selected.y, z=selected.z, broken=true})
+    end)
+    atmosphere:addOption("Repair air intake on selected tile", player, function(p)
+        send(p, "qaSetIntake", {x=selected.x, y=selected.y, z=selected.z, broken=false})
+    end)
     atmosphere:addOption("Set current room CO2 to 5000 ppm", player, function(p)
         send(p, "qaSetRoomAir", {co2=5000})
     end)
@@ -188,11 +247,11 @@ local function addQaMenu(context, player, selected)
     water:addOption("Request bunker water pump OFF", player, function(p)
         sendClientCommand(p, "BunkerCampaign", "setConsumer", {id="water", requested=false})
     end)
+    water:addOption("STOP pump and EMPTY ALL bunker water storage", player, function(p)
+        send(p, "qaWaterStorage", {fillFraction=0, stopPump=true})
+    end)
     water:addOption("Fill bunker storage with tainted water", player, function(p)
         send(p, "qaWaterStorage", {medium="TaintedWater", fillFraction=1})
-    end)
-    water:addOption("Empty bunker water storage", player, function(p)
-        send(p, "qaWaterStorage", {fillFraction=0})
     end)
     water:addOption("Set physical pump condition to 25%", player, function(p)
         send(p, "qaWaterPump", {condition=0.25, burn=false})

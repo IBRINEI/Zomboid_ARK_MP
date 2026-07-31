@@ -24,4 +24,11 @@ BWOARooms = {
             BWOARooms.Garage.vents = { {x=9905,y=12002,z=-4} }
         end,
     },
+    Corridor = {
+        Init=function()
+            BWOARooms.Corridor.name = "CORRIDOR"
+            BWOARooms.Corridor.z = -4
+            BWOARooms.Corridor.vents = { {x=9957,y=12624,z=-4} }
+        end,
+    },
 }

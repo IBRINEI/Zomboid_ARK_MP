@@ -32,8 +32,15 @@ BunkerCampaign.CampaignState.initialize(true)
 BunkerCampaignIntegration.IntegrationState.initialize(true)
 
 local campaign = BunkerCampaign.CampaignState.get()
+assert(#BunkerCampaignIntegration.Constants.ENTRY_DOORS == 4,
+    "entry-path telemetry must track the surface gate and all three bunker gates")
 assert(BunkerCampaign.RoomRegistry.get("laboratory"), "Ark laboratory must be discovered declaratively")
 assert(BunkerCampaign.RoomRegistry.get("garage"), "future Ark garage must be discovered without simulation edits")
+assert(BunkerCampaign.RoomRegistry.get("corridor"),
+    "The Ark corridor without legacy rectangular bounds must use declarative composite geometry")
+assert(BunkerCampaign.RoomRegistry.find(9957, 12630, -4).id == "corridor"
+    and BunkerCampaign.RoomRegistry.find(9965, 12641, -4).id == "corridor",
+    "both corridor stem and loop must resolve to the corridor ventilation room")
 assert(campaign.bunker.modules.ventilation.rooms.laboratory
     and campaign.bunker.modules.ventilation.rooms.garage,
     "discovered rooms must receive ventilation state")

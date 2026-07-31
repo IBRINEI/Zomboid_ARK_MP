@@ -19,6 +19,26 @@ Constants.BUNKER_BOUNDS = {
     levels = { [-4] = true, [-5] = true, [-7] = true },
 }
 Constants.BUNKER_WATER_PUMP = { x = 9950, y = 12616, z = -4 }
+Constants.ROOM_GEOMETRY = {
+    Corridor = {
+        -- The Ark corridor is a loop with a western stem, not one rectangle.
+        -- Declarative regions keep room discovery extensible without teaching
+        -- the ventilation simulation about this particular map.
+        regions = {
+            {x1=9950,x2=9958,y1=12624,y2=12626,z=-4},
+            {x1=9957,x2=9958,y1=12600,y2=12650,z=-4},
+            {x1=9958,x2=9972,y1=12608,y2=12609,z=-4},
+            {x1=9971,x2=9972,y1=12608,y2=12642,z=-4},
+            {x1=9958,x2=9972,y1=12641,y2=12642,z=-4},
+        },
+    },
+}
+Constants.ENTRY_DOORS = {
+    {id="surface_gate", label="Surface gate", x=9926, y=12625, z=0},
+    {id="outer_gate", label="Outer bunker gate", x=9924, y=12625, z=-4},
+    {id="middle_gate", label="Middle bunker gate", x=9934, y=12625, z=-4},
+    {id="airlock_gate", label="Airlock gate", x=9944, y=12625, z=-4},
+}
 Constants.BUNKER_WATER_FLOWMETER = { x = 9954, y = 12615, z = -4 }
 Constants.BUNKER_WATER_PIPES = {
     { x = 9950, y = 12615, z = -4, shape = "ns" },

@@ -31,6 +31,10 @@ BunkerCampaign.PowerSimulation.update(power, 0)
 assert(power.gridOnline == true, "backup generator must restore the grid")
 assert(power.consumers.water.allocated == true, "water must resume after backup power is available")
 assert(power.consumers.emergency_lighting.allocated == false, "emergency lights must turn off after grid restoration")
+power.consumers.ventilation.demandKw = BunkerCampaign.Constants.VENTILATION.FAN_POWER_EMERGENCY_KW
+BunkerCampaign.PowerSimulation.update(power, 0)
+assert(power.consumers.main_lighting.allocated == true,
+    "a healthy backup generator must carry emergency ventilation, water and main lighting")
 
 power.consumers.decontamination.requested = true
 BunkerCampaign.PowerSimulation.update(power, 0)

@@ -28,6 +28,9 @@ isServer = function() return true end
 
 local persisted = {
     ["BunkerCampaign.IntegrationState"] = {},
+    BanditWeekOneTheArk = {
+        airintakes={{x=9940,y=12633,z=0,broken=false,condition=1}},
+    },
     WaterPipes = {
         Pumps={ ["9950-12616--4"]={x=9950,y=12616,z=-4,efficiency=100,filter=100,active=true,source="TaintedWater"} },
         Pipes={}, Valves={}, Flowmeters={}, Sprinklers={}, Buildings={},
@@ -112,17 +115,31 @@ getCell = function()
 end
 sendServerCommand = function() end
 
-local power = { consumers={ decontamination={requested=false,allocated=false} } }
+local power = { consumers={
+    decontamination={requested=false,allocated=false},
+    water={requested=true,allocated=true},
+} }
+local campaignWater = {requested=true,pumpRequested=true,telemetry={}}
+local ventilation = {
+    intakes={intake_1={x=9940,y=12633,z=0,broken=false,condition=1,status="operational"}},
+}
 local refueledGenerator = nil
+local stateTouches, stateBroadcasts = 0, 0
 BunkerCampaign.CampaignState = {
-    get=function() return { bunker={modules={power=power}} } end,
+    get=function() return { bunker={modules={power=power,ventilation=ventilation,water=campaignWater}} } end,
     setConsumerRequested=function(id, requested)
         power.consumers[id].requested = requested
         power.consumers[id].allocated = requested
+        if id == "water" then
+            campaignWater.requested = requested
+            campaignWater.pumpRequested = requested
+        end
         return true
     end,
     setWaterSnapshot=function() return true end,
     appendLog=function() end,
+    touch=function() stateTouches = stateTouches + 1 end,
+    broadcast=function() stateBroadcasts = stateBroadcasts + 1 end,
     refuelGenerator=function(id) refueledGenerator = id; return true end,
 }
 BunkerCampaign.Util.worldAgeHours = function() return 10 end
@@ -246,6 +263,23 @@ BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
     "BunkerCampaignDecontamination", "qaRefuelGenerator", player, {generator="backup"}
 )
 assert(refueledGenerator == "backup", "QA refuel must target the requested logical generator")
+
+BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
+    "BunkerCampaignDecontamination", "qaSetIntake", player,
+    {x=9940,y=12633,z=0,broken=true}
+)
+assert(persisted.BanditWeekOneTheArk.airintakes[1].broken
+    and ventilation.intakes.intake_1.broken and ventilation.intakes.intake_1.status == "failed",
+    "QA intake failure must mutate both the Ark source state and campaign snapshot immediately")
+assert(stateTouches == 1 and stateBroadcasts == 1,
+    "QA intake failure must publish one authoritative state revision")
+
+BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
+    "BunkerCampaignDecontamination", "qaWaterStorage", player,
+    {fillFraction=0,stopPump=true}
+)
+assert(not power.consumers.water.requested and persisted.WaterPipes.Barrels.bunker.w == 0,
+    "empty-storage QA must stop the pump and drain the physical Waterpipes reserve")
 
 print("BunkerCampaign decontamination server tests passed")
 end

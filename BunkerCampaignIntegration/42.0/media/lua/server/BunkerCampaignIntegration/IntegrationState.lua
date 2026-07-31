@@ -33,7 +33,11 @@ local function bunkerAirContamination(player)
     local campaign = CampaignState.get()
     local ventilation = campaign and campaign.bunker.modules.ventilation
     local room = definition and ventilation and ventilation.rooms[definition.id]
-    return room and room.contamination or 0
+    local contamination = room and room.contamination or 0
+    local coreConstants = BunkerCampaign.Constants
+    local cutoff = coreConstants and coreConstants.VENTILATION
+        and coreConstants.VENTILATION.AIRBORNE_TRACE_CUTOFF or 0
+    return contamination < cutoff and 0 or contamination
 end
 
 local function roomId(name)
@@ -55,20 +59,53 @@ local function boundsAdjacent(left, right)
     return xOverlap and yOverlap
 end
 
+local function roomFootprints(definition)
+    return type(definition.regions) == "table" and #definition.regions > 0
+        and definition.regions or {definition.bounds}
+end
+
+local function footprintsAdjacent(left, right)
+    for _, leftRegion in ipairs(roomFootprints(left)) do
+        for _, rightRegion in ipairs(roomFootprints(right)) do
+            if boundsAdjacent(leftRegion, rightRegion) then return true end
+        end
+    end
+    return false
+end
+
+local function geometryBounds(regions)
+    if type(regions) ~= "table" or #regions == 0 then return nil end
+    local result = {
+        x1=regions[1].x1, x2=regions[1].x2,
+        y1=regions[1].y1, y2=regions[1].y2, z=regions[1].z,
+    }
+    for _, region in ipairs(regions) do
+        result.x1, result.x2 = math.min(result.x1, region.x1), math.max(result.x2, region.x2)
+        result.y1, result.y2 = math.min(result.y1, region.y1), math.max(result.y2, region.y2)
+    end
+    return result
+end
+
 local function registerArkRooms()
     if type(BWOARooms) ~= "table" then return 0 end
     local definitions = {}
     for name, room in pairs(BWOARooms) do
         if name ~= "Exterior" and type(room) == "table" then
             if type(room.Init) == "function" then pcall(room.Init) end
-            if Util.isFiniteNumber(room.x1) and Util.isFiniteNumber(room.x2)
+            local geometry = Constants.ROOM_GEOMETRY[name]
+            local regions = geometry and geometry.regions or nil
+            local bounds = Util.isFiniteNumber(room.x1) and Util.isFiniteNumber(room.x2)
                 and Util.isFiniteNumber(room.y1) and Util.isFiniteNumber(room.y2)
-                and Util.isFiniteNumber(room.z) and room.z < 0 then
+                and Util.isFiniteNumber(room.z)
+                and {x1=room.x1, x2=room.x2, y1=room.y1, y2=room.y2, z=room.z}
+                or geometryBounds(regions)
+            if bounds and bounds.z < 0 then
                 definitions[#definitions + 1] = {
                     id=roomId(name),
                     label=type(room.name) == "string" and room.name or name,
                     kind=roomKind(name),
-                    bounds={x1=room.x1, x2=room.x2, y1=room.y1, y2=room.y2, z=room.z},
+                    bounds=bounds,
+                    regions=regions,
                     vents=type(room.vents) == "table" and room.vents or {},
                     ventWeight=math.max(0.25, #(type(room.vents) == "table" and room.vents or {})),
                     leakRate=roomKind(name) == "airlock" and 0.008 or 0.002,
@@ -81,7 +118,7 @@ local function registerArkRooms()
     for leftIndex, left in ipairs(definitions) do
         for rightIndex = leftIndex + 1, #definitions do
             local right = definitions[rightIndex]
-            if boundsAdjacent(left.bounds, right.bounds) then
+            if footprintsAdjacent(left, right) then
                 left.connections[#left.connections + 1] = right.id
                 right.connections[#right.connections + 1] = left.id
             end
@@ -245,7 +282,8 @@ local function doorStateAt(definition)
     local cell = getCell and getCell() or nil
     local square = cell and cell:getGridSquare(definition.x, definition.y, definition.z) or nil
     if not square or not square:getChunk() or not square.getObjects then
-        return { id=definition.id, x=definition.x, y=definition.y, z=definition.z, loaded=false, open=false }
+        return { id=definition.id, label=definition.label, x=definition.x, y=definition.y,
+            z=definition.z, loaded=false, open=false }
     end
     local objects = square:getObjects()
     for index = 0, objects:size() - 1 do
@@ -259,23 +297,17 @@ local function doorStateAt(definition)
         end
         if isDoor and object.IsOpen then
             return {
-                id=definition.id, x=definition.x, y=definition.y, z=definition.z,
+                id=definition.id, label=definition.label, x=definition.x, y=definition.y, z=definition.z,
                 loaded=true, open=object:IsOpen() == true,
             }
         end
     end
-    return { id=definition.id, x=definition.x, y=definition.y, z=definition.z, loaded=true, open=false, missing=true }
+    return { id=definition.id, label=definition.label, x=definition.x, y=definition.y,
+        z=definition.z, loaded=true, open=false, missing=true }
 end
 
 local function sampleEntryPath(zones)
-    local definitions = {}
-    local entrance = type(BWOARooms) == "table" and BWOARooms.Entrance or nil
-    if entrance and type(entrance.Init) == "function" then pcall(entrance.Init) end
-    for index, door in ipairs(entrance and type(entrance.doors) == "table" and entrance.doors or {}) do
-        definitions[#definitions + 1] = {
-            id="entry_door_" .. tostring(index), x=door.x, y=door.y, z=door.z,
-        }
-    end
+    local definitions = Constants.ENTRY_DOORS
     local result = {
         sampled=#definitions > 0,
         breached=false,

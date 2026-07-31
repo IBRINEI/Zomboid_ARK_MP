@@ -84,6 +84,8 @@ function VentilationSimulation.createDefault()
             worstRoomId="",
             co2TrendPpmPerMinute=0,
             filterUsePerMinute=0,
+            recirculationRemovalPerMinute=0,
+            filterActivity="idle_clean_air",
         },
     }
 end
@@ -132,7 +134,9 @@ function VentilationSimulation.normalize(ventilation)
     local filter = ensureTable(ventilation, "filterBank")
     local legacyFilter = Util.numberOr(ventilation.filterRemaining, 1, 0, 1)
     filter.remaining = Util.numberOr(filter.remaining, legacyFilter, 0, 1)
-    filter.efficiency = Util.numberOr(filter.efficiency, defaults.filterBank.efficiency, 0, 1)
+    -- Efficiency is a model rule, not per-item wear (condition is).  Reapply it
+    -- so existing saves receive filtration-balance fixes immediately.
+    filter.efficiency = Constants.VENTILATION.FILTER_EFFICIENCY
     filter.condition = Util.numberOr(filter.condition, defaults.filterBank.condition, 0, 1)
     filter.bypass = Util.booleanOr(filter.bypass, false)
     filter.fault = type(filter.fault) == "string" and filter.fault or "none"
@@ -175,6 +179,10 @@ function VentilationSimulation.normalize(ventilation)
     telemetry.worstRoomId = type(telemetry.worstRoomId) == "string" and telemetry.worstRoomId or ""
     telemetry.co2TrendPpmPerMinute = Util.numberOr(telemetry.co2TrendPpmPerMinute, 0, -10000, 10000)
     telemetry.filterUsePerMinute = Util.numberOr(telemetry.filterUsePerMinute, 0, 0, 1)
+    telemetry.recirculationRemovalPerMinute = Util.numberOr(
+        telemetry.recirculationRemovalPerMinute, 0, 0, 1)
+    telemetry.filterActivity = type(telemetry.filterActivity) == "string"
+        and telemetry.filterActivity or "idle_clean_air"
     ventilation.powerDemandKw = VentilationSimulation.powerDemand(ventilation.requestedMode)
     return ventilation
 end
@@ -324,8 +332,12 @@ function VentilationSimulation.update(ventilation, deltaMinutes, context)
 
     local filter = ventilation.filterBank
     local filterEffective = filter.remaining > 0 and not filter.bypass and filter.condition > 0.05
-    local efficiency = filterEffective and filter.efficiency * filter.condition or 0
+    -- A serviceable installed filter is a hard contamination barrier.  Its
+    -- remaining charge controls capacity; condition below the failure threshold
+    -- disables it instead of causing invisible partial breakthrough.
+    local efficiency = filterEffective and filter.efficiency or 0
     local capturedLoad = 0
+    local recirculationRemoved = 0
     local totalVolume, weightedCo2, weightedContamination = 0, 0, 0
     local totalOccupants, occupiedRooms, worstRoomId, worstScore = 0, 0, "", -1
 
@@ -343,16 +355,22 @@ function VentilationSimulation.update(ventilation, deltaMinutes, context)
             room.co2 = room.co2 + generatedCo2 * (1 - exchange * 0.5)
             local supplied = outside * (1 - efficiency)
             room.contamination = room.contamination + (supplied - room.contamination) * exchange
+            if supplied <= 0.000001 and room.contamination < rules.AIRBORNE_TRACE_CUTOFF then
+                room.contamination = 0
+            end
             capturedLoad = capturedLoad + outside * efficiency * roomFlow * deltaMinutes
         elseif ventilation.activeMode == "internal_recirculation" then
             room.co2 = room.co2 + generatedCo2
             local passes = math.min(1, roomFlow * deltaMinutes / volume)
             room.contamination = room.contamination * (1 - efficiency * passes)
-            capturedLoad = capturedLoad + math.max(0, beforeContamination - room.contamination) * volume
+            if room.contamination < rules.AIRBORNE_TRACE_CUTOFF then room.contamination = 0 end
+            local removed = math.max(0, beforeContamination - room.contamination) * volume
+            capturedLoad = capturedLoad + removed
+            recirculationRemoved = recirculationRemoved + removed
         else
             room.co2 = room.co2 + generatedCo2
-            local leak = ventilation.activeMode == "sealed" and rules.SEALED_LEAK_FRACTION_PER_MINUTE
-                or math.max(rules.SEALED_LEAK_FRACTION_PER_MINUTE, room.leakRate or 0)
+            local leak = ventilation.activeMode == "sealed" and 0
+                or math.max(0, room.leakRate or 0)
             local exchange = math.min(0.25, leak * deltaMinutes * (room.sealed and 1 or 8))
             room.co2 = room.co2 + (rules.EXTERNAL_CO2_PPM - room.co2) * exchange
             room.contamination = room.contamination + (outside - room.contamination) * exchange
@@ -424,6 +442,20 @@ function VentilationSimulation.update(ventilation, deltaMinutes, context)
     ventilation.telemetry.co2TrendPpmPerMinute = deltaMinutes > 0 and (ventilation.co2 - oldCo2) / deltaMinutes or 0
     ventilation.telemetry.filterUsePerMinute = deltaMinutes > 0
         and math.max(0, oldFilter - filter.remaining) / deltaMinutes or 0
+    ventilation.telemetry.recirculationRemovalPerMinute = deltaMinutes > 0
+        and recirculationRemoved / math.max(1, totalVolume) / deltaMinutes or 0
+    if not filterEffective then
+        ventilation.telemetry.filterActivity = filter.bypass and "bypassed" or "unavailable"
+    elseif capturedLoad > 0 then
+        ventilation.telemetry.filterActivity = ventilation.activeMode == "internal_recirculation"
+            and "cleaning_internal_air" or "capturing_external_contamination"
+    elseif ventilation.activeMode == "internal_recirculation" then
+        ventilation.telemetry.filterActivity = "idle_internal_air_clean"
+    elseif ventilation.activeMode == "external_filtration" or ventilation.activeMode == "emergency_ventilation" then
+        ventilation.telemetry.filterActivity = outside > 0 and "no_filter_load" or "idle_intakes_clean"
+    else
+        ventilation.telemetry.filterActivity = "inactive"
+    end
     ventilation.enabled = ventilation.requestedMode ~= "off" and ventilation.requestedMode ~= "sealed"
     ventilation.powerDemandKw = VentilationSimulation.powerDemand(ventilation.requestedMode)
 

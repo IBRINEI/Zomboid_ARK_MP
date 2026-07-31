@@ -359,3 +359,37 @@ worst-room values, entry-path state, filter use per minute and purge progress.
 The physical pump tile now changes the same authoritative request as the
 systems panel. The admin QA water submenu creates clean, tainted, empty,
 damaged-filter, damaged-pump and finite-external-source test states.
+
+### Third-slice room/air/water correction pass (2026-07-31)
+
+Core 0.5.2 and Integration 0.7.2 address the second dedicated-server test
+report. Ark's corridor has no rectangular bounds, so it is now registered as
+one declarative five-region ventilation room. The registry, snapshots, player
+lookup and adjacency model support composite footprints; this is also the
+extension mechanism for later non-rectangular garage/laboratory additions.
+The systems window has a persistent scrollable room map listing every room's
+CO2, airborne contamination, occupants, airflow and connections.
+
+A serviceable ventilation filter now blocks contaminant breakthrough until it
+is exhausted or fails. Filter charge is consumed only while capturing dirty
+outside air or cleaning dirty recirculated air, and explicit activity/removal
+telemetry explains an unchanged percentage in clean air. Recirculation cleans
+internal airborne contamination but does not remove CO2. Sealed has no
+intentional outside exchange; Off retains passive leakage. The emergency fan
+load fits the healthy backup generator's life-support budget without shedding
+main lights. Trace contamination from the former partial-breakthrough model is
+cleared and no longer reaches ToxicMP player exposure.
+
+Entry telemetry now uses an explicit four-gate manifest: one surface gate and
+three bunker gates. Reports distinguish open, loaded and total counts. The
+four physical surface intakes are listed with coordinates and can be broken or
+repaired individually from the administrator context menu on their exact
+tiles.
+
+QA reports are persistent scrollable windows; water reports contain only
+water state. The empty-water command is promoted, clearly labelled and stops
+the pump so the infinite well cannot immediately refill the test state. Clean,
+tainted and empty storage mutations now update loaded Waterpipes sinks and
+containers directly as well as unloaded pending buffers, so a tainted QA fill
+is observable from a sink immediately and emptying storage drains the actual
+receiver.

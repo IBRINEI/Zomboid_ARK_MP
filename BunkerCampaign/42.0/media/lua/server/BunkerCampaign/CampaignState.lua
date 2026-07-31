@@ -169,7 +169,8 @@ function CampaignState.snapshot()
     for id, room in pairs(ventilation.rooms or {}) do
         roomSnapshot[id] = {
             id=id, label=room.label, kind=room.kind, volumeM3=room.volumeM3,
-            bounds=room.bounds,
+            bounds=room.bounds, regions=room.regions, footprintArea=room.footprintArea,
+            connections=room.connections,
             occupants=room.occupants, sealed=room.sealed, co2=room.co2,
             contamination=room.contamination, airflowM3PerMinute=room.airflowM3PerMinute,
             status=room.status,

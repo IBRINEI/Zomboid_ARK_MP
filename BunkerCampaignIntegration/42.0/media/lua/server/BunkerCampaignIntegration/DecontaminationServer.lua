@@ -539,6 +539,11 @@ local function sendQaReport(player, kind)
     local definition = BunkerCampaign.RoomRegistry.find(player:getX(), player:getY(), player:getZ())
     local room = definition and ventilation.rooms and ventilation.rooms[definition.id] or nil
     local water = WaterService.sample()
+    local campaignWater = campaign and campaign.bunker.modules.water or {}
+    water.pumpRequested = campaignWater.requested == true
+    water.powerAllocated = campaignWater.powerAllocated == true
+    water.reason = campaignWater.reason or "none"
+    water.source = campaignWater.selectedSource or water.source
     sendServerCommand(player, Constants.DECON_NETWORK_MODULE, "qaReport", {
         kind=kind,
         roomId=definition and definition.id or "outside",
@@ -548,9 +553,44 @@ local function sendQaReport(player, kind)
         entryPath=ventilation.entryPath,
         filterRemaining=ventilation.filterBank and ventilation.filterBank.remaining or 0,
         filterUsePerMinute=ventilation.telemetry and ventilation.telemetry.filterUsePerMinute or 0,
+        filterActivity=ventilation.telemetry and ventilation.telemetry.filterActivity or "unknown",
+        intakes=ventilation.intakes,
         airlock=ventilation.airlock,
         water=water,
     })
+end
+
+local function qaSetIntake(player, args)
+    local x, y, z = tonumber(args and args.x), tonumber(args and args.y), tonumber(args and args.z)
+    if not x or not y or not z or type(args.broken) ~= "boolean" then return false, "invalid_intake" end
+    x, y, z = math.floor(x), math.floor(y), math.floor(z)
+    local ark = ModData.getOrCreate(Constants.THE_ARK_STATE_KEY)
+    local found = false
+    for _, intake in pairs(type(ark.airintakes) == "table" and ark.airintakes or {}) do
+        if math.floor(tonumber(intake.x) or 0) == x and math.floor(tonumber(intake.y) or 0) == y
+            and math.floor(tonumber(intake.z) or 0) == z then
+            intake.broken = args.broken
+            if not args.broken and (tonumber(intake.condition) or 0) <= 0 then intake.condition = 1 end
+            found = true
+        end
+    end
+    if not found then return false, "air_intake_not_found_on_selected_tile" end
+    if type(ModData.transmit) == "function" then ModData.transmit(Constants.THE_ARK_STATE_KEY) end
+    local campaign = CampaignState.get()
+    local ventilation = campaign and campaign.bunker.modules.ventilation
+    for _, intake in pairs(ventilation and ventilation.intakes or {}) do
+        if math.floor(tonumber(intake.x) or 0) == x and math.floor(tonumber(intake.y) or 0) == y
+            and math.floor(tonumber(intake.z) or 0) == z then
+            intake.broken = args.broken
+            intake.condition = args.broken and 0 or math.max(tonumber(intake.condition) or 0, 1)
+            intake.status = args.broken and "failed" or "operational"
+        end
+    end
+    CampaignState.touch()
+    CampaignState.broadcast()
+    CampaignState.appendLog("ventilation", (args.broken and "air intake broken at " or "air intake repaired at ")
+        .. tostring(x) .. "," .. tostring(y) .. "," .. tostring(z), actor(player))
+    return true
 end
 
 local function refreshLifeSupportZones(player)
@@ -567,6 +607,7 @@ local function runQa(player, command, args)
         local targetId = type(args) == "table" and args.target or nil
         local targets = {
             exterior=Rules.EXTERIOR_TEST,
+            intakes={x=9940.5,y=12633.5,z=0},
             dirty=Rules.DIRTY_ENTRY,
             chamber=Rules.CHAMBER,
             clean=Rules.CLEAN_EXIT,
@@ -623,6 +664,8 @@ local function runQa(player, command, args)
         return true
     elseif command == "qaSetRoomAir" then
         return qaSetRoomAir(player, args)
+    elseif command == "qaSetIntake" then
+        return qaSetIntake(player, args)
     elseif command == "qaSetVentFilter" then
         local ventilation = CampaignState.get().bunker.modules.ventilation
         local remaining = Util.clamp(tonumber(args and args.remaining) or 1, 0, 1)
@@ -643,6 +686,9 @@ local function runQa(player, command, args)
     elseif command == "qaWaterStorage" then
         local medium = args and args.medium or nil
         local fraction = tonumber(args and args.fillFraction) or 0
+        if args and args.stopPump == true then
+            CampaignState.setConsumerRequested("water", false, actor(player))
+        end
         local found = WaterService.setStorageForQa(medium, fraction)
         return found, "no_bunker_storage"
     elseif command == "qaWaterPump" then

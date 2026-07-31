@@ -14,6 +14,17 @@ assert(RoomRegistry.register({
 }), "garage must register")
 assert(RoomRegistry.find(12, 22, -4).id == "laboratory", "coordinates must resolve to a room")
 assert(RoomRegistry.find(17, 23, -4).id == "garage", "new rooms must need no simulation changes")
+assert(RoomRegistry.register({
+    id="corridor", label="Corridor", kind="circulation",
+    regions={
+        {x1=21,x2=22,y1=20,y2=30,z=-4},
+        {x1=21,x2=30,y1=29,y2=30,z=-4},
+    },
+    vents={{x=21,y=25,z=-4}}, connections={"garage"},
+}), "non-rectangular corridor geometry must register")
+assert(RoomRegistry.find(22, 27, -4).id == "corridor"
+    and RoomRegistry.find(27, 30, -4).id == "corridor",
+    "every composite corridor segment must resolve to one ventilation room")
 
 local ventilation = VentilationSimulation.createDefault()
 ventilation.powerAllocated = true
@@ -32,6 +43,26 @@ assert(ventilation.telemetry.totalOccupants == 3, "room occupants must be counte
 assert(ventilation.rooms.laboratory.co2 > BunkerCampaign.Constants.VENTILATION.MIN_CO2,
     "occupied room must generate CO2")
 assert(ventilation.filterBank.remaining < filterBefore, "outside contamination must load the filter")
+assert(ventilation.rooms.laboratory.contamination == 0,
+    "a healthy full-efficiency filter must not leak trace contamination into a clean room")
+ventilation.filterBank.condition = 0.5
+VentilationSimulation.update(ventilation, 1, {
+    occupancyByRoom={}, externalContamination=1,
+})
+assert(ventilation.rooms.laboratory.contamination == 0,
+    "a serviceable damaged filter must remain a barrier until it actually fails or is exhausted")
+ventilation.filterBank.condition = 1
+
+ventilation.rooms.laboratory.contamination = 0.5
+assert(VentilationSimulation.setMode(ventilation, "internal_recirculation"))
+local recirculationFilter = ventilation.filterBank.remaining
+VentilationSimulation.update(ventilation, 1, {occupancyByRoom={laboratory=1},externalContamination=1})
+assert(ventilation.rooms.laboratory.contamination < 0.5
+    and ventilation.filterBank.remaining < recirculationFilter,
+    "internal recirculation must clean existing airborne contamination and load the filter")
+assert(ventilation.telemetry.filterActivity == "cleaning_internal_air"
+    and ventilation.telemetry.recirculationRemovalPerMinute > 0,
+    "recirculation effectiveness must be exposed in telemetry")
 
 VentilationSimulation.update(ventilation, 1, {occupancyByRoom={}})
 assert(ventilation.telemetry.totalOccupants == 0
@@ -39,9 +70,16 @@ assert(ventilation.telemetry.totalOccupants == 0
     "leaving a room must reset its occupant count instead of accumulating visits")
 
 assert(VentilationSimulation.setMode(ventilation, "sealed"))
+ventilation.rooms.laboratory.contamination = 0
 VentilationSimulation.update(ventilation, 1, {occupancyByRoom={laboratory=2}})
 assert(ventilation.activeMode == "sealed" and ventilation.airflowM3PerMinute == 0,
     "sealed mode must stop mechanical airflow")
+assert(ventilation.rooms.laboratory.contamination == 0,
+    "sealed mode must block intentional outside contamination exchange")
+assert(VentilationSimulation.setMode(ventilation, "off"))
+VentilationSimulation.update(ventilation, 1, {occupancyByRoom={laboratory=2},externalContamination=1})
+assert(ventilation.rooms.laboratory.contamination > 0,
+    "OFF must remain distinct from sealed by allowing passive room leakage")
 
 ventilation.rooms.laboratory.contamination = 0.8
 assert(VentilationSimulation.setMode(ventilation, "emergency_ventilation"))
