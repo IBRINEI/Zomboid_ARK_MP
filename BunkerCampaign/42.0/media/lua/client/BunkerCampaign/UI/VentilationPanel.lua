@@ -17,6 +17,10 @@ local function number(value, decimals)
     return string.format("%." .. tostring(decimals or 0) .. "f", tonumber(value) or 0)
 end
 
+local function precisePercent(value)
+    return string.format("%.4f%%", (tonumber(value) or 0) * 100)
+end
+
 local function canControl()
     if not isClient() then return true end
     local player = getPlayer()
@@ -133,8 +137,10 @@ local function roomStatusText(snapshot)
             .. " | filter: " .. percent(ventilation.filterRemaining)
             .. " | activity: " .. tostring(ventilation.telemetry and ventilation.telemetry.filterActivity or "-")
             .. " | recirc removal: "
-            .. percent(ventilation.telemetry and ventilation.telemetry.recirculationRemovalPerMinute or 0)
-            .. "/min"
+            .. precisePercent(ventilation.telemetry and ventilation.telemetry.recirculationRemovalPerMinute or 0)
+            .. "/min (" .. number(ventilation.telemetry
+                and ventilation.telemetry.recirculationRemovedM3PerMinute or 0, 2)
+            .. " contaminated m3/min)"
             .. " <LINE>",
         "External filtration: filtered outside air lowers CO2. The filter loses charge only when contaminant is captured. <LINE>",
         "Internal recirculation: no fresh air and no CO2 removal; it cleans existing airborne contamination and loads the filter only while cleaning. <LINE>",
@@ -164,15 +170,40 @@ local function roomStatusText(snapshot)
     end
     table.sort(intakes, function(left, right) return tostring(left.id) < tostring(right.id) end)
     for _, intake in ipairs(intakes) do
-        lines[#lines + 1] = string.format("<TEXT> %s (%d,%d,Z%d): %s | outside %.1f%% <LINE>",
+        lines[#lines + 1] = string.format("<TEXT> %s (%d,%d,Z%d): %s | condition %.0f%% | outside %.1f%% <LINE>",
             tostring(intake.id), tonumber(intake.x) or 0, tonumber(intake.y) or 0,
             tonumber(intake.z) or 0, tostring(intake.status or "unknown"),
+            (tonumber(intake.condition) or 0) * 100,
             (tonumber(intake.externalContamination) or 0) * 100)
     end
+    lines[#lines + 1] = "<SIZE:small> Repair: carry 1 Scrap Metal, stand next to a broken intake, right-click its exact tile and choose Repair bunker air intake. Administrators also retain instant QA break/repair actions. <LINE>"
     return table.concat(lines)
 end
 
+local function refreshRoomStatusModal(self, force)
+    local modal = self.roomStatusModal
+    if not modal or not modal:getIsVisible() or not modal.chatText then
+        self.roomStatusModal = nil
+        return
+    end
+    local snapshot = ClientState.snapshot
+    local revision = snapshot and snapshot.revision or -1
+    if not force and self.roomStatusRevision == revision then return end
+    local scroll = modal.chatText:getYScroll()
+    local value = roomStatusText(snapshot)
+    modal.text = value
+    modal.chatText.text = value
+    modal.chatText:paginate()
+    modal.chatText:setYScroll(scroll)
+    self.roomStatusRevision = revision
+end
+
 function VentilationPanel:onRoomStatus()
+    if self.roomStatusModal and self.roomStatusModal:getIsVisible() then
+        refreshRoomStatusModal(self, true)
+        self.roomStatusModal:bringToTop()
+        return
+    end
     local text = roomStatusText(ClientState.snapshot)
     local width, height = 850, 650
     local modal = ISModalRichText:new((getCore():getScreenWidth() - width) / 2,
@@ -182,6 +213,24 @@ function VentilationPanel:onRoomStatus()
     modal.destroyOnClick = true
     modal.alwaysOnTop = true
     modal:addToUIManager()
+    self.roomStatusModal = modal
+    self.roomStatusRevision = ClientState.snapshot and ClientState.snapshot.revision or -1
+    self.nextRoomStatusRefreshMs = 0
+end
+
+function VentilationPanel:update()
+    ISCollapsableWindow.update(self)
+    if not self.roomStatusModal then return end
+    if not self.roomStatusModal:getIsVisible() then
+        self.roomStatusModal = nil
+        return
+    end
+    local now = getTimestampMs()
+    if now >= (self.nextRoomStatusRefreshMs or 0) then
+        ClientState.request(getSpecificPlayer(self.playerNum))
+        self.nextRoomStatusRefreshMs = now + 2000
+    end
+    refreshRoomStatusModal(self, false)
 end
 
 local function toggleGenerator(self, id)
@@ -380,6 +429,13 @@ function VentilationPanel:render()
         .. " | " .. tostring(entryPath.openCount or 0) .. "/" .. tostring(entryPath.total or 0)
         .. " open | " .. tostring(entryPath.loadedCount or 0) .. "/" .. tostring(entryPath.total or 0)
         .. " loaded | outside " .. percent(entryPath.externalContamination)) or "not sampled"
+    local intakeTotal = 0
+    for _ in pairs(ventilation.intakes or {}) do intakeTotal = intakeTotal + 1 end
+    local activeIntakes = ventilation.telemetry and ventilation.telemetry.activeIntakes or 0
+    local airflowText = number(ventilation.airflowM3PerMinute, 0) .. " m3/min"
+    if ventilation.activeMode == "internal_recirculation" then
+        airflowText = airflowText .. " internal | outside 0"
+    end
     drawRows({
         { getText("UI_BC_RequestedMode"), tostring(ventilation.requestedMode or "-") },
         { getText("UI_BC_ActiveMode"), tostring(ventilation.activeMode or "-") },
@@ -387,12 +443,15 @@ function VentilationPanel:render()
         { getText("UI_BC_Powered"), ventilation.powerAllocated and getText("UI_BC_Yes") or getText("UI_BC_No") },
         { getText("UI_BC_Operating"), ventilation.operating and getText("UI_BC_Yes") or getText("UI_BC_No") },
         { getText("UI_BC_Status"), tostring(ventilation.status or "-") },
-        { getText("UI_BC_Condition"), percent(ventilation.condition) },
+        { "Vent unit condition", percent(ventilation.condition) .. " | active intakes "
+            .. tostring(activeIntakes) .. "/" .. tostring(intakeTotal) },
         { getText("UI_BC_Filter"), percent(ventilation.filterRemaining) },
         { getText("UI_BC_FilterUse"), percent(ventilation.telemetry and ventilation.telemetry.filterUsePerMinute or 0)
             .. "/min | " .. tostring(ventilation.telemetry and ventilation.telemetry.filterActivity or "-") },
-        { getText("UI_BC_Airflow"), number(ventilation.airflowM3PerMinute, 0) .. " m3/min | recirc cleaning "
-            .. percent(ventilation.telemetry and ventilation.telemetry.recirculationRemovalPerMinute or 0) .. "/min" },
+        { getText("UI_BC_Airflow"), airflowText .. " | clean "
+            .. precisePercent(ventilation.telemetry and ventilation.telemetry.recirculationRemovalPerMinute or 0)
+            .. "/min (" .. number(ventilation.telemetry
+                and ventilation.telemetry.recirculationRemovedM3PerMinute or 0, 2) .. " m3/min)" },
         { getText("UI_BC_CO2"), number(ventilation.co2, 0) .. " ppm" },
         { getText("UI_BC_ExternalContamination"), percent(ventilation.externalContamination) },
         { getText("UI_BC_InternalContamination"), percent(ventilation.internalContamination) },
@@ -421,7 +480,9 @@ function VentilationPanel:render()
             { getText("UI_BC_Status"), tostring(water.status or "-") },
             { getText("UI_BC_Restriction"), tostring(water.reason or "none") },
             { getText("UI_BC_Condition"), percent(water.pumpCondition) },
-            { getText("UI_BC_Filter"), percent(water.filterRemaining) },
+            { getText("UI_BC_Filter"), percent(water.filterRemaining) .. " | use "
+                .. precisePercent(water.telemetry and water.telemetry.treatmentFilterUsePerMinute or 0)
+                .. "/min" },
             { getText("UI_BC_WaterReserve"), reserve .. " L" },
             { getText("UI_BC_CleanWater"), number(storage.cleanLiters, 0) .. " L" },
             { getText("UI_BC_TaintedWater"), number(storage.taintedLiters, 0) .. " L" },
@@ -452,6 +513,10 @@ function VentilationPanel:render()
 end
 
 function VentilationPanel:close()
+    if self.roomStatusModal and self.roomStatusModal:getIsVisible() then
+        self.roomStatusModal:destroy()
+    end
+    self.roomStatusModal = nil
     self:removeFromUIManager()
     VentilationPanel.instance = nil
 end

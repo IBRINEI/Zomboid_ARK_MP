@@ -52,8 +52,36 @@ local function physicalWater(record)
     -- are numbers, so normalize before any arithmetic or comparison.
     amount = tonumber(amount) or 0
     capacity = tonumber(capacity) or tonumber(md and (md.waterMaxAmount or md.waterMax)) or 0
-    local medium = amount > 0 and object.isTaintedWater and object:isTaintedWater()
-        and "TaintedWater" or (amount > 0 and "Water" or nil)
+    local medium = nil
+    if amount > 0 then
+        local container = object.getFluidContainer and object:getFluidContainer() or nil
+        local primary = container and container.getPrimaryFluid and container:getPrimaryFluid() or nil
+        local primaryName = primary and primary.getFluidTypeString and primary:getFluidTypeString() or nil
+        if primaryName ~= nil then primaryName = tostring(primaryName) end
+        if primaryName == "TaintedWater" or primaryName == "Water" then
+            medium = primaryName
+        elseif object.isTaintedWater and object:isTaintedWater() then
+            medium = "TaintedWater"
+        elseif record.m == "TaintedWater" or record.m == "Water" then
+            medium = record.m
+        elseif md and (md.BunkerCampaignWaterMedium == "TaintedWater"
+            or md.BunkerCampaignWaterMedium == "Water") then
+            medium = md.BunkerCampaignWaterMedium
+        else
+            medium = "Water"
+        end
+        -- WaterPipes clears the sprite taint flag after its pending buffer is
+        -- transferred.  Preserve the actual receiver medium instead.
+        if md then md.BunkerCampaignWaterMedium = medium end
+        local sprite = object.getSprite and object:getSprite() or nil
+        local properties = sprite and sprite.getProperties and sprite:getProperties() or nil
+        if properties and IsoFlagType and IsoFlagType.taintedWater then
+            if medium == "TaintedWater" then properties:set(IsoFlagType.taintedWater)
+            else properties:unset(IsoFlagType.taintedWater) end
+        end
+    elseif md then
+        md.BunkerCampaignWaterMedium = nil
+    end
     return object, math.max(0, amount), math.max(0, capacity), medium
 end
 
@@ -70,6 +98,7 @@ local function setPhysicalWater(object, medium, amount, capacity)
     if md then
         md.waterAmount = amount
         if capacity > 0 then md.waterMaxAmount = capacity end
+        md.BunkerCampaignWaterMedium = amount > 0 and medium or nil
     end
     local sprite = object.getSprite and object:getSprite() or nil
     local properties = sprite and sprite.getProperties and sprite:getProperties() or nil
@@ -374,6 +403,20 @@ function WaterpipesAdapter.setBunkerPumpForQa(gmd, condition, filterRemaining, b
     return true
 end
 
+function WaterpipesAdapter.consumeTreatmentFilter(gmd, liters)
+    local pumps = type(gmd) == "table" and type(gmd.Pumps) == "table" and gmd.Pumps or {}
+    local pump = pumps[coordsId(Constants.BUNKER_WATER_PUMP)]
+    if type(pump) ~= "table" or pump.active ~= true or pump.source ~= "TaintedWater"
+        or pump.BunkerCampaignBypass == true then return false, 0 end
+    local remaining = Util.numberOr(pump.filter, 0, 0, 100)
+    liters = Util.numberOr(liters, 0, 0, BunkerCampaign.Constants.WATER.MAX_FLOW_PER_MINUTE)
+    if remaining <= 0 or liters <= 0 then return false, 0 end
+    local capacity = math.max(1, tonumber(Constants.BUNKER_WATER_FILTER_CAPACITY_LITERS) or 1000)
+    local usedPercent = math.min(remaining, liters / capacity * 100)
+    pump.filter = math.max(0, remaining - usedPercent)
+    return usedPercent > 0, usedPercent / 100
+end
+
 function WaterpipesAdapter.sample(gmd)
     local result = {
         adapterOnline = type(gmd) == "table",
@@ -454,7 +497,7 @@ function WaterpipesAdapter.sample(gmd)
 
     local meters = type(gmd.Flowmeters) == "table" and gmd.Flowmeters or {}
     local meter = meters[coordsId(Constants.BUNKER_WATER_FLOWMETER)]
-    if type(meter) == "table" then
+    if result.pumpActive and type(meter) == "table" then
         result.flowPerMinute = Util.numberOr(meter.f, 0, 0, BunkerCampaign.Constants.WATER.MAX_FLOW_PER_MINUTE) / 100
     end
 

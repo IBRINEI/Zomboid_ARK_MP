@@ -86,6 +86,20 @@ BunkerCampaignIntegration.IntegrationState.onClientCommand(
 )
 assert(campaign.bunker.modules.power.consumers.water.requested == true,
     "Waterpipes pump ON must update the authoritative water consumer")
+BunkerCampaignIntegration.IntegrationState.onClientCommand(
+    "Commands", "PumpMod", pumpPlayer,
+    { x=9950, y=12616, z=-4, efficiency=80 }
+)
+assert(waterpipes.Pumps["9950-12616--4"].efficiency == 80
+    and campaign.bunker.modules.water.pumpCondition == 0.8,
+    "Waterpipes repair must reach both the server pump and bunker systems snapshot")
+BunkerCampaignIntegration.IntegrationState.onClientCommand(
+    "Commands", "PumpMod", pumpPlayer,
+    { x=9950, y=12616, z=-4, filter=0 }
+)
+assert(waterpipes.Pumps["9950-12616--4"].filter == 0
+    and campaign.bunker.modules.water.filterRemaining == 0,
+    "removing the physical treatment filter must update the bunker systems snapshot")
 
 toxic.arkIntakes = { startX = 500, startY = 500, endX = 510, endY = 510 }
 BunkerCampaignIntegration.IntegrationState.onClientCommand(

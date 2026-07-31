@@ -52,6 +52,10 @@ Constants.BUNKER_WATER_PIPES = {
 }
 Constants.BUNKER_WATER_BUILDING_CONNECTION = { x = 9956, y = 12615, z = -4 }
 Constants.BUNKER_PUMP_POWER_DEMAND_KW = 1.5
+-- One full charcoal treatment charge processes this much contaminated source
+-- water.  WaterPipes' stock fixed 0.007 percentage-point loss per minute is
+-- too small to expose meaningful campaign maintenance at bunker flow rates.
+Constants.BUNKER_WATER_FILTER_CAPACITY_LITERS = 1000
 
 Constants.DECONTAMINATION = {
     ROOM = { x1=9944, x2=9949, y1=12622, y2=12628, z=-4 },

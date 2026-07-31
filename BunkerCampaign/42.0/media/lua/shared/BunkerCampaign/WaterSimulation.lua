@@ -68,6 +68,7 @@ function WaterSimulation.createDefault()
             producedLiters=0,
             consumedLiters=0,
             lastFlowLpm=0,
+            treatmentFilterUsePerMinute=0,
             lastTransactionId="",
         },
         faults={},
@@ -154,6 +155,8 @@ function WaterSimulation.normalize(water)
     telemetry.consumedLiters = Util.numberOr(telemetry.consumedLiters, 0, 0, Constants.WATER.MAX_STORAGE)
     telemetry.lastFlowLpm = Util.numberOr(telemetry.lastFlowLpm, pump.actualFlowLpm,
         0, Constants.WATER.MAX_FLOW_PER_MINUTE)
+    telemetry.treatmentFilterUsePerMinute = Util.numberOr(
+        telemetry.treatmentFilterUsePerMinute, 0, 0, 1)
     telemetry.lastTransactionId = type(telemetry.lastTransactionId) == "string" and telemetry.lastTransactionId or ""
     ensureTable(water, "faults")
 
@@ -210,6 +213,8 @@ function WaterSimulation.update(water, deltaMinutes, physical)
             selected.availableLiters / deltaMinutes)
     end
     water.telemetry.lastFlowLpm = water.pump.actualFlowLpm
+    water.telemetry.treatmentFilterUsePerMinute = Util.numberOr(
+        physical.filterUsePerMinute, 0, 0, 1)
     local producedLiters = water.pump.actualFlowLpm * deltaMinutes
     water.telemetry.producedLiters = water.telemetry.producedLiters + producedLiters
     if water.operating and selected and not selected.renewable and selected.availableLiters >= 0 then

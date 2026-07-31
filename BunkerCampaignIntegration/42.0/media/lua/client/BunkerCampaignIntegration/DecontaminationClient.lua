@@ -1,8 +1,11 @@
 require "ISUI/ISContextMenu"
 require "ISUI/ISModalRichText"
+require "ISUI/ISToolTip"
+require "TimedActions/ISTimedActionQueue"
 require "BunkerCampaignIntegration/Constants"
 require "BunkerCampaignIntegration/ManualWashClient"
 require "BunkerCampaignIntegration/DecontaminationEffects"
+require "BunkerCampaignIntegration/RepairIntakeAction"
 
 BunkerCampaignIntegration = BunkerCampaignIntegration or {}
 
@@ -46,10 +49,11 @@ local function showQaReport(args)
             tostring(args.roomId or "outside"), tonumber(args.roomCo2) or 0,
             (tonumber(args.roomContamination) or 0) * 100, tonumber(args.roomOccupants) or 0)
         lines[#lines + 1] = string.format(
-            "Vent filter: %.2f%% | use %.4f%%/min | activity %s <LINE>",
+            "Vent filter: %.2f%% | use %.4f%%/min | activity %s | recirc cleaning %.2f contaminated m3/min <LINE>",
             (tonumber(args.filterRemaining) or 0) * 100,
             (tonumber(args.filterUsePerMinute) or 0) * 100,
-            tostring(args.filterActivity or "unknown"))
+            tostring(args.filterActivity or "unknown"),
+            tonumber(args.recirculationRemovedM3PerMinute) or 0)
         lines[#lines + 1] = string.format("Entry: %s | %d/%d open, %d/%d loaded <LINE>",
             entry.breached and "BREACHED" or "contained", tonumber(entry.openCount) or 0,
             tonumber(entry.total) or 0, tonumber(entry.loadedCount) or 0, tonumber(entry.total) or 0)
@@ -67,9 +71,10 @@ local function showQaReport(args)
         end
         table.sort(intakes, function(left, right) return tostring(left.id) < tostring(right.id) end)
         for _, intake in ipairs(intakes) do
-            lines[#lines + 1] = string.format("%s (%d,%d,Z%d): %s | contamination %.1f%% <LINE>",
+            lines[#lines + 1] = string.format("%s (%d,%d,Z%d): %s | condition %.0f%% | contamination %.1f%% <LINE>",
                 tostring(intake.id), tonumber(intake.x) or 0, tonumber(intake.y) or 0,
                 tonumber(intake.z) or 0, tostring(intake.status or "unknown"),
+                (tonumber(intake.condition) or 0) * 100,
                 (tonumber(intake.externalContamination) or 0) * 100)
         end
     end
@@ -81,9 +86,11 @@ local function showQaReport(args)
             water.pumpRequested and "yes" or "no", water.powerAllocated and "yes" or "no",
             water.pumpActive and "ON" or "OFF")
         lines[#lines + 1] = string.format(
-            "Pump condition: %.1f%% | treatment filter: %.1f%% | flow: %.2f L/min <LINE>",
+            "Pump condition: %.1f%% | treatment filter: %.1f%% | use: %.2f%%/min | flow: %.2f L/min <LINE>",
             (tonumber(water.pumpCondition) or 0) * 100,
-            (tonumber(water.filterRemaining) or 0) * 100, tonumber(water.flowPerMinute) or 0)
+            (tonumber(water.filterRemaining) or 0) * 100,
+            (tonumber(water.filterUsePerMinute) or 0) * 100,
+            tonumber(water.flowPerMinute) or 0)
         lines[#lines + 1] = string.format(
             "Storage: %.2f / %.2f L | clean %.2f L | tainted %.2f L <LINE>Source: %s <LINE>",
             tonumber(water.stored) or 0, tonumber(water.capacity) or 0,
@@ -250,8 +257,8 @@ local function addQaMenu(context, player, selected)
     water:addOption("STOP pump and EMPTY ALL bunker water storage", player, function(p)
         send(p, "qaWaterStorage", {fillFraction=0, stopPump=true})
     end)
-    water:addOption("Fill bunker storage with tainted water", player, function(p)
-        send(p, "qaWaterStorage", {medium="TaintedWater", fillFraction=1})
+    water:addOption("STOP pump and fill storage with tainted water", player, function(p)
+        send(p, "qaWaterStorage", {medium="TaintedWater", fillFraction=1, stopPump=true})
     end)
     water:addOption("Set physical pump condition to 25%", player, function(p)
         send(p, "qaWaterPump", {condition=0.25, burn=false})
@@ -261,6 +268,9 @@ local function addQaMenu(context, player, selected)
     end)
     water:addOption("Set Waterpipes treatment filter to 10%", player, function(p)
         send(p, "qaWaterPump", {filterRemaining=0.1})
+    end)
+    water:addOption("REMOVE Waterpipes treatment filter (0%)", player, function(p)
+        send(p, "qaWaterPump", {filterRemaining=0})
     end)
     water:addOption("Set Waterpipes treatment filter to 100%", player, function(p)
         send(p, "qaWaterPump", {filterRemaining=1})
@@ -279,7 +289,7 @@ local function selectedTile(playerNum, context, player, worldObjects)
     for _, object in ipairs(objects) do
         if object and object.getX and math.floor(object:getX()) == pump.x
             and math.floor(object:getY()) == pump.y and math.floor(object:getZ()) == pump.z then
-            return {x=pump.x, y=pump.y, z=pump.z}
+            return {x=pump.x, y=pump.y, z=pump.z, square=object:getSquare()}
         end
     end
 
@@ -289,7 +299,7 @@ local function selectedTile(playerNum, context, player, worldObjects)
     for _, object in ipairs(objects) do
         local square = object and object.getSquare and object:getSquare() or nil
         if square and square.getX and square.getY and square.getZ then
-            return {x=math.floor(square:getX()), y=math.floor(square:getY()), z=math.floor(square:getZ())}
+            return {x=math.floor(square:getX()), y=math.floor(square:getY()), z=math.floor(square:getZ()), square=square}
         end
         if object and object.getX and object.getY and object.getZ then
             return {x=math.floor(object:getX()), y=math.floor(object:getY()), z=math.floor(object:getZ())}
@@ -304,7 +314,45 @@ local function selectedTile(playerNum, context, player, worldObjects)
         x = screenToIsoX(playerNum, mouseX, mouseY, z)
         y = screenToIsoY(playerNum, mouseX, mouseY, z)
     end
-    return {x=math.floor(x), y=math.floor(y), z=z}
+    local tileX, tileY = math.floor(x), math.floor(y)
+    local square = getCell() and getCell():getGridSquare(tileX, tileY, z) or nil
+    return {x=tileX, y=tileY, z=z, square=square}
+end
+
+local function brokenIntakeAt(selected)
+    local state = BunkerCampaign and BunkerCampaign.ClientState and BunkerCampaign.ClientState.snapshot
+    local ventilation = state and state.ventilation
+    for _, intake in pairs(ventilation and ventilation.intakes or {}) do
+        if math.floor(tonumber(intake.x) or 0) == selected.x
+            and math.floor(tonumber(intake.y) or 0) == selected.y
+            and math.floor(tonumber(intake.z) or 0) == selected.z
+            and intake.broken == true then
+            return intake
+        end
+    end
+    return nil
+end
+
+local function queueIntakeRepair(player, selected, scrap)
+    if not player or not selected.square or not scrap then return end
+    if luautils.walkAdj(player, selected.square) then
+        ISTimedActionQueue.add(BunkerCampaignIntegration.RepairIntakeAction:new(
+            player, scrap, selected.x, selected.y, selected.z))
+    end
+end
+
+local function addIntakeRepair(context, player, selected)
+    if not brokenIntakeAt(selected) then return end
+    local scrap = player:getInventory():getFirstTypeRecurse("Base.ScrapMetal")
+    local option = context:addOption("Repair bunker air intake (1 Scrap Metal)", player,
+        queueIntakeRepair, selected, scrap)
+    option.notAvailable = scrap == nil or selected.square == nil
+    if option.notAvailable then
+        option.toolTip = ISToolTip:new()
+        option.toolTip:initialise()
+        option.toolTip.description = scrap == nil and "Requires 1 Scrap Metal"
+            or "The intake tile is not loaded"
+    end
 end
 
 local function addPhysicalPumpControl(context, player, selected)
@@ -326,6 +374,7 @@ local function addContextOptions(playerNum, context, worldObjects, test)
     local selected = selectedTile(playerNum, context, player, worldObjects)
     if inside(Rules.INTERACTION, player) then addGameplayMenu(context, player) end
     addPhysicalPumpControl(context, player, selected)
+    addIntakeRepair(context, player, selected)
     if isAdministrator() then addQaMenu(context, player, selected) end
 end
 

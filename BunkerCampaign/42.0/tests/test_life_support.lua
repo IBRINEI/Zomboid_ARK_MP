@@ -61,8 +61,16 @@ assert(ventilation.rooms.laboratory.contamination < 0.5
     and ventilation.filterBank.remaining < recirculationFilter,
     "internal recirculation must clean existing airborne contamination and load the filter")
 assert(ventilation.telemetry.filterActivity == "cleaning_internal_air"
-    and ventilation.telemetry.recirculationRemovalPerMinute > 0,
+    and ventilation.telemetry.recirculationRemovalPerMinute > 0
+    and ventilation.telemetry.recirculationRemovedM3PerMinute > 0,
     "recirculation effectiveness must be exposed in telemetry")
+
+ventilation.intakes.intake_1.broken = true
+ventilation.intakes.intake_1.condition = 1
+VentilationSimulation.normalize(ventilation)
+assert(ventilation.intakes.intake_1.condition == 0
+    and ventilation.intakes.intake_1.status == "failed",
+    "a broken intake must expose zero condition even when an old save retained 100 percent")
 
 VentilationSimulation.update(ventilation, 1, {occupancyByRoom={}})
 assert(ventilation.telemetry.totalOccupants == 0
@@ -106,12 +114,14 @@ water.powerAllocated = true
 WaterSimulation.update(water, 1, {
     adapterOnline=true, physicallyAvailable=true, pumpPresent=true, pumpActive=true,
     pumpCondition=0.9, filterRemaining=0.8, cleanStored=50, taintedStored=10,
-    capacity=100, flowPerMinute=6,
+    capacity=100, flowPerMinute=6, filterUsePerMinute=0.012,
 })
 assert(water.operating, "powered physical pump must operate")
 assert(water.storage.cleanLiters == 50 and water.storage.taintedLiters == 10,
     "water qualities must remain separate")
 assert(water.telemetry.producedLiters == 6, "actual flow must drive production telemetry")
+assert(water.telemetry.treatmentFilterUsePerMinute == 0.012,
+    "physical water-filter consumption must be visible in campaign telemetry")
 
 water.powerAllocated = false
 WaterSimulation.update(water, 1, {adapterOnline=true, physicallyAvailable=true, pumpActive=false})

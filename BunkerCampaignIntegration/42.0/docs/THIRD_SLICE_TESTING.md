@@ -9,10 +9,10 @@ Enable the accepted local forks and dependencies:
 
 - `Bandits2`;
 - `Waterpipes`;
-- `BunkerCampaign` 0.5.2;
+- `BunkerCampaign` 0.5.3;
 - `BunkerCampaignArkMP` 0.4.5.1 (the stable 0.4.5 lighting code plus QA-menu cleanup);
 - `BunkerCampaignToxicMP` 0.5.1;
-- `BunkerCampaignIntegration` 0.7.3.
+- `BunkerCampaignIntegration` 0.7.4.
 
 Keep the original The Ark, original Toxic Zones, Bandits Day One/Week One and
 Cryogenic Winter disabled.
@@ -94,10 +94,13 @@ Run these checks with both clients inside, preferably in different rooms.
    two clients move between rooms.
 7. Open `Room CO2 map and mode help`. Confirm the corridor and every bounded
    Ark room appear with their individual CO2, airborne contamination,
-   occupants, airflow and inferred connections.
+   occupants, airflow and inferred connections. Leave the window open and
+   confirm it refreshes itself without pressing the button again.
 
 Expected: room occupancy follows actual player coordinates. A newly declared
-garage or laboratory appears without adding its name to simulation code.
+garage or laboratory appears without adding its name to simulation code. CO2
+generation is divided by actual room volume: the unique footprint tile count
+times declared room height, unless an addon explicitly supplies `volumeM3`.
 
 ## 4. Intake contamination and filter bank
 
@@ -111,7 +114,9 @@ garage or laboratory appears without adding its name to simulation code.
    completely until it is exhausted or fails.
 4. Switch to recirculation. It does not remove CO2, but it cleans existing
    airborne contamination; filter use and `recirc removal` remain zero once
-   internal air is clean. Sealed mode stops both the fan and filter loading.
+   internal air is clean. The panel shows both the high-precision fraction and
+   contaminated-air-equivalent m3/min so a small real value is not rounded to
+   `0.0%`. Sealed mode stops both the fan and filter loading.
 5. Let the filter approach exhaustion, or enable treatment bypass only for the
    separate water test below. Verify airborne contamination enters affected
    rooms after ventilation protection is lost.
@@ -156,9 +161,10 @@ Fast administrator pass from `Bunker Campaign: QA tools` -> `Water system`:
    physical pump to be off. Re-enable it from the same tile.
 3. Select `Set physical pump condition to 25%`, then repair it to 100%; the
    report and Waterpipes UI must agree after each action.
-4. Select `Fill bunker storage with tainted water`, set the treatment filter to
-   10%, then restore it to 100%. This isolates storage quality and treatment
-   state without waiting for normal consumption.
+4. Select `STOP pump and fill storage with tainted water`, then `REMOVE
+   Waterpipes treatment filter (0%)`. Drain any clean water already held by the
+   test sink and restart the pump. Newly delivered water must remain tainted.
+   Set the treatment filter to 10%, then restore it to 100%.
 5. Select `Empty bunker water storage`, then `Add and select 100 L external
    tainted supply` to test a finite source. Request the pump and confirm actual
    produced liters reduce the external supply rather than creating water.
@@ -171,6 +177,11 @@ The four surface air-intake objects are at `9940..9941,12633..12634,0`. Use
 `[QA] Surface air intakes`, right-click the exact intake tile, and choose the
 break or repair action. The room-status window and atmosphere report list each
 intake independently so partial capacity and failover can be verified.
+For the normal player repair path, carry one `Base.ScrapMetal`, stand next to a
+broken intake, right-click its exact tile and choose `Repair bunker air intake
+(1 Scrap Metal)`. The timed action and material debit are validated by the
+server. With every intake broken, `450 m3/min internal | outside 0` is the
+automatic internal-recirculation fallback, not outside airflow.
 
 The bunker water system consists of the physical Waterpipes pump, its connected
 pipes/flowmeter and Waterpipes storage barrels, plus the campaign power request,
@@ -185,6 +196,8 @@ summary; it is not a second independent pump.
 3. With a valid source, pump condition and allocated power, verify flow and
    storage growth. With any one prerequisite removed, verify physical pumping
    stops and the reason changes appropriately.
+   Repair the pump through WaterPipes while it is off; both the WaterPipes UI
+   and bunker panel must keep the repaired percentage after it is switched on.
 4. Introduce tainted/contaminated water. With treatment enabled, verify clean
    storage increases according to filter efficiency and treatment condition.
 5. Enable treatment bypass. Verify the real Waterpipes filter is removed from
@@ -194,6 +207,11 @@ summary; it is not a second independent pump.
    debited and the source eventually reports depleted.
 7. Restart the server and confirm source, clean/tainted storage, bypass and
    physical filter state remain consistent.
+
+The bunker well's treatment charge is balanced for 1000 L. At a measured 12
+L/min it therefore loses about 1.2 percentage points per game minute (plus the
+small native WaterPipes wear), rather than cleaning indefinitely at a barely
+visible rate.
 
 ## 7. Atomic consumer regression
 

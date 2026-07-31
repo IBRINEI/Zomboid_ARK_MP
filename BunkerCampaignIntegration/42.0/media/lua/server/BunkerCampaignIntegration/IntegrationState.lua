@@ -418,6 +418,13 @@ local function sampleLifeSupport(state, context)
     if WaterpipesAdapter.ensureBunkerInfrastructure(gmd) then changed = true end
     if changed and type(TransmitWPModData) == "function" then TransmitWPModData() end
     context.waterPhysical = WaterpipesAdapter.sample(gmd)
+    local filterChanged, filterUse = WaterpipesAdapter.consumeTreatmentFilter(
+        gmd, context.waterPhysical.flowPerMinute)
+    if filterChanged then
+        if type(TransmitWPModData) == "function" then TransmitWPModData() end
+        context.waterPhysical = WaterpipesAdapter.sample(gmd)
+    end
+    context.waterPhysical.filterUsePerMinute = filterUse
     IntegrationState.data.waterpipes.initialized = pump ~= nil
     IntegrationState.data.waterpipes.lastPumpFound = pump ~= nil
     IntegrationState.data.waterpipes.lastFlowPerMinute = context.waterPhysical.flowPerMinute
@@ -586,8 +593,7 @@ function IntegrationState.refreshToxicZones(actor)
 end
 
 function IntegrationState.onClientCommand(module, command, player, args)
-    if module == "Commands" and command == "PumpMod" and type(args) == "table"
-        and type(args.active) == "boolean" then
+    if module == "Commands" and command == "PumpMod" and type(args) == "table" then
         local pump = Constants.BUNKER_WATER_PUMP
         local isBunkerPump = math.floor(tonumber(args.x) or 0) == pump.x
             and math.floor(tonumber(args.y) or 0) == pump.y
@@ -596,7 +602,24 @@ function IntegrationState.onClientCommand(module, command, player, args)
             and math.abs(player:getY() - pump.y) <= 4
             and math.floor(player:getZ()) == pump.z
         if isBunkerPump and (nearby or (player and player:isAccessLevel("admin"))) then
-            CampaignState.setConsumerRequested("water", args.active, player:getUsername())
+            local gmd = ModData.getOrCreate(Constants.WATERPIPES_STATE_KEY)
+            local record = type(gmd.Pumps) == "table"
+                and gmd.Pumps[tostring(pump.x) .. "-" .. tostring(pump.y) .. "-" .. tostring(pump.z)] or nil
+            if type(record) == "table" then
+                if args.efficiency ~= nil then
+                    record.efficiency = Util.clamp(tonumber(args.efficiency) or record.efficiency or 0, 0, 100)
+                end
+                if args.filter ~= nil then
+                    record.filter = Util.clamp(tonumber(args.filter) or record.filter or 0, 0, 100)
+                    record.BunkerCampaignStoredFilter = nil
+                    record.BunkerCampaignBypass = false
+                end
+                if type(args.burn) == "boolean" then record.burn = args.burn end
+            end
+            if type(args.active) == "boolean" then
+                CampaignState.setConsumerRequested("water", args.active, player:getUsername())
+            end
+            syncWaterpipes()
         end
         return
     end

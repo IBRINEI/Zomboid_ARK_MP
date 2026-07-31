@@ -376,6 +376,8 @@ function CampaignState.setWaterSnapshot(values, source)
     local water = CampaignState.data.bunker.modules.water
     local previousStatus, previousOnline = water.status, water.adapterOnline
     local previousStored, previousFlow = water.stored, water.flowPerMinute
+    local previousPumpCondition, previousFilter = water.pumpCondition, water.filterRemaining
+    local previousContamination, previousPumpActive = water.contamination, water.pumpActive
     local physical = values
     if values.cleanStored == nil and values.taintedStored == nil and values.stored ~= nil then
         local capacity = Util.numberOr(values.capacity, 0, 0, Constants.WATER.MAX_STORAGE)
@@ -390,6 +392,10 @@ function CampaignState.setWaterSnapshot(values, source)
     local changed = previousStatus ~= water.status or previousOnline ~= water.adapterOnline
         or waterValueChanged(previousStored, water.stored)
         or waterValueChanged(previousFlow, water.flowPerMinute)
+        or waterValueChanged(previousPumpCondition, water.pumpCondition)
+        or waterValueChanged(previousFilter, water.filterRemaining)
+        or waterValueChanged(previousContamination, water.contamination)
+        or previousPumpActive ~= water.pumpActive
     if not changed then return true, "unchanged" end
 
     CampaignState.touch()
@@ -398,8 +404,8 @@ function CampaignState.setWaterSnapshot(values, source)
     end
     if previousStatus ~= water.status then
         CampaignState.appendLog("water", "status changed " .. tostring(previousStatus) .. " -> " .. tostring(water.status), source or "server adapter")
-        CampaignState.broadcast()
     end
+    CampaignState.broadcast()
     return true
 end
 

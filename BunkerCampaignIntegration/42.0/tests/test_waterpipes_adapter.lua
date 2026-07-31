@@ -21,6 +21,11 @@ assert(sample.contamination == 0, "filtered source and clean reserve must be cle
 assert(sample.flowPerMinute == 6, "bunker flowmeter must supply measured liters per minute")
 assert(sample.powerDemandKw == 1.5, "active pump must expose nominal power demand")
 
+local filterChanged, filterUse = BunkerCampaignIntegration.WaterpipesAdapter.consumeTreatmentFilter(empty, 6)
+assert(filterChanged and math.abs(pump.filter - 99.4) < 0.0001
+    and math.abs(filterUse - 0.006) < 0.0001,
+    "six liters of dirty well water must visibly debit the 1000-liter treatment charge")
+
 assert(BunkerCampaignIntegration.WaterpipesAdapter.availableBunkerWater(empty, true) == 2.5,
     "decontamination must see only clean bunker water")
 local consumed, liters = BunkerCampaignIntegration.WaterpipesAdapter.consumeBunkerWater(empty, 1.5, true)
@@ -37,6 +42,11 @@ pump.filter = 0
 sample = BunkerCampaignIntegration.WaterpipesAdapter.sample(empty)
 assert(sample.status == "contaminated", "unfiltered underground source must be contaminated")
 assert(sample.contamination == 1, "unfiltered source contamination must be explicit")
+
+pump.active = false
+sample = BunkerCampaignIntegration.WaterpipesAdapter.sample(empty)
+assert(sample.flowPerMinute == 0, "an inactive pump must not report a stale flowmeter value")
+pump.active = true
 
 pump.burn = true
 sample = BunkerCampaignIntegration.WaterpipesAdapter.sample(empty)

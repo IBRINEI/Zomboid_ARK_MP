@@ -399,3 +399,30 @@ WaterPipes returns pre-shutoff sink amounts from sprite properties as strings;
 the adapter now normalizes both amount and capacity before comparison. A
 string-valued receiver regression test covers the former per-tick `__lt not
 defined for operand` failure.
+
+### Third-slice telemetry and WaterPipes synchronization pass (2026-07-31)
+
+Core 0.5.3 and Integration 0.7.4 address the next live MP report. The room-air
+window now requests and renders fresh authoritative snapshots every two
+seconds while open. CO2 remains volume-aware: generation per occupant is
+divided by each registered room's composite footprint area times height.
+Recirculation reports a high-precision removal fraction and contaminated-air
+equivalent m3/min. Intake normalization forces failed units to condition 0;
+the UI separates internal fallback flow from zero outside-intake flow.
+
+Broken surface intakes now have a normal server-authoritative repair path.
+Any player can stand next to the exact intake tile and perform a timed repair
+using one `Base.ScrapMetal`; the server revalidates the tile, distance, broken
+state and inventory debit. Administrator instant break/repair actions remain
+available for QA.
+
+The local integration patches WaterPipes repair completion so repaired pump
+efficiency reaches its server ModData instead of being overwritten when the
+pump is next activated. Water snapshot publication now includes condition,
+filter, contamination and active-state changes, keeping the bunker panel in
+sync with WaterPipes. Treatment filter use is additionally debited from actual
+liters moved against a 1000 L full-charge capacity and is shown with sufficient
+precision. Administrator QA can set the real treatment filter to 0%, and the
+tainted-fill action stops the pump first. Physical receivers retain their
+actual water-medium marker so a tainted sink does not silently become clean
+when WaterPipes drains its pending buffer.

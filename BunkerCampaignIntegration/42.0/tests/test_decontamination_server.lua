@@ -47,7 +47,12 @@ local now = 1000
 getTimestampMs = function() return now end
 local tabletRemoved = 0
 local inventory
+local repairInventory
 local tablet = { getContainer=function() return inventory end }
+local repairScrapRemoved = 0
+local repairScrap = {
+    getContainer=function() return repairScrapRemoved == 0 and repairInventory or nil end,
+}
 local soapUses = 20
 local soap = {
     className="DrainableComboItem",
@@ -78,7 +83,9 @@ inventory = {
 instanceof = function(object, className) return object and object.className == className end
 ZomboidGlobals = { CleanStainCleaningFluidAmount=0.1 }
 sendRemoveItemFromContainer = function(container, item)
-    assert(container == inventory and item == tablet, "tablet removal must be synchronized")
+    assert((container == inventory and item == tablet)
+        or (container == repairInventory and item == repairScrap),
+        "whole-item removal must be synchronized")
 end
 sendAddItemToContainer = function(container, item)
     assert(container == inventory and item, "QA inventory sync must use the authoritative container")
@@ -100,6 +107,25 @@ local secondPlayer = {
     getY=function() return 12625 end,
     getZ=function() return -4 end,
     getInventory=function() return inventory end,
+    isDead=function() return false end,
+}
+repairInventory = {
+    getFirstTypeRecurse=function(self, itemType)
+        if itemType == "Base.ScrapMetal" and repairScrapRemoved == 0 then return repairScrap end
+        return nil
+    end,
+    Remove=function(self, item)
+        assert(item == repairScrap)
+        repairScrapRemoved = repairScrapRemoved + 1
+    end,
+}
+local repairPlayer = {
+    getUsername=function() return "intake-repairer" end,
+    isAccessLevel=function() return false end,
+    getX=function() return 9941 end,
+    getY=function() return 12633 end,
+    getZ=function() return 0 end,
+    getInventory=function() return repairInventory end,
     isDead=function() return false end,
 }
 local online = {
@@ -273,6 +299,33 @@ assert(persisted.BanditWeekOneTheArk.airintakes[1].broken
     "QA intake failure must mutate both the Ark source state and campaign snapshot immediately")
 assert(stateTouches == 1 and stateBroadcasts == 1,
     "QA intake failure must publish one authoritative state revision")
+
+local farRepairPlayer = {
+    getUsername=function() return "remote-intake-repairer" end,
+    isAccessLevel=function() return false end,
+    getX=function() return 9900 end,
+    getY=function() return 12633 end,
+    getZ=function() return 0 end,
+    getInventory=function() return repairInventory end,
+    isDead=function() return false end,
+}
+BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
+    "BunkerCampaignDecontamination", "repairIntake", farRepairPlayer,
+    {x=9940,y=12633,z=0}
+)
+assert(repairScrapRemoved == 0 and persisted.BanditWeekOneTheArk.airintakes[1].broken,
+    "remote forged intake repair must not consume material or mutate state")
+
+BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
+    "BunkerCampaignDecontamination", "repairIntake", repairPlayer,
+    {x=9940,y=12633,z=0}
+)
+assert(repairScrapRemoved == 1, "ordinary intake repair must consume one Scrap Metal on the server")
+assert(not persisted.BanditWeekOneTheArk.airintakes[1].broken
+    and not ventilation.intakes.intake_1.broken and ventilation.intakes.intake_1.condition == 1,
+    "ordinary intake repair must restore both authoritative intake representations")
+assert(stateTouches == 2 and stateBroadcasts == 2,
+    "ordinary intake repair must publish one authoritative state revision")
 
 BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
     "BunkerCampaignDecontamination", "qaWaterStorage", player,

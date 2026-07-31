@@ -85,6 +85,7 @@ function VentilationSimulation.createDefault()
             co2TrendPpmPerMinute=0,
             filterUsePerMinute=0,
             recirculationRemovalPerMinute=0,
+            recirculationRemovedM3PerMinute=0,
             filterActivity="idle_clean_air",
         },
     }
@@ -97,7 +98,8 @@ local function normalizeIntake(intake, defaults)
     intake.z = math.floor(Util.numberOr(intake.z, defaults.z, -32, 32))
     intake.open = Util.booleanOr(intake.open, defaults.open)
     intake.broken = Util.booleanOr(intake.broken, defaults.broken)
-    intake.condition = Util.numberOr(intake.condition, intake.broken and 0 or defaults.condition, 0, 1)
+    intake.condition = intake.broken and 0
+        or Util.numberOr(intake.condition, defaults.condition, 0, 1)
     intake.externalContamination = Util.numberOr(intake.externalContamination, 0, 0, 1)
     intake.maximumFlowM3PerMinute = Util.numberOr(intake.maximumFlowM3PerMinute,
         defaults.maximumFlowM3PerMinute, 0, 100000)
@@ -181,6 +183,8 @@ function VentilationSimulation.normalize(ventilation)
     telemetry.filterUsePerMinute = Util.numberOr(telemetry.filterUsePerMinute, 0, 0, 1)
     telemetry.recirculationRemovalPerMinute = Util.numberOr(
         telemetry.recirculationRemovalPerMinute, 0, 0, 1)
+    telemetry.recirculationRemovedM3PerMinute = Util.numberOr(
+        telemetry.recirculationRemovedM3PerMinute, 0, 0, 1000000)
     telemetry.filterActivity = type(telemetry.filterActivity) == "string"
         and telemetry.filterActivity or "idle_clean_air"
     ventilation.powerDemandKw = VentilationSimulation.powerDemand(ventilation.requestedMode)
@@ -444,6 +448,8 @@ function VentilationSimulation.update(ventilation, deltaMinutes, context)
         and math.max(0, oldFilter - filter.remaining) / deltaMinutes or 0
     ventilation.telemetry.recirculationRemovalPerMinute = deltaMinutes > 0
         and recirculationRemoved / math.max(1, totalVolume) / deltaMinutes or 0
+    ventilation.telemetry.recirculationRemovedM3PerMinute = deltaMinutes > 0
+        and recirculationRemoved / deltaMinutes or 0
     if not filterEffective then
         ventilation.telemetry.filterActivity = filter.bypass and "bypassed" or "unavailable"
     elseif capturedLoad > 0 then

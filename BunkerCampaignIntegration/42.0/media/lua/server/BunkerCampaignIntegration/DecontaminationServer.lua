@@ -544,6 +544,8 @@ local function sendQaReport(player, kind)
     water.powerAllocated = campaignWater.powerAllocated == true
     water.reason = campaignWater.reason or "none"
     water.source = campaignWater.selectedSource or water.source
+    water.filterUsePerMinute = campaignWater.telemetry
+        and campaignWater.telemetry.treatmentFilterUsePerMinute or 0
     sendServerCommand(player, Constants.DECON_NETWORK_MODULE, "qaReport", {
         kind=kind,
         roomId=definition and definition.id or "outside",
@@ -554,13 +556,15 @@ local function sendQaReport(player, kind)
         filterRemaining=ventilation.filterBank and ventilation.filterBank.remaining or 0,
         filterUsePerMinute=ventilation.telemetry and ventilation.telemetry.filterUsePerMinute or 0,
         filterActivity=ventilation.telemetry and ventilation.telemetry.filterActivity or "unknown",
+        recirculationRemovedM3PerMinute=ventilation.telemetry
+            and ventilation.telemetry.recirculationRemovedM3PerMinute or 0,
         intakes=ventilation.intakes,
         airlock=ventilation.airlock,
         water=water,
     })
 end
 
-local function qaSetIntake(player, args)
+local function setIntakeState(player, args)
     local x, y, z = tonumber(args and args.x), tonumber(args and args.y), tonumber(args and args.z)
     if not x or not y or not z or type(args.broken) ~= "boolean" then return false, "invalid_intake" end
     x, y, z = math.floor(x), math.floor(y), math.floor(z)
@@ -591,6 +595,34 @@ local function qaSetIntake(player, args)
     CampaignState.appendLog("ventilation", (args.broken and "air intake broken at " or "air intake repaired at ")
         .. tostring(x) .. "," .. tostring(y) .. "," .. tostring(z), actor(player))
     return true
+end
+
+local function repairIntake(player, args)
+    if not player or player:isDead() then return false, "invalid_player" end
+    local x, y, z = tonumber(args and args.x), tonumber(args and args.y), tonumber(args and args.z)
+    if not x or not y or not z then return false, "invalid_intake" end
+    x, y, z = math.floor(x), math.floor(y), math.floor(z)
+    if math.floor(player:getZ()) ~= z
+        or math.abs(player:getX() - x) > 2 or math.abs(player:getY() - y) > 2 then
+        return false, "too_far_from_intake"
+    end
+    local ark = ModData.getOrCreate(Constants.THE_ARK_STATE_KEY)
+    local found, broken = false, false
+    for _, intake in pairs(type(ark.airintakes) == "table" and ark.airintakes or {}) do
+        if math.floor(tonumber(intake.x) or 0) == x and math.floor(tonumber(intake.y) or 0) == y
+            and math.floor(tonumber(intake.z) or 0) == z then
+            found = true
+            broken = intake.broken == true or (tonumber(intake.condition) or 0) <= 0
+            break
+        end
+    end
+    if not found then return false, "air_intake_not_found_on_selected_tile" end
+    if not broken then return false, "air_intake_already_operational" end
+    local inventory = player:getInventory()
+    local scrap = inventory and inventory:getFirstTypeRecurse("Base.ScrapMetal") or nil
+    if not scrap then return false, "scrap_metal_required" end
+    if not consumeWholeInventoryItem(scrap) then return false, "scrap_metal_unavailable" end
+    return setIntakeState(player, {x=x, y=y, z=z, broken=false})
 end
 
 local function refreshLifeSupportZones(player)
@@ -665,7 +697,7 @@ local function runQa(player, command, args)
     elseif command == "qaSetRoomAir" then
         return qaSetRoomAir(player, args)
     elseif command == "qaSetIntake" then
-        return qaSetIntake(player, args)
+        return setIntakeState(player, args)
     elseif command == "qaSetVentFilter" then
         local ventilation = CampaignState.get().bunker.modules.ventilation
         local remaining = Util.clamp(tonumber(args and args.remaining) or 1, 0, 1)
@@ -786,6 +818,11 @@ function Server.onClientCommand(module, command, player, args)
     if command == "loadReagent" then
         local ok, code = loadReagent(player)
         sendResult(player, ok, command, code)
+        return
+    end
+    if command == "repairIntake" then
+        local ok, code = repairIntake(player, args)
+        sendResult(player, ok, command, ok and nil or code)
         return
     end
     if string.sub(tostring(command), 1, 2) == "qa" then
