@@ -393,3 +393,9 @@ tainted and empty storage mutations now update loaded Waterpipes sinks and
 containers directly as well as unloaded pending buffers, so a tainted QA fill
 is observable from a sink immediately and emptying storage drains the actual
 receiver.
+
+Integration 0.7.3 is a startup hotfix for the physical receiver adapter.
+WaterPipes returns pre-shutoff sink amounts from sprite properties as strings;
+the adapter now normalizes both amount and capacity before comparison. A
+string-valued receiver regression test covers the former per-tick `__lt not
+defined for operand` failure.

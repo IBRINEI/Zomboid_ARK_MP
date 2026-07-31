@@ -44,7 +44,14 @@ function WaterServiceEnablePhysicalReceiver()
             return nil
         end}
     end
-    WPIso={GetBarrel=function(square) return square and square.receiver or nil end}
+    WPIso={
+        GetBarrel=function(square) return square and square.receiver or nil end,
+        -- Live pre-shutoff sinks expose these through sprite properties as
+        -- strings; keep the regression harness faithful to that API edge.
+        GetWaterStatus=function()
+            return tostring(physicalMd.waterAmount), tostring(physicalMd.waterMaxAmount)
+        end,
+    }
 end
 function WaterServicePhysicalState() return physicalAmount, physicalMedium end
 

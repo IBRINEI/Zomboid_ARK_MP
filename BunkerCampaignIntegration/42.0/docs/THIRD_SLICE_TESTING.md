@@ -12,7 +12,7 @@ Enable the accepted local forks and dependencies:
 - `BunkerCampaign` 0.5.2;
 - `BunkerCampaignArkMP` 0.4.5.1 (the stable 0.4.5 lighting code plus QA-menu cleanup);
 - `BunkerCampaignToxicMP` 0.5.1;
-- `BunkerCampaignIntegration` 0.7.2.
+- `BunkerCampaignIntegration` 0.7.3.
 
 Keep the original The Ark, original Toxic Zones, Bandits Day One/Week One and
 Cryogenic Winter disabled.

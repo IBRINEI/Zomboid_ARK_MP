@@ -47,10 +47,14 @@ local function physicalWater(record)
         capacity = object.getFluidCapacity and tonumber(object:getFluidCapacity()) or nil
     end
     local md = object.getModData and object:getModData() or nil
-    capacity = capacity or tonumber(md and (md.waterMaxAmount or md.waterMax)) or 0
+    -- WaterPipes reads pre-shutoff sink amounts from sprite properties.  Those
+    -- values are strings in the live game even though container-backed values
+    -- are numbers, so normalize before any arithmetic or comparison.
+    amount = tonumber(amount) or 0
+    capacity = tonumber(capacity) or tonumber(md and (md.waterMaxAmount or md.waterMax)) or 0
     local medium = amount > 0 and object.isTaintedWater and object:isTaintedWater()
         and "TaintedWater" or (amount > 0 and "Water" or nil)
-    return object, math.max(0, tonumber(amount) or 0), math.max(0, tonumber(capacity) or 0), medium
+    return object, math.max(0, amount), math.max(0, capacity), medium
 end
 
 local function setPhysicalWater(object, medium, amount, capacity)
