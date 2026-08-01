@@ -580,8 +580,9 @@ accepted versions remain unchanged.
 Candidate versions:
 
 - `BunkerCampaign` 0.6.0, campaign state version 7;
-- `BunkerCampaignIntegration` 0.8.0, integration state version 5;
-- `BunkerCampaignArkMP` remains exactly 0.4.5.1;
+- `BunkerCampaignIntegration` 0.8.1, integration state version 5;
+- `BunkerCampaignArkMP` 0.4.5.2 (the accepted 0.4.5 behavior plus the
+  reconnect-light repair; none of the rejected 0.4.6--0.4.10 changes);
 - `BunkerCampaignToxicMP` remains exactly 0.5.1.
 
 The dependency order is now explicit. The server first evaluates the reused
@@ -604,10 +605,34 @@ observable in the systems panel rather than hidden.
 The integration reuses The Ark's room vents and its `+7 C` local heat-source
 correction. It deliberately replaces the original client-owned radius-1000
 sources with replicated, removable radius-5 `IsoHeatSource` objects at actual
-vent coordinates on both server and client. The server remains authoritative
-for room temperatures; clients only mirror snapshots into local climate and
-heat-source objects. The original Ark `ventilation.temp`, `tempTarget` and
-heating request are imported once and kept as compatibility mirrors.
+vent coordinates on both server and client. Those sources remain useful for
+the physical vent representation, but Build 42.19's
+`ClimateManager.getAirTemperatureForSquare` hard-clamps powered indoor rooms
+to 22 C and heat sources can only raise that result. They therefore cannot make
+a room colder than 22 C: the systems panel could correctly show -41 C while a
+wristwatch and the character thermoregulator still received 22 C.
+
+Integration 0.8.1 adds a ZombieBuddy Java patch at that canonical
+`ClimateManager` method. Lua atomically publishes every exact RoomRegistry
+region and its server-authoritative temperature; the patched method replaces
+the vanilla value only inside those regions. Consequently wristwatches,
+thermoregulation, cold moodles and every other vanilla square-temperature
+consumer share the same room value instead of receiving a UI-only substitute.
+The original Ark `ventilation.temp`, `tempTarget` and heating request remain
+one-time compatibility imports/mirrors. Java source is stored under
+`BunkerCampaignIntegration/42.0/src`; the runtime JAR is
+`media/java/BunkerCampaignIntegration.jar`, SHA-256
+`B56C6ED7B7103478373368D68AA6C9E35A8D068EF8AFC26A052184279DEB1B5D`.
+
+The reconnect lighting fault was separate from heating. Save/stream reload
+stripped the battery flag from all 653 expected red emergency switches, so the
+old classifier treated them as main lights and the client could display red and
+main lighting together. ArkMP 0.4.5.2 now identifies emergency lights by their
+immutable The Ark room coordinate plus directional sprite, repairs their
+battery identity on server and client, and builds the reconnect manifest from
+that stable role. A live server audit after applying the repair found 194 main
+and 653 emergency lights, with every emergency light repaired and no role
+overlap.
 
 The Bunker Systems panel now contains heating enable/disable, 0.5 C target
 adjustment, current-room circuit isolation, average/outdoor/current/coldest
@@ -623,6 +648,9 @@ Automated coverage passing on this branch:
 - client snapshot ordering and heating commands;
 - exact The Ark climate option mapping and curve endpoints/peak;
 - bounded heat-source creation, update, deduplication and removal;
+- atomic exact-region temperature publication and fallback behavior;
+- Java region lookup, overlap precedence, replacement and clearing;
+- reconnect-stable main/emergency light classification and battery repair;
 - Integration import/mirror of Ark heating state.
 
 ZombieBuddy correlation `slice4-heating-20260801-a` validated the live dedicated
@@ -637,17 +665,21 @@ returned to the 21 C migration baseline before normal minute simulation
 resumed; backup fuel/condition/coolant/lubricant are 100/90/90/90%, battery
 charge is zero, water and main lighting are requested, and the backup is off.
 
-Project Zomboid's hot loader can execute newly added files by absolute path but
-does not add them to the running `require` index. The current process therefore
-logged expected hot-reload-only `require(...) failed` warnings and its
-server-to-client command path did not resume, although client-to-server command
-delivery and the authoritative simulation were verified. A clean server and
-client restart is required before user acceptance testing. After restart,
-verify exactly one callback for each new/changed event, request a client
-snapshot, open the systems panel, and repeat power-shed/backup/room-isolation
-scenarios. Do not treat the hot-reload warnings as startup expectations.
+Project Zomboid's hot loader can execute newly added Lua files by absolute path
+but cannot load or approve a new Java mod JAR. The processes used during the
+0.8.1 work therefore still report `bcThermalResolve == nil`; no live watch or
+thermoregulation result from those processes is an acceptance test for the new
+patch. A clean dedicated-server and client restart is mandatory. Approve the
+new `BunkerCampaignIntegration.jar` fingerprint when ZombieBuddy asks. After
+restart verify `type(bcThermalResolve) == "function"` in both processes, exactly
+one callback for each changed event, then compare the systems-panel room value,
+wristwatch value and thermoregulator air value at the same tile. Also reconnect
+once and confirm the requested power state produces mutually exclusive main and
+red emergency lighting without unloading the bunker as a workaround.
 
 Fourth-slice commits so far:
 
 - `e08672b` - server-authoritative bunker heating core;
-- `4b2216b` - MP adaptation of The Ark climate and heating.
+- `4b2216b` - MP adaptation of The Ark climate and heating;
+- `57e4c36` - authoritative room temperature exposed to vanilla climate;
+- `1c8ae70` - reconnect-stable emergency light identity and reconciliation.
