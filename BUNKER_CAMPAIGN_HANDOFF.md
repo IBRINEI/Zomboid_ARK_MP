@@ -1,17 +1,20 @@
 # Bunker Campaign handoff
 
-Last updated: 2026-07-30 (Europe/Moscow)
+Last updated: 2026-08-01 (Europe/Moscow)
 
 ## Read this first
 
-The infrastructure/MP-foundation slice is complete and was accepted in an
-administrator + ordinary-client dedicated-server test. The user reported that
-everything works as intended and found no remaining defects in this slice.
+The infrastructure/MP-foundation slice and the third, extensible life-support
+slice are complete. Both were accepted after administrator + ordinary-client
+dedicated-server testing, targeted ZombieBuddy runtime inspection and clean
+server/client restarts. The third slice closed on 2026-08-01 at Core 0.5.6 and
+Integration 0.7.7. Do not reopen it for unrelated campaign features; start the
+next dependency-ordered slice instead.
 
-The stable Ark fork is **BunkerCampaignArkMP 0.4.5**. Versions 0.4.6 through
-0.4.10 were lighting experiments made on 2026-07-29 and were deliberately
-rolled back. Do not reintroduce those patches. Version 0.4.5 is the known-good
-lighting implementation.
+The packaged Ark fork is **BunkerCampaignArkMP 0.4.5.1** and retains the
+known-good 0.4.5 lighting implementation. Versions 0.4.6 through 0.4.10 were
+lighting experiments made on 2026-07-29 and were deliberately rolled back. Do
+not reintroduce those patches.
 
 Before starting another slice, inspect this file, the two original design
 specifications, and the DAG/plan from the originating Codex conversation. Build
@@ -55,10 +58,10 @@ Enable:
 
 - Workshop `Bandits2` (read-only dependency).
 - Workshop `Waterpipes` (read-only dependency).
-- `BunkerCampaign` 0.3.2.
-- `BunkerCampaignArkMP` 0.4.5.
-- `BunkerCampaignToxicMP` 0.3.4.
-- `BunkerCampaignIntegration` 0.5.0.
+- `BunkerCampaign` 0.5.6.
+- `BunkerCampaignArkMP` 0.4.5.1 (0.4.5 lighting baseline).
+- `BunkerCampaignToxicMP` 0.5.1.
+- `BunkerCampaignIntegration` 0.7.7.
 
 Disable:
 
@@ -111,8 +114,9 @@ connects it to the bunker power allocation without recurring command/log spam.
 The power layer owns generator requests and resources, consumer allocations,
 main-grid status, emergency mode and emergency-battery discharge. Physical
 normal and red emergency lights are synchronized for administrator and client.
-The stable 0.4.5 behavior is important: later attempts to manipulate room-wide
-lighting separately caused permanently illuminated rooms and were rolled back.
+The stable 0.4.5 lighting behavior is important: later attempts to manipulate
+room-wide lighting separately caused permanently illuminated rooms and were
+rolled back.
 
 ## Accepted runtime behavior
 
@@ -289,12 +293,12 @@ protective-suit repair progression, skill/specialization bonuses, and campaign
 missions/unlocks. The second-slice data model should leave room for them but
 must not implement them prematurely.
 
-## Third slice implemented: extensible water and ventilation (2026-07-30)
+## Third slice: extensible water and ventilation (accepted 2026-08-01)
 
 The user accepted the preceding playable slice and authorized the complete
 water/ventilation implementation. Work is on branch `slice-3-life-support`.
-This section records implementation and automated validation; dedicated MP
-acceptance is still pending.
+The implementation, correction passes and dedicated MP acceptance are recorded
+below. The slice is closed; remaining campaign work belongs to later slices.
 
 Implemented versions:
 
@@ -450,3 +454,119 @@ FluidContainer, even when the virtual pipe medium is `TaintedWater`. The
 integration now replaces only that tainted bunker-receiver branch, adding real
 `FluidType.TaintedWater` and preserving the physical marker. Other WaterPipes
 networks and clean-water synchronization remain on the original code path.
+
+### Third-slice network/action correction pass (2026-07-31)
+
+Core 0.5.5 and Integration 0.7.6 close the final Build 42.19 multiplayer
+action and snapshot races. Campaign-state publication is deferred while the
+ordered life-support minute is running, then emitted once with the final power,
+ventilation and water values. A startup guard skips the global packet send when
+there are no online players, avoiding the dedicated-server `udpEngine` failure.
+The client ignores snapshots older than its current numeric revision. Rapid
+server/client polling no longer observes intermediate zero-valued telemetry.
+
+Build 42.19 reconstructs network timed actions differently when a custom
+client-only action defines `complete()`. Removing that method from
+`BunkerCampaignRepairIntakeAction` makes the normal `perform()` path reliable:
+the real queued action completes, consumes one `Base.ScrapMetal`, reaches the
+authoritative server validation and repairs the selected intake. Do not add a
+custom `complete()` or `forceComplete()` workaround back to this action.
+
+Tainted sink water required corrections on both sides. The client constructor
+patch passes the replicated per-object `BunkerCampaignWaterMedium` marker into
+`ISTakeWaterAction` without mutating shared sprite properties. On the server,
+`WaterTakeActionServerPatch.lua` replaces only the marked legacy-sink transfer:
+the source is debited through the vanilla temporary-container operation, then
+the bottle or drinking sample receives `FluidType.TaintedWater`. Clean and
+unrelated sources remain on the vanilla transfer path. This server module was
+confirmed to load normally after a clean restart.
+
+Regression coverage added in this pass:
+
+- out-of-order client snapshot rejection;
+- empty-player startup broadcast guard;
+- one atomic end-of-minute state publication after adapter mutations;
+- Build 42.19 intake-action shape without `complete()`;
+- authoritative client water-medium selection;
+- tainted server transfer plus untouched clean-water fallback.
+
+Runtime acceptance used correlation id `zb-fix-20260731-05`. Twenty-four rapid
+polls matched server/client revision and telemetry, the real intake action
+completed and consumed its material, and a real multiplayer water action filled
+the test bottle with primary fluid `TaintedWater`. The test item was removed and
+the player was returned to the bunker afterwards. Commit: `0d1490c`.
+
+### Third-slice full-storage/filter correction (2026-07-31 to 2026-08-01)
+
+Core 0.5.6 and Integration 0.7.7 fix phantom water production and duplicate
+treatment-filter debit. WaterPipes keeps its flowmeter at nominal pump
+throughput even when every bunker receiver is full. The adapter now exposes
+only accepted flow, clamped to the free physical storage capacity for the next
+minute. The core water simulation applies the same capacity bound before
+production telemetry or finite-source debit. Consequently a powered pump
+against a full reserve reports `storage_full`, accepted flow 0, campaign filter
+use 0 and no increase in produced liters.
+
+The original read-only WaterPipes mod still performs its own very slow native
+pump/filter wear while a pump is active. That behavior remains intentionally
+owned by WaterPipes. The removed defect was the campaign adapter charging the
+same filter again for nominal flow that stored no water.
+
+Automated regressions assert that a full physical reserve reports zero accepted
+flow, does not call the campaign treatment debit and does not add phantom core
+production. Syntax checks and the focused life-support and WaterPipes adapter
+suites pass. Commit: `d313569`.
+
+After a clean server/client restart on 2026-08-01, both permanent patches were
+present in the loaded-file set. With the pump on and storage set to 520 L clean:
+
+- status remained `operational` with reason `storage_full`;
+- accepted flow and campaign filter use remained 0;
+- produced liters were unchanged over the accelerated-time observation;
+- 12 snapshot samples stayed complete, and an explicit normal `requestState`
+  returned an exact server/client revision and payload match;
+- no Bunker Campaign errors appeared after the test correlation marker.
+
+The test state was restored through the existing administrator controls. The
+player was left at `9966,12622,-4`; storage was 520 L clean and 0 L tainted;
+the treatment filter was restored to effectively 100%; the main generator was
+running and refueled, and the idle backup generator was at 100% fuel.
+
+### Third-slice closure and forward constraints
+
+The user explicitly accepted the third slice on 2026-08-01. Its closure covers:
+
+- data-driven rectangular and composite room registration for future rooms;
+- per-room volume-aware CO2, contamination, occupancy and live room-map UI;
+- distinct Off, Sealed, Internal Recirculation, External Filtration and
+  Emergency ventilation behavior;
+- four physical intakes, entry breach state, repair and airlock purge;
+- authoritative power allocation and physical generator/light integration;
+- authoritative pump request, physical condition, source, filter, clean/tainted
+  storage, sink medium and decontamination water transactions;
+- administrator QA controls and restart-safe multiplayer synchronization.
+
+Relevant third-slice commit sequence:
+
+- `47e197d` - extensible bunker life support;
+- `715a720` - life-support state and administrator QA corrections;
+- `d2946bf` - room airflow and physical-water QA;
+- `eadb0cd` - WaterPipes sink-value normalization;
+- `3aa4da3` - life-support telemetry and water synchronization;
+- `847e426` - ventilation-mode separation and tainted tap water;
+- `0d1490c` - atomic synchronization and multiplayer water actions;
+- `d313569` - full-storage flow and treatment-filter correction.
+
+Known non-blocking observations at closure:
+
+- server startup still logs missing third-party item ids such as `Base.Soap`,
+  `Base.DentalFloos`, `Base.MufflerPerformance*` and `Base.TomatoBagSeed`; these
+  originate in reused external content and did not affect this slice;
+- `BunkerCampaignIntegration/42.0/docs/THIRD_SLICE_TESTING.md` has an unrelated
+  pre-existing accidental pasted block in the working tree. It was deliberately
+  excluded from all accepted commits. Repair it separately from a known-good
+  copy instead of staging it with gameplay work.
+
+No further restart is required for the accepted versions. Begin subsequent
+work from commits `0d1490c` and `d313569`, preserve the read-only dependency
+boundary, and keep all runtime strings in English.
