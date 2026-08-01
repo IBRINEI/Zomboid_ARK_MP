@@ -1,4 +1,4 @@
-BunkerCampaignIntegration = BunkerCampaignIntegration or {}
+BunkerCampaignThermalJava = BunkerCampaignThermalJava or {}
 
 local ThermalOverrideAdapter = {}
 
@@ -23,7 +23,7 @@ function ThermalOverrideAdapter.apply(heating)
     if not available() then return false, "java_override_unavailable" end
 
     local ok, result = pcall(function()
-        bcThermalBegin()
+        assert(bcThermalBegin(), "thermal region staging failed")
         local count = 0
         for roomId, room in pairs(type(heating.rooms) == "table" and heating.rooms or {}) do
             local temperature = tonumber(room.temperature)
@@ -40,9 +40,7 @@ function ThermalOverrideAdapter.apply(heating)
             end
         end
         local committed = bcThermalCommit()
-        if tonumber(committed) ~= count then
-            error("thermal region commit mismatch")
-        end
+        if tonumber(committed) ~= count then error("thermal region commit mismatch") end
         return count
     end)
     if not ok then
@@ -52,5 +50,5 @@ function ThermalOverrideAdapter.apply(heating)
     return true, result
 end
 
-BunkerCampaignIntegration.ThermalOverrideAdapter = ThermalOverrideAdapter
+BunkerCampaignThermalJava.ThermalOverrideAdapter = ThermalOverrideAdapter
 return ThermalOverrideAdapter

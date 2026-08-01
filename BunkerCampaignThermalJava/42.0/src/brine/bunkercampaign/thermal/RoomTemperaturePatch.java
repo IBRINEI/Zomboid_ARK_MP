@@ -1,9 +1,8 @@
-package brine.bunkercampaign.integration;
+package brine.bunkercampaign.thermal;
 
 import me.zed_0xff.zombie_buddy.annotations.Patch;
 import zombie.iso.IsoGridSquare;
 
-/** Makes the campaign room model the ambient-temperature source in the bunker. */
 @Patch(className = "zombie.iso.weather.ClimateManager",
         methodName = "getAirTemperatureForSquare", warmUp = true)
 public final class RoomTemperaturePatch {

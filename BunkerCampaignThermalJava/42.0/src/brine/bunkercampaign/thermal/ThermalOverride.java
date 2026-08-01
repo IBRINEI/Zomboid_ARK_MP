@@ -1,4 +1,4 @@
-package brine.bunkercampaign.integration;
+package brine.bunkercampaign.thermal;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,11 +6,6 @@ import java.util.List;
 
 import se.krka.kahlua.integration.annotations.LuaMethod;
 
-/**
- * Atomic room-temperature registry populated by the authoritative Lua state.
- * The active list is immutable so ClimateManager reads never observe a partial
- * stateSnapshot update.
- */
 public final class ThermalOverride {
     private static final float MIN_TEMPERATURE = -100.0f;
     private static final float MAX_TEMPERATURE = 60.0f;
@@ -50,9 +45,7 @@ public final class ThermalOverride {
 
     @LuaMethod(name = "bcThermalCommit", global = true)
     public static synchronized int commit() {
-        if (staging == null) {
-            return -1;
-        }
+        if (staging == null) return -1;
         active = Collections.unmodifiableList(new ArrayList<>(staging));
         staging = null;
         return active.size();
@@ -75,7 +68,8 @@ public final class ThermalOverride {
                 (int) Math.floor(z), (float) fallback);
     }
 
-    static float resolve(int x, int y, int z, float fallback) {
+    /** Public because the patched ClimateManager bytecode invokes this directly. */
+    public static float resolve(int x, int y, int z, float fallback) {
         Region best = null;
         long bestArea = Long.MAX_VALUE;
         for (Region region : active) {

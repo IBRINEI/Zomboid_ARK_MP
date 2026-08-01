@@ -1,8 +1,6 @@
 name=Bunker Campaign: MP Fork Integration
 id=BunkerCampaignIntegration
 description=Server-authoritative bridge between Bunker Campaign and the local The Ark/Toxic Zones MP forks for Build 42.19.
-version=0.8.1
+version=0.8.2
 versionMin=42.19
-require=\BunkerCampaign,\BunkerCampaignArkMP,\BunkerCampaignToxicMP,\Waterpipes,\ZombieBuddy
-javaJarFile=media/java/BunkerCampaignIntegration.jar
-javaPkgName=brine.bunkercampaign.integration
+require=\BunkerCampaign,\BunkerCampaignArkMP,\BunkerCampaignToxicMP,\Waterpipes
