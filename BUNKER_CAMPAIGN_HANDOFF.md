@@ -581,7 +581,7 @@ Candidate versions:
 
 - `BunkerCampaign` 0.6.0, campaign state version 7;
 - `BunkerCampaignIntegration` 0.8.2, integration state version 5;
-- optional `BunkerCampaignThermalJava` 0.1.0;
+- optional `BunkerCampaignThermalJava` 0.2.0;
 - `BunkerCampaignArkMP` 0.4.5.2 (the accepted 0.4.5 behavior plus the
   reconnect-light repair; none of the rejected 0.4.6--0.4.10 changes);
 - `BunkerCampaignToxicMP` remains exactly 0.5.1.
@@ -614,15 +614,18 @@ a room colder than 22 C: the systems panel could correctly show -41 C while a
 wristwatch and the character thermoregulator still received 22 C.
 
 The Java patch is now a physically separate optional mod,
-`BunkerCampaignThermalJava` 0.1.0. It listens for the normal core heating
-snapshot on the client and atomically publishes every exact RoomRegistry
-region and its server-authoritative temperature. Its patched ClimateManager
-method replaces the vanilla value only inside those regions. Consequently
-wristwatches, thermoregulation, cold moodles and other vanilla square-
-temperature consumers share the same room value instead of receiving a UI-only
-substitute. The runtime JAR is client-only and is skipped by the dedicated
-server. Source, Lua lifecycle adapter and tests all live exclusively under
-`BunkerCampaignThermalJava/42.0`; the JAR SHA-256 is
+`BunkerCampaignThermalJava` 0.2.0. The client listens for the normal core
+heating snapshot; the server reads the authoritative campaign state after
+initialization/start and every game minute. Each side atomically publishes
+every exact RoomRegistry region and its server-authoritative temperature. The
+patched ClimateManager method replaces the vanilla value only inside those
+regions. Consequently wristwatches, server-owned thermoregulation, cold
+moodles and other vanilla square-temperature consumers share the same room
+value instead of receiving a UI-only substitute. The same runtime JAR loads on
+both client and dedicated server because Build 42.19 skips local-player
+`BodyDamage.Update()` on an MP client and performs the authoritative body
+simulation on the server. Source, Lua lifecycle adapters and tests all live
+exclusively under `BunkerCampaignThermalJava/42.0`; the JAR SHA-256 is
 `44CA0AF45AC03477446F2719A3CA3E9A8980A6C6D00217952505E874F313C3E4`.
 
 `BunkerCampaignIntegration` 0.8.2 contains no Java classes, no Java JAR, no
@@ -674,6 +677,8 @@ Automated coverage passing on this branch:
 - Java region lookup, overlap precedence, replacement and clearing;
 - external-package access to the method invoked by transformed game bytecode;
 - optional client module snapshot, disconnect and main-menu cleanup lifecycle;
+- optional server module initialization, minute refresh and complete region
+  publication;
 - reconnect-stable main/emergency light classification and battery repair;
 - Integration import/mirror of Ark heating state.
 
@@ -698,7 +703,7 @@ frame 8 immediately after player creation. That server exit left ArkMP at
 the normal automatic teleport. The apparent teleport failure and the crash on
 leaving the spawn building therefore had the same Java root cause.
 
-ThermalJava 0.1.0 makes the invoked method public and compiles an access probe
+ThermalJava 0.1.0 made the invoked method public and compiles an access probe
 from a different Java package, which would fail compilation if this regression
 returned. The mandatory clean dedicated-server and client restart was accepted
 with correlation `slice4-thermal-optional-20260801-a`. The dedicated server
@@ -706,7 +711,22 @@ correctly skipped the client-only API (`bcThermalResolve == nil`), reached ArkMP
 `ready`, and automatically placed `admin` in the infirmary at
 9965.86,12622.04,-4. The client loaded the optional API, published 25 exact
 thermal regions and applied 5.288 C consistently through character, square and
-registry climate lookups. Both ZombieBuddy endpoints remained healthy.
+registry climate lookups. Both ZombieBuddy endpoints remained healthy. That
+acceptance covered display paths but exposed a second MP boundary afterward:
+the dedicated server had correctly skipped the then-client-only JAR, so its
+authoritative BodyDamage simulation still used vanilla indoor temperature.
+Clocks showed the real cold while the player could not develop hypothermia.
+
+ThermalJava 0.2.0 moves the unchanged JAR to the two-sided `media/java` path
+and adds a replaceable server publisher. Correlation
+`slice4-server-thermoreg-20260801-b` accepted the corrected clean restart. Both
+processes loaded the Java API and 25 regions without `IllegalAccessError`; the
+server's `getAirTemperatureForSquare`, `getAirTemperatureForCharacter`,
+`Thermoregulator.getTemperatureAir` and cached external-air value agreed. As
+the infirmary fell to 0.106 C, the authoritative core temperature fell to
+36.137 C with body heat delta -0.691, and both server and client reported
+hypothermia level 1. All three server publisher callbacks were registered
+exactly once.
 
 The same clean run validated lighting after reconnect. The client received all
 847 manifest entries and completed reconciliation. Its loaded world contained
@@ -719,11 +739,11 @@ client receives the dynamically built structure, but they stop after loading;
 the manifest reconciliation is what establishes the final correct client
 lighting state.
 
-To test the detachable fallback, disable only `BunkerCampaignThermalJava` and
-restart the client; all other campaign mods must still load and the only
-expected regression is vanilla +22 C indoor reporting. That disabled-module
-restart has not yet been exercised because it would interrupt the currently
-accepted enabled-module runtime.
+To test the detachable fallback, disable only `BunkerCampaignThermalJava` on
+both server and client and restart both processes; all other campaign mods must
+still load and the only expected regression is vanilla +22 C indoor reporting
+and thermoregulation. That disabled-module restart has not yet been exercised
+because it would interrupt the currently accepted enabled-module runtime.
 
 Fourth-slice commits so far:
 
@@ -732,4 +752,5 @@ Fourth-slice commits so far:
 - `57e4c36` - authoritative room temperature exposed to vanilla climate;
 - `1c8ae70` - reconnect-stable emergency light identity and reconciliation;
 - `bc68dce` - local ZombieBuddy runtime marker and dependency setup;
-- `6657a0f` - isolate the optional Java bridge and repair external access.
+- `6657a0f` - isolate the optional Java bridge and repair external access;
+- `82bee8d` - publish optional room climate to MP server thermoregulation.
