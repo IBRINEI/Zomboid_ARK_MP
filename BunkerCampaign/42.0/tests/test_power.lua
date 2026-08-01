@@ -35,6 +35,8 @@ power.consumers.ventilation.demandKw = BunkerCampaign.Constants.VENTILATION.FAN_
 BunkerCampaign.PowerSimulation.update(power, 0)
 assert(power.consumers.main_lighting.allocated == true,
     "a healthy backup generator must carry emergency ventilation, water and main lighting")
+assert(power.consumers.heating.allocated == false,
+    "backup power must shed gradual heating before accepted water and main-lighting loads")
 
 power.consumers.decontamination.requested = true
 BunkerCampaign.PowerSimulation.update(power, 0)

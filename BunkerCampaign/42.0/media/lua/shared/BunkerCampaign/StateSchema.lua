@@ -3,6 +3,7 @@ require "BunkerCampaign/Util"
 require "BunkerCampaign/PowerSimulation"
 require "BunkerCampaign/WaterSimulation"
 require "BunkerCampaign/VentilationSimulation"
+require "BunkerCampaign/HeatingSimulation"
 
 BunkerCampaign = BunkerCampaign or {}
 
@@ -11,6 +12,7 @@ local Util = BunkerCampaign.Util
 local PowerSimulation = BunkerCampaign.PowerSimulation
 local WaterSimulation = BunkerCampaign.WaterSimulation
 local VentilationSimulation = BunkerCampaign.VentilationSimulation
+local HeatingSimulation = BunkerCampaign.HeatingSimulation
 local StateSchema = {}
 
 local function defaultVentilation()
@@ -36,6 +38,7 @@ function StateSchema.createDefault()
             modules = {
                 power = PowerSimulation.createDefault(),
                 ventilation = defaultVentilation(),
+                heating = HeatingSimulation.createDefault(),
                 water = defaultWater(),
             },
         },
@@ -145,6 +148,10 @@ function StateSchema.prepare(state, isNewGame)
         table.insert(changes, "state migration 5 -> 6: extensible room-based life support")
         changed = true
     end
+    if oldVersion < 7 then
+        table.insert(changes, "state migration 6 -> 7: server room heating")
+        changed = true
+    end
 
     if copyMissing(state, {
         campaignId = defaults.campaignId,
@@ -170,6 +177,8 @@ function StateSchema.prepare(state, isNewGame)
     if ensureTable(state.bunker.modules, "ventilation") then changed = true end
     if normalizeVentilation(state.bunker.modules.ventilation) then changed = true end
     if oldVersion < 6 then state.bunker.modules.ventilation.recirculationUnlocked = true end
+    if ensureTable(state.bunker.modules, "heating") then changed = true end
+    if HeatingSimulation.normalize(state.bunker.modules.heating) then changed = true end
     if ensureTable(state.bunker.modules, "water") then changed = true end
     if normalizeWater(state.bunker.modules.water) then changed = true end
     if ensureTable(state, "auditLog") then changed = true end

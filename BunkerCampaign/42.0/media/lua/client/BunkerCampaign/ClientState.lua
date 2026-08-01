@@ -103,6 +103,43 @@ function ClientState.setWaterBypass(player, enabled)
     end
 end
 
+function ClientState.setHeatingEnabled(player, enabled)
+    if type(enabled) ~= "boolean" then return end
+    player = player or getPlayer()
+    if isClient() then
+        if player then sendClientCommand(player, Constants.NETWORK_MODULE, "setHeating", { enabled=enabled }) end
+    elseif BunkerCampaign.CampaignState then
+        BunkerCampaign.CampaignState.setHeatingEnabled(enabled, "singleplayer")
+        ClientState.request(player)
+    end
+end
+
+function ClientState.setHeatingTarget(player, temperature)
+    if type(temperature) ~= "number" then return end
+    player = player or getPlayer()
+    if isClient() then
+        if player then sendClientCommand(player, Constants.NETWORK_MODULE, "setHeatingTarget", {
+            temperature=temperature,
+        }) end
+    elseif BunkerCampaign.CampaignState then
+        BunkerCampaign.CampaignState.setHeatingTarget(temperature, "singleplayer")
+        ClientState.request(player)
+    end
+end
+
+function ClientState.setHeatingRoomEnabled(player, roomId, enabled)
+    if type(roomId) ~= "string" or type(enabled) ~= "boolean" then return end
+    player = player or getPlayer()
+    if isClient() then
+        if player then sendClientCommand(player, Constants.NETWORK_MODULE, "setHeatingRoom", {
+            roomId=roomId, enabled=enabled,
+        }) end
+    elseif BunkerCampaign.CampaignState then
+        BunkerCampaign.CampaignState.setHeatingRoomEnabled(roomId, enabled, "singleplayer")
+        ClientState.request(player)
+    end
+end
+
 function ClientState.setGeneratorRequested(player, generatorId, requested)
     if type(generatorId) ~= "string" or type(requested) ~= "boolean" then return end
     player = player or getPlayer()
@@ -128,7 +165,8 @@ end
 function ClientState.onServerCommand(module, command, args)
     if module ~= Constants.NETWORK_MODULE then return end
 
-    if command == "stateSnapshot" and type(args) == "table" and type(args.ventilation) == "table" and type(args.power) == "table" then
+    if command == "stateSnapshot" and type(args) == "table" and type(args.ventilation) == "table"
+        and type(args.power) == "table" and type(args.heating) == "table" then
         local currentRevision = ClientState.snapshot and tonumber(ClientState.snapshot.revision) or nil
         local incomingRevision = tonumber(args.revision)
         if currentRevision and incomingRevision and incomingRevision < currentRevision then return end

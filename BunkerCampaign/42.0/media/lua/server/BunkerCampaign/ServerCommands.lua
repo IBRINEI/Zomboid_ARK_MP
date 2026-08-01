@@ -127,6 +127,35 @@ local function setWaterBypass(player, args)
     if not ok then replyError(player, reason or "invalid_payload") end
 end
 
+local function setHeating(player, args)
+    if not canOperateBunkerSystems(player) then replyError(player, "bunker_access_required"); return end
+    if type(args) ~= "table" or type(args.enabled) ~= "boolean" then
+        replyError(player, "invalid_payload"); return
+    end
+    local ok, reason = CampaignState.setHeatingEnabled(args.enabled, player:getUsername())
+    if not ok then replyError(player, reason or "invalid_payload") end
+end
+
+local function setHeatingTarget(player, args)
+    if not canOperateBunkerSystems(player) then replyError(player, "bunker_access_required"); return end
+    if type(args) ~= "table" or type(args.temperature) ~= "number" then
+        replyError(player, "invalid_payload"); return
+    end
+    local ok, reason = CampaignState.setHeatingTarget(args.temperature, player:getUsername())
+    if not ok then replyError(player, reason or "invalid_payload") end
+end
+
+local function setHeatingRoom(player, args)
+    if not canOperateBunkerSystems(player) then replyError(player, "bunker_access_required"); return end
+    if type(args) ~= "table" or type(args.roomId) ~= "string"
+        or type(args.enabled) ~= "boolean" then
+        replyError(player, "invalid_payload"); return
+    end
+    local ok, reason = CampaignState.setHeatingRoomEnabled(
+        args.roomId, args.enabled, player:getUsername())
+    if not ok then replyError(player, reason or "invalid_payload") end
+end
+
 local function setGenerator(player, args)
     if not canOperateBunkerSystems(player) then
         CampaignState.appendLog("security", "rejected generator mutation", player and player:getUsername() or "unknown")
@@ -151,7 +180,7 @@ local function setConsumer(player, args)
         replyError(player, "invalid_payload")
         return
     end
-    local allowed = { ventilation=true, water=true, main_lighting=true }
+    local allowed = { ventilation=true, water=true, heating=true, main_lighting=true }
     if not allowed[args.id] then replyError(player, "unknown_consumer"); return end
     local ok, reason = CampaignState.setConsumerRequested(args.id, args.requested, player:getUsername())
     if not ok then replyError(player, reason or "invalid_payload") end
@@ -174,6 +203,12 @@ function ServerCommands.onClientCommand(module, command, player, args)
         setWaterSource(player, args)
     elseif command == "setWaterBypass" then
         setWaterBypass(player, args)
+    elseif command == "setHeating" then
+        setHeating(player, args)
+    elseif command == "setHeatingTarget" then
+        setHeatingTarget(player, args)
+    elseif command == "setHeatingRoom" then
+        setHeatingRoom(player, args)
     elseif command == "setGenerator" then
         setGenerator(player, args)
     elseif command == "setConsumer" then

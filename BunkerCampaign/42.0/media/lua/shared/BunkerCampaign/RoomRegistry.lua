@@ -174,5 +174,34 @@ function RoomRegistry.ensureState(roomStates, baselineCo2)
     return roomStates
 end
 
+function RoomRegistry.ensureThermalState(roomStates, baselineTemperature, targetTemperature)
+    roomStates = type(roomStates) == "table" and roomStates or {}
+    baselineTemperature = number(baselineTemperature, 18)
+    targetTemperature = number(targetTemperature, 21)
+    for _, definition in ipairs(RoomRegistry.all()) do
+        local room = roomStates[definition.id]
+        if type(room) ~= "table" then room = {}; roomStates[definition.id] = room end
+        room.id = definition.id
+        room.label = definition.label
+        room.kind = definition.kind
+        room.bounds = definition.bounds
+        room.regions = definition.regions
+        room.footprintArea = definition.footprintArea
+        room.connections = definition.connections
+        room.vents = definition.vents
+        room.volumeM3 = number(room.volumeM3, definition.volumeM3, 1)
+        room.ventWeight = number(room.ventWeight, definition.ventWeight, 0)
+        room.leakRate = number(room.leakRate, definition.leakRate, 0)
+        room.sealed = room.sealed ~= false
+        room.heatingEnabled = room.heatingEnabled ~= false and #definition.vents > 0
+        room.temperature = number(room.temperature, baselineTemperature)
+        room.targetTemperature = number(room.targetTemperature, targetTemperature)
+        room.heatInputKw = number(room.heatInputKw, 0, 0)
+        room.heatLossKw = number(room.heatLossKw, 0, 0)
+        room.status = type(room.status) == "string" and room.status or "operational"
+    end
+    return roomStates
+end
+
 BunkerCampaign.RoomRegistry = RoomRegistry
 return RoomRegistry

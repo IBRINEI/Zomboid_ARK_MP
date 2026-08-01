@@ -61,6 +61,9 @@ function PowerSimulation.createDefault()
             ventilation = defaultConsumer("ventilation", true, 3.50, 90, false),
             water = defaultConsumer("water", true, 1.50, 80, false),
             decontamination = defaultConsumer("decontamination", false, 2.50, 85, false),
+            -- Heating has thermal inertia, so backup power preserves water and
+            -- accepted main-lighting behavior before shedding this load.
+            heating = defaultConsumer("heating", true, 0.35, 65, false),
             main_lighting = defaultConsumer("main_lighting", true, 1.00, 70, false),
         },
     }

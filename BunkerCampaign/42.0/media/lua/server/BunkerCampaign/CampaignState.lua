@@ -7,6 +7,7 @@ require "BunkerCampaign/PowerSimulation"
 require "BunkerCampaign/VentilationSimulation"
 require "BunkerCampaign/WaterSimulation"
 require "BunkerCampaign/RoomRegistry"
+require "BunkerCampaign/HeatingSimulation"
 
 BunkerCampaign = BunkerCampaign or {}
 
@@ -17,6 +18,7 @@ local PowerSimulation = BunkerCampaign.PowerSimulation
 local VentilationSimulation = BunkerCampaign.VentilationSimulation
 local WaterSimulation = BunkerCampaign.WaterSimulation
 local RoomRegistry = BunkerCampaign.RoomRegistry
+local HeatingSimulation = BunkerCampaign.HeatingSimulation
 local CampaignState = {
     data = nil,
     minutesSinceSync = 0,
@@ -68,11 +70,15 @@ function CampaignState.initialize(isNewGame)
     local consumers = state.bunker.modules.power.consumers
     local ventilation = state.bunker.modules.ventilation
     local water = state.bunker.modules.water
+    local heating = state.bunker.modules.heating
     ventilation.powerAllocated = consumers.ventilation.allocated
     VentilationSimulation.update(ventilation, 0)
     water.requested = consumers.water.requested
     water.pumpRequested = water.requested
     water.powerAllocated = consumers.water.allocated
+    heating.powerAllocated = consumers.heating.allocated
+    HeatingSimulation.update(heating, 0, { ventilation=ventilation })
+    state.bunker.temperature = heating.averageTemperature
 
     for _, message in ipairs(changes) do
         CampaignState.appendLog("migration", message, "server")
@@ -140,6 +146,7 @@ function CampaignState.snapshot()
     local ventilation = state.bunker.modules.ventilation
     local water = state.bunker.modules.water
     local power = state.bunker.modules.power
+    local heating = state.bunker.modules.heating
 
     local generatorSnapshot = {}
     for id, generator in pairs(power.generators) do
@@ -195,6 +202,18 @@ function CampaignState.snapshot()
             availableLiters=source.availableLiters, renewable=source.renewable,
             contamination=source.contamination, maximumFlowLpm=source.maximumFlowLpm,
             status=source.status,
+        }
+    end
+    local heatingRoomSnapshot = {}
+    for id, room in pairs(heating.rooms or {}) do
+        heatingRoomSnapshot[id] = {
+            id=id, label=room.label, kind=room.kind, volumeM3=room.volumeM3,
+            bounds=room.bounds, regions=room.regions, footprintArea=room.footprintArea,
+            connections=room.connections, vents=room.vents, ventWeight=room.ventWeight,
+            sealed=room.sealed, heatingEnabled=room.heatingEnabled,
+            temperature=room.temperature, targetTemperature=room.targetTemperature,
+            heatInputKw=room.heatInputKw, heatLossKw=room.heatLossKw,
+            status=room.status,
         }
     end
 
@@ -257,6 +276,25 @@ function CampaignState.snapshot()
             entryPath = ventilation.entryPath,
             telemetry = ventilation.telemetry,
         },
+        heating = {
+            enabled = heating.enabled,
+            requested = heating.requested,
+            operating = heating.operating,
+            powerAllocated = heating.powerAllocated,
+            status = heating.status,
+            reason = heating.reason,
+            targetTemperature = heating.targetTemperature,
+            averageTemperature = heating.averageTemperature,
+            externalTemperature = heating.externalTemperature,
+            baseExternalTemperature = heating.baseExternalTemperature,
+            coldOffset = heating.coldOffset,
+            powerDemandKw = heating.powerDemandKw,
+            fuelAvailable = heating.fuelAvailable,
+            heatExchanger = heating.heatExchanger,
+            pipes = heating.pipes,
+            rooms = heatingRoomSnapshot,
+            telemetry = heating.telemetry,
+        },
         water = {
             adapterOnline = water.adapterOnline,
             pumpActive = water.pumpActive,
@@ -293,6 +331,7 @@ local function applyPowerOutputs()
     modules.water.requested = consumers.water.requested
     modules.water.pumpRequested = modules.water.requested
     modules.water.powerAllocated = consumers.water.allocated
+    modules.heating.powerAllocated = consumers.heating.allocated
 end
 
 function CampaignState.recalculatePower(deltaMinutes, actor)
@@ -301,6 +340,9 @@ function CampaignState.recalculatePower(deltaMinutes, actor)
     local events = PowerSimulation.update(power, deltaMinutes or 0)
     applyPowerOutputs()
     VentilationSimulation.update(CampaignState.data.bunker.modules.ventilation, 0)
+    HeatingSimulation.update(CampaignState.data.bunker.modules.heating, 0, {
+        ventilation=CampaignState.data.bunker.modules.ventilation,
+    })
     notifyPowerListeners()
     if events.statusChanged then
         CampaignState.appendLog("power", "status changed " .. tostring(events.previousStatus) .. " -> " .. tostring(power.status), actor or "server")
@@ -354,11 +396,57 @@ function CampaignState.setConsumerRequested(consumerId, requested, actor)
         water.requested = requested
         water.pumpRequested = requested
         consumer.demandKw = WaterSimulation.prepareDemand(water)
+    elseif consumerId == "heating" then
+        local heating = CampaignState.data.bunker.modules.heating
+        heating.enabled = requested
+        heating.requested = requested
+        consumer.demandKw = HeatingSimulation.prepareDemand(heating, {
+            ventilation=CampaignState.data.bunker.modules.ventilation,
+        })
     end
     CampaignState.recalculatePower(0, actor)
     VentilationSimulation.update(CampaignState.data.bunker.modules.ventilation, 0)
     CampaignState.touch()
     CampaignState.appendLog("power", tostring(consumerId) .. (requested and " power requested" or " power released"), actor)
+    CampaignState.broadcast()
+    return true
+end
+
+function CampaignState.setHeatingEnabled(enabled, actor)
+    if type(enabled) ~= "boolean" then return false, "enabled must be boolean" end
+    local heating = CampaignState.data and CampaignState.data.bunker.modules.heating
+    if not heating then return false, "state_unavailable" end
+    if heating.enabled == enabled and heating.requested == enabled then return true, "unchanged" end
+    return CampaignState.setConsumerRequested("heating", enabled, actor)
+end
+
+function CampaignState.setHeatingTarget(value, actor)
+    local heating = CampaignState.data and CampaignState.data.bunker.modules.heating
+    if not heating then return false, "state_unavailable" end
+    local previous = heating.targetTemperature
+    local ok, reason = HeatingSimulation.setTarget(heating, value)
+    if not ok then return false, reason end
+    if previous == heating.targetTemperature then return true, "unchanged" end
+    local consumer = CampaignState.data.bunker.modules.power.consumers.heating
+    consumer.demandKw = HeatingSimulation.prepareDemand(heating, {
+        ventilation=CampaignState.data.bunker.modules.ventilation,
+    })
+    CampaignState.recalculatePower(0, actor)
+    CampaignState.touch()
+    CampaignState.appendLog("heating", "target changed to "
+        .. tostring(Util.round(heating.targetTemperature, 1)) .. " C", actor)
+    CampaignState.broadcast()
+    return true
+end
+
+function CampaignState.setHeatingRoomEnabled(roomId, enabled, actor)
+    local heating = CampaignState.data and CampaignState.data.bunker.modules.heating
+    if not heating then return false, "state_unavailable" end
+    local ok, reason = HeatingSimulation.setRoomEnabled(heating, roomId, enabled)
+    if not ok then return false, reason end
+    CampaignState.touch()
+    CampaignState.appendLog("heating", "room " .. roomId
+        .. (enabled and " circuit enabled" or " circuit isolated"), actor)
     CampaignState.broadcast()
     return true
 end
@@ -528,6 +616,9 @@ function CampaignState.registerRoom(definition)
         local ventilation = CampaignState.data.bunker.modules.ventilation
         if definition.id ~= "legacy_habitat" then ventilation.rooms.legacy_habitat = nil end
         ventilation.rooms = RoomRegistry.ensureState(ventilation.rooms, Constants.VENTILATION.MIN_CO2)
+        local heating = CampaignState.data.bunker.modules.heating
+        heating.rooms = RoomRegistry.ensureThermalState(
+            heating.rooms, heating.averageTemperature, heating.targetTemperature)
     end
     return true
 end
@@ -576,11 +667,15 @@ function CampaignState.updateOneMinute()
     local modules = CampaignState.data.bunker.modules
     local ventilation = modules.ventilation
     local water = modules.water
+    local heating = modules.heating
     local context = {
         occupancyByRoom=collectRoomOccupancy(),
         intakeContamination={},
         externalContamination=ventilation.externalContamination,
         waterPhysical={},
+        externalTemperature=heating.externalTemperature,
+        baseExternalTemperature=heating.baseExternalTemperature,
+        coldOffset=heating.coldOffset,
     }
     notifyLifeSupportListeners("sample", context)
 
@@ -590,10 +685,21 @@ function CampaignState.updateOneMinute()
     local waterConsumer = modules.power.consumers.water
     waterConsumer.demandKw = WaterSimulation.prepareDemand(water)
     waterConsumer.requested = water.requested and waterConsumer.demandKw > 0
+    context.ventilation = ventilation
+    local heatingConsumer = modules.power.consumers.heating
+    heatingConsumer.demandKw = HeatingSimulation.prepareDemand(heating, context)
+    heatingConsumer.requested = heating.requested and heating.enabled
     local powerEvents = CampaignState.recalculatePower(1, "server")
     notifyLifeSupportListeners("postPower", context)
     WaterSimulation.update(water, 1, context.waterPhysical)
     local events = VentilationSimulation.update(ventilation, 1, context)
+    context.ventilation = ventilation
+    context.fuelAvailable = false
+    for _, generator in pairs(modules.power.generators or {}) do
+        if generator.running and generator.fuel > 0 then context.fuelAvailable = true; break end
+    end
+    local heatingEvents = HeatingSimulation.update(heating, 1, context)
+    CampaignState.data.bunker.temperature = heating.averageTemperature
     notifyLifeSupportListeners("postSimulation", context)
     CampaignState.touch()
 
@@ -606,6 +712,10 @@ function CampaignState.updateOneMinute()
     end
     if events.filterExhausted then
         CampaignState.appendLog("ventilation", "filter exhausted", "server")
+    end
+    if heatingEvents.statusChanged then
+        CampaignState.appendLog("heating", "status changed "
+            .. tostring(heatingEvents.previousStatus) .. " -> " .. tostring(heating.status), "server")
     end
 
     CampaignState.minutesSinceSync = CampaignState.minutesSinceSync + 1

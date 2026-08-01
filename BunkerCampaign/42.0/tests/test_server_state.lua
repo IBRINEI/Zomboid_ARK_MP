@@ -46,12 +46,16 @@ end
 function RunBunkerCampaignServerTests()
 BunkerCampaign.CampaignState.initialize(true)
 local firstReference = BunkerCampaign.CampaignState.get()
-assert(firstReference.version == 6, "server must initialize versioned state")
+assert(firstReference.version == 7, "server must initialize versioned state")
 assert(#firstReference.auditLog > 0, "initialization must be audited")
 assert(firstReference.bunker.modules.water.status == "offline", "water module must migrate with safe defaults")
 assert(firstReference.bunker.modules.water.adapterOnline == false, "water adapter must start offline")
 assert(firstReference.bunker.modules.power.gridOnline == true, "main generator must bootstrap the bunker grid")
 assert(firstReference.bunker.modules.power.consumers.decontamination.requested == false, "decontamination load must start idle")
+assert(firstReference.bunker.modules.power.consumers.heating.requested == true,
+    "heating must be an explicit server power consumer")
+assert(firstReference.bunker.modules.heating.powerAllocated == true,
+    "heating must receive bootstrap generator power")
 assert(firstReference.bunker.modules.ventilation.operating == true, "ventilation must receive bootstrap power")
 
 local ok = BunkerCampaign.CampaignState.setVentilationEnabled(false, "admin-user")
@@ -141,6 +145,27 @@ assert(firstReference.bunker.modules.ventilation.operating == true, "ventilation
 
 BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "setConsumer", bunkerPlayer, { id = "water", requested = false })
 assert(firstReference.bunker.modules.power.consumers.water.requested == false, "ordinary players inside the bunker must operate infrastructure")
+
+assert(BunkerCampaign.CampaignState.registerRoom({
+    id="server_test_room", label="Server test room", kind="habitable",
+    bounds={x1=9964,x2=9968,y1=12620,y2=12624,z=-4},
+    vents={{x=9966,y=12620,z=-4}}, connections={},
+}), "server test heating room must register")
+BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "setHeatingTarget", bunkerPlayer, {
+    temperature=19,
+})
+assert(firstReference.bunker.modules.heating.targetTemperature == 19,
+    "ordinary bunker operators must set the heating target")
+BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "setHeatingRoom", bunkerPlayer, {
+    roomId="server_test_room", enabled=false,
+})
+assert(firstReference.bunker.modules.heating.rooms.server_test_room.heatingEnabled == false,
+    "room heating isolation must be server authoritative")
+BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "setHeating", normalPlayer, {
+    enabled=false,
+})
+assert(firstReference.bunker.modules.heating.enabled == true,
+    "a player outside the bunker must not change heating")
 
 local previousVentFilter = firstReference.bunker.modules.ventilation.filterBank.remaining
 BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "replaceVentilationFilter", filterPlayer, {})

@@ -57,11 +57,12 @@ end
 function VentilationPanel:createChildren()
     ISCollapsableWindow.createChildren(self)
 
-    local firstY = self.height - 158
-    local secondY = self.height - 128
-    local thirdY = self.height - 98
-    local fourthY = self.height - 68
-    local fifthY = self.height - 38
+    local firstY = self.height - 188
+    local secondY = self.height - 158
+    local thirdY = self.height - 128
+    local fourthY = self.height - 98
+    local fifthY = self.height - 68
+    local sixthY = self.height - 38
     self.mainButton = ISButton:new(12, firstY, 155, 26, getText("UI_BC_MainGenerator"), self, VentilationPanel.onToggleMain)
     self.mainButton:initialise()
     self.mainButton:instantiate()
@@ -107,12 +108,36 @@ function VentilationPanel:createChildren()
     self.bypassButton:instantiate()
     self:addChild(self.bypassButton)
 
-    self.sourceButton = ISButton:new(12, fifthY, 476, 26, getText("UI_BC_SelectWaterSource"), self, VentilationPanel.onCycleWaterSource)
+    self.heatingButton = ISButton:new(12, fifthY, 130, 26, getText("UI_BC_Heating"), self,
+        VentilationPanel.onToggleHeating)
+    self.heatingButton:initialise()
+    self.heatingButton:instantiate()
+    self:addChild(self.heatingButton)
+
+    self.heatingDownButton = ISButton:new(147, fifthY, 82, 26, getText("UI_BC_TargetDown"), self,
+        VentilationPanel.onHeatingDown)
+    self.heatingDownButton:initialise()
+    self.heatingDownButton:instantiate()
+    self:addChild(self.heatingDownButton)
+
+    self.heatingUpButton = ISButton:new(234, fifthY, 82, 26, getText("UI_BC_TargetUp"), self,
+        VentilationPanel.onHeatingUp)
+    self.heatingUpButton:initialise()
+    self.heatingUpButton:instantiate()
+    self:addChild(self.heatingUpButton)
+
+    self.roomHeatingButton = ISButton:new(321, fifthY, 167, 26, getText("UI_BC_RoomHeating"), self,
+        VentilationPanel.onToggleRoomHeating)
+    self.roomHeatingButton:initialise()
+    self.roomHeatingButton:instantiate()
+    self:addChild(self.roomHeatingButton)
+
+    self.sourceButton = ISButton:new(12, sixthY, 476, 26, getText("UI_BC_SelectWaterSource"), self, VentilationPanel.onCycleWaterSource)
     self.sourceButton:initialise()
     self.sourceButton:instantiate()
     self:addChild(self.sourceButton)
 
-    self.roomStatusButton = ISButton:new(590, fifthY, 378, 26, "Room CO2 map and mode help", self,
+    self.roomStatusButton = ISButton:new(590, sixthY, 378, 26, "Room climate map and mode help", self,
         VentilationPanel.onRoomStatus)
     self.roomStatusButton:initialise()
     self.roomStatusButton:instantiate()
@@ -121,6 +146,7 @@ end
 
 local function roomStatusText(snapshot)
     local ventilation = snapshot and snapshot.ventilation or {}
+    local heating = snapshot and snapshot.heating or {}
     local rooms = {}
     for _, room in pairs(type(ventilation.rooms) == "table" and ventilation.rooms or {}) do
         rooms[#rooms + 1] = room
@@ -132,7 +158,7 @@ local function roomStatusText(snapshot)
         return tostring(left.label or left.id) < tostring(right.label or right.id)
     end)
     local lines = {
-        "<H1> Bunker room air status <LINE>",
+        "<H1> Bunker room climate status <LINE>",
         "<TEXT> Active mode: " .. tostring(ventilation.activeMode or "-")
             .. " | filter: " .. percent(ventilation.filterRemaining)
             .. " | activity: " .. tostring(ventilation.telemetry and ventilation.telemetry.filterActivity or "-")
@@ -153,10 +179,13 @@ local function roomStatusText(snapshot)
     }
     for _, room in ipairs(rooms) do
         local connections = type(room.connections) == "table" and table.concat(room.connections, ", ") or ""
+        local thermal = type(heating.rooms) == "table" and heating.rooms[room.id] or nil
         lines[#lines + 1] = string.format(
-            "<TEXT> Z%d | %s | %s | CO2 %.0f ppm | air %.2f%% | occ %d | flow %.1f m3/min <LINE>",
+            "<TEXT> Z%d | %s | %s | %.1f C (%s) | CO2 %.0f ppm | air %.2f%% | occ %d | flow %.1f m3/min <LINE>",
             tonumber(room.bounds and room.bounds.z) or 0, tostring(room.label or room.id),
-            tostring(room.status or "unknown"), tonumber(room.co2) or 0,
+            tostring(room.status or "unknown"), tonumber(thermal and thermal.temperature) or 0,
+            thermal and thermal.heatingEnabled ~= false and "heated" or "isolated",
+            tonumber(room.co2) or 0,
             (tonumber(room.contamination) or 0) * 100, tonumber(room.occupants) or 0,
             tonumber(room.airflowM3PerMinute) or 0)
         if connections ~= "" then lines[#lines + 1] = "<SIZE:small> connects: " .. connections .. " <LINE>" end
@@ -293,6 +322,33 @@ function VentilationPanel:onToggleWater()
     end
 end
 
+function VentilationPanel:onToggleHeating()
+    local heating = ClientState.snapshot and ClientState.snapshot.heating
+    if heating and canControl() then
+        ClientState.setHeatingEnabled(getSpecificPlayer(self.playerNum), not heating.requested)
+    end
+end
+
+local function adjustHeatingTarget(self, delta)
+    local heating = ClientState.snapshot and ClientState.snapshot.heating
+    if heating and canControl() then
+        ClientState.setHeatingTarget(getSpecificPlayer(self.playerNum),
+            (tonumber(heating.targetTemperature) or 21) + delta)
+    end
+end
+
+function VentilationPanel:onHeatingDown() adjustHeatingTarget(self, -0.5) end
+function VentilationPanel:onHeatingUp() adjustHeatingTarget(self, 0.5) end
+
+function VentilationPanel:onToggleRoomHeating()
+    local heating = ClientState.snapshot and ClientState.snapshot.heating
+    local room = heating and roomAtPlayer(heating.rooms, getSpecificPlayer(self.playerNum))
+    if room and type(room.vents) == "table" and #room.vents > 0 and canControl() then
+        ClientState.setHeatingRoomEnabled(getSpecificPlayer(self.playerNum),
+            room.id, room.heatingEnabled == false)
+    end
+end
+
 function VentilationPanel:onCycleWaterSource()
     local water = ClientState.snapshot and ClientState.snapshot.water
     if not water or type(water.sources) ~= "table" or not canControl() then return end
@@ -329,16 +385,37 @@ function VentilationPanel:prerender()
     local backup = power and power.generators and power.generators.backup or nil
     local waterConsumer = power and power.consumers and power.consumers.water or nil
     local lightingConsumer = power and power.consumers and power.consumers.main_lighting or nil
+    local heating = snapshot and snapshot.heating or nil
     if ventilation then self.modeButton:setTitle(getText("UI_BC_VentilationMode") .. ": " .. tostring(ventilation.requestedMode or "off")) end
     if main then self.mainButton:setTitle(main.requested and getText("UI_BC_StopMain") or getText("UI_BC_StartMain")) end
     if backup then self.backupButton:setTitle(backup.requested and getText("UI_BC_StopBackup") or getText("UI_BC_StartBackup")) end
     if waterConsumer then self.waterButton:setTitle(waterConsumer.requested and getText("UI_BC_DisableWater") or getText("UI_BC_EnableWater")) end
     if lightingConsumer then self.lightingButton:setTitle(lightingConsumer.requested and getText("UI_BC_DisableLighting") or getText("UI_BC_EnableLighting")) end
+    if heating then
+        self.heatingButton:setTitle(heating.requested and getText("UI_BC_DisableHeating")
+            or getText("UI_BC_EnableHeating"))
+        self.heatingDownButton:setTitle(getText("UI_BC_TargetDown") .. " "
+            .. number(heating.targetTemperature, 1) .. " C")
+        self.heatingUpButton:setTitle(getText("UI_BC_TargetUp") .. " "
+            .. number(heating.targetTemperature, 1) .. " C")
+    end
     self.modeButton:setEnable(ventilation ~= nil and canControl())
     self.mainButton:setEnable(main ~= nil and canControl())
     self.backupButton:setEnable(backup ~= nil and canControl())
     self.waterButton:setEnable(waterConsumer ~= nil and canControl())
     self.lightingButton:setEnable(lightingConsumer ~= nil and canControl())
+    self.heatingButton:setEnable(heating ~= nil and canControl())
+    self.heatingDownButton:setEnable(heating ~= nil and canControl())
+    self.heatingUpButton:setEnable(heating ~= nil and canControl())
+    local heatingRoom = heating and roomAtPlayer(heating.rooms, getSpecificPlayer(self.playerNum))
+    local roomHasHeat = heatingRoom and type(heatingRoom.vents) == "table" and #heatingRoom.vents > 0
+    if heatingRoom then
+        self.roomHeatingButton:setTitle(tostring(heatingRoom.label or heatingRoom.id) .. ": "
+            .. (heatingRoom.heatingEnabled == false and getText("UI_BC_Enable") or getText("UI_BC_Isolate")))
+    else
+        self.roomHeatingButton:setTitle(getText("UI_BC_RoomHeating"))
+    end
+    self.roomHeatingButton:setEnable(roomHasHeat and canControl())
     self.purgeButton:setEnable(ventilation ~= nil and ventilation.airlock ~= nil and not ventilation.airlock.active and canControl())
     self.filterButton:setEnable(ventilation ~= nil and canControl())
     local treatment = ClientState.snapshot and ClientState.snapshot.water and ClientState.snapshot.water.treatment
@@ -503,6 +580,35 @@ function VentilationPanel:render()
         })
     end
 
+    local heating = snapshot.heating
+    if heating then
+        y = y + 5
+        self:drawText(getText("UI_BC_HeatingSection"), x, y, 0.35, 0.75, 1, 1, UIFont.Small)
+        y = y + lineHeight
+        local thermalRooms = heating.rooms or {}
+        local currentRoom = roomAtPlayer(thermalRooms, getSpecificPlayer(self.playerNum))
+        local coldest = heating.telemetry and thermalRooms[heating.telemetry.coldestRoomId] or nil
+        drawRows({
+            { getText("UI_BC_Status"), tostring(heating.status or "-") },
+            { getText("UI_BC_Restriction"), tostring(heating.reason or "none") },
+            { getText("UI_BC_Powered"), heating.powerAllocated and getText("UI_BC_Yes") or getText("UI_BC_No") },
+            { getText("UI_BC_Operating"), heating.operating and getText("UI_BC_Yes") or getText("UI_BC_No") },
+            { getText("UI_BC_TargetTemperature"), number(heating.targetTemperature, 1) .. " C" },
+            { getText("UI_BC_AverageTemperature"), number(heating.averageTemperature, 1) .. " C" },
+            { getText("UI_BC_ExternalTemperature"), number(heating.externalTemperature, 1) .. " C ("
+                .. number(heating.coldOffset, 1) .. " C)" },
+            { getText("UI_BC_CurrentRoom"), currentRoom and (tostring(currentRoom.label or currentRoom.id)
+                .. " | " .. number(currentRoom.temperature, 1) .. " C | "
+                .. (currentRoom.heatingEnabled == false and getText("UI_BC_Isolated")
+                    or getText("UI_BC_Heated"))) or "outside registered rooms" },
+            { getText("UI_BC_ColdestRoom"), coldest and (tostring(coldest.label or coldest.id)
+                .. " | " .. number(coldest.temperature, 1) .. " C") or "-" },
+            { getText("UI_BC_HeatOutput"), number(heating.heatExchanger and heating.heatExchanger.outputKw, 1)
+                .. " kW | loss " .. number(heating.telemetry and heating.telemetry.heatLossKw, 1) .. " kW" },
+            { getText("UI_BC_PowerDemand"), number(heating.powerDemandKw, 1) .. " kW" },
+        })
+    end
+
     y = y + 5
     self:drawText(getText("UI_BC_RecentLog") .. ":", x, y, 0.75, 0.80, 0.85, 1, UIFont.Small)
     y = y + lineHeight
@@ -515,9 +621,9 @@ function VentilationPanel:render()
     end
 
     if ClientState.lastError then
-        self:drawText(getText("UI_BC_Error") .. ": " .. ClientState.lastError, x, self.height - 148, 1, 0.25, 0.25, 1, UIFont.Small)
+        self:drawText(getText("UI_BC_Error") .. ": " .. ClientState.lastError, x, self.height - 208, 1, 0.25, 0.25, 1, UIFont.Small)
     elseif not canControl() then
-        self:drawText(getText("UI_BC_BunkerOnly"), x, self.height - 148, 1, 0.75, 0.25, 1, UIFont.Small)
+        self:drawText(getText("UI_BC_BunkerOnly"), x, self.height - 208, 1, 0.75, 0.25, 1, UIFont.Small)
     end
 end
 
@@ -532,7 +638,7 @@ end
 
 function VentilationPanel:new(x, y, playerNum)
     local width = 980
-    local height = 760
+    local height = 820
     local panel = ISCollapsableWindow:new(x, y, width, height)
     setmetatable(panel, self)
     self.__index = self
@@ -548,7 +654,7 @@ function VentilationPanel.open(playerNum)
     end
 
     local width = 980
-    local height = 760
+    local height = 820
     local x = (getCore():getScreenWidth() - width) / 2
     local y = (getCore():getScreenHeight() - height) / 2
     local panel = VentilationPanel:new(x, y, playerNum or 0)
