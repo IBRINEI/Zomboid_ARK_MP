@@ -1,17 +1,20 @@
 # Bunker Campaign handoff
 
-Last updated: 2026-07-30 (Europe/Moscow)
+Last updated: 2026-08-01 (Europe/Moscow)
 
 ## Read this first
 
-The infrastructure/MP-foundation slice is complete and was accepted in an
-administrator + ordinary-client dedicated-server test. The user reported that
-everything works as intended and found no remaining defects in this slice.
+The infrastructure/MP-foundation slice and the third, extensible life-support
+slice are complete. Both were accepted after administrator + ordinary-client
+dedicated-server testing, targeted ZombieBuddy runtime inspection and clean
+server/client restarts. The third slice closed on 2026-08-01 at Core 0.5.6 and
+Integration 0.7.7. Do not reopen it for unrelated campaign features; start the
+next dependency-ordered slice instead.
 
-The stable Ark fork is **BunkerCampaignArkMP 0.4.5**. Versions 0.4.6 through
-0.4.10 were lighting experiments made on 2026-07-29 and were deliberately
-rolled back. Do not reintroduce those patches. Version 0.4.5 is the known-good
-lighting implementation.
+The packaged Ark fork is **BunkerCampaignArkMP 0.4.5.1** and retains the
+known-good 0.4.5 lighting implementation. Versions 0.4.6 through 0.4.10 were
+lighting experiments made on 2026-07-29 and were deliberately rolled back. Do
+not reintroduce those patches.
 
 Before starting another slice, inspect this file, the two original design
 specifications, and the DAG/plan from the originating Codex conversation. Build
@@ -55,10 +58,10 @@ Enable:
 
 - Workshop `Bandits2` (read-only dependency).
 - Workshop `Waterpipes` (read-only dependency).
-- `BunkerCampaign` 0.3.2.
-- `BunkerCampaignArkMP` 0.4.5.
-- `BunkerCampaignToxicMP` 0.3.4.
-- `BunkerCampaignIntegration` 0.5.0.
+- `BunkerCampaign` 0.5.6.
+- `BunkerCampaignArkMP` 0.4.5.1 (0.4.5 lighting baseline).
+- `BunkerCampaignToxicMP` 0.5.1.
+- `BunkerCampaignIntegration` 0.7.7.
 
 Disable:
 
@@ -111,8 +114,9 @@ connects it to the bunker power allocation without recurring command/log spam.
 The power layer owns generator requests and resources, consumer allocations,
 main-grid status, emergency mode and emergency-battery discharge. Physical
 normal and red emergency lights are synchronized for administrator and client.
-The stable 0.4.5 behavior is important: later attempts to manipulate room-wide
-lighting separately caused permanently illuminated rooms and were rolled back.
+The stable 0.4.5 lighting behavior is important: later attempts to manipulate
+room-wide lighting separately caused permanently illuminated rooms and were
+rolled back.
 
 ## Accepted runtime behavior
 
@@ -288,3 +292,281 @@ radiation medicines and long-term dose treatment, weather-driven moving zones,
 protective-suit repair progression, skill/specialization bonuses, and campaign
 missions/unlocks. The second-slice data model should leave room for them but
 must not implement them prematurely.
+
+## Third slice: extensible water and ventilation (accepted 2026-08-01)
+
+The user accepted the preceding playable slice and authorized the complete
+water/ventilation implementation. Work is on branch `slice-3-life-support`.
+The implementation, correction passes and dedicated MP acceptance are recorded
+below. The slice is closed; remaining campaign work belongs to later slices.
+
+Implemented versions:
+
+- `BunkerCampaign` 0.5.0, persistent state version 6;
+- `BunkerCampaignIntegration` 0.7.0, integration state version 4;
+- `BunkerCampaignToxicMP` 0.5.0;
+- the accepted `BunkerCampaignArkMP` lighting behavior remains untouched.
+
+The new `RoomRegistry` is data-driven. Integration automatically imports every
+bounded negative-Z ArkMP room and derives volume, vent weight and adjacency.
+Addon rooms can instead call `CampaignState.registerRoom`. The water and air
+simulations iterate the registry, so future garage, laboratory, workshop or
+storage rooms do not require named branches in those systems.
+
+There is now one ordered server lifecycle: room/occupant discovery, external
+sampling, power-demand preparation, power allocation, physical actuation,
+simulation, effects and snapshot publication. This removes the previous race
+where a pump could be evaluated before bunker power existed.
+
+Ventilation now models five modes, independent Ark intakes, real contaminated
+airflow, filter loading, fan/intake availability, per-room CO2 and airborne
+contamination, room leakage/mixing and a persistent airlock purge. Internal
+air contamination is provided to ToxicMP, which remains the sole owner of
+player exposure and mask-filter drain. High-CO2 effects are server owned.
+
+Water now distinguishes requested, allocated, physically available and actual
+operation. It models well/external/collected/portable sources, pump and
+treatment condition/faults, bypass, clean/tainted storage and telemetry.
+Waterpipes remains canonical for physical topology, volumes, types, filter and
+pump wear. Decontamination consumes through the new server-owned WaterService;
+persisted transaction ids prevent duplicate debit.
+
+Architecture and extension contract:
+`BunkerCampaign/42.0/docs/LIFE_SUPPORT_ARCHITECTURE.md`.
+
+Dedicated MP acceptance procedure:
+`BunkerCampaignIntegration/42.0/docs/THIRD_SLICE_TESTING.md`.
+
+### Third-slice MP correction pass (2026-07-30)
+
+The first manual pass found stale room occupancy, unbounded vertical QA zones,
+two conflicting hard-coded zone buttons, cached intake hazards, drainable
+ventilation cartridges incorrectly mapped to item condition, no entry-door
+breach state, opaque purge progress and Waterpipes controls that were
+overridden by campaign authority.
+
+Patch versions are Core 0.5.1, ArkMP 0.4.5.1, ToxicMP 0.5.1 and Integration
+0.7.1. Occupancy now resets from the current online-player sample. Zones carry
+explicit Z bounds and the unified admin QA menu places a single-level zone
+around the selected tile or directly over surface intakes. ToxicMP notifies the
+integration immediately after any zone mutation. The vanilla drainable
+`Base.GasmaskFilter` now preserves `UsedDelta`/Remaining and is never charged
+through Condition. ToxicMP mask recipes and bunker ventilation now consume the
+same vanilla filter type; the former non-drainable `Base.GasMaskFilter` remains
+defined only so existing saved items do not disappear.
+
+The integration samples all three Ark entrance doors. A completely open,
+fully loaded path is reported as `BREACHED`, permits direct exterior exchange
+into the entrance/decontamination rooms and pauses purge until containment is
+restored. The systems panel reports current-room CO2/contamination/occupancy,
+worst-room values, entry-path state, filter use per minute and purge progress.
+The physical pump tile now changes the same authoritative request as the
+systems panel. The admin QA water submenu creates clean, tainted, empty,
+damaged-filter, damaged-pump and finite-external-source test states.
+
+### Third-slice room/air/water correction pass (2026-07-31)
+
+Core 0.5.2 and Integration 0.7.2 address the second dedicated-server test
+report. Ark's corridor has no rectangular bounds, so it is now registered as
+one declarative five-region ventilation room. The registry, snapshots, player
+lookup and adjacency model support composite footprints; this is also the
+extension mechanism for later non-rectangular garage/laboratory additions.
+The systems window has a persistent scrollable room map listing every room's
+CO2, airborne contamination, occupants, airflow and connections.
+
+A serviceable ventilation filter now blocks contaminant breakthrough until it
+is exhausted or fails. Filter charge is consumed only while capturing dirty
+outside air or cleaning dirty recirculated air, and explicit activity/removal
+telemetry explains an unchanged percentage in clean air. Recirculation cleans
+internal airborne contamination but does not remove CO2. Sealed has no
+intentional outside exchange; Off retains passive leakage. The emergency fan
+load fits the healthy backup generator's life-support budget without shedding
+main lights. Trace contamination from the former partial-breakthrough model is
+cleared and no longer reaches ToxicMP player exposure.
+
+Entry telemetry now uses an explicit four-gate manifest: one surface gate and
+three bunker gates. Reports distinguish open, loaded and total counts. The
+four physical surface intakes are listed with coordinates and can be broken or
+repaired individually from the administrator context menu on their exact
+tiles.
+
+QA reports are persistent scrollable windows; water reports contain only
+water state. The empty-water command is promoted, clearly labelled and stops
+the pump so the infinite well cannot immediately refill the test state. Clean,
+tainted and empty storage mutations now update loaded Waterpipes sinks and
+containers directly as well as unloaded pending buffers, so a tainted QA fill
+is observable from a sink immediately and emptying storage drains the actual
+receiver.
+
+Integration 0.7.3 is a startup hotfix for the physical receiver adapter.
+WaterPipes returns pre-shutoff sink amounts from sprite properties as strings;
+the adapter now normalizes both amount and capacity before comparison. A
+string-valued receiver regression test covers the former per-tick `__lt not
+defined for operand` failure.
+
+### Third-slice telemetry and WaterPipes synchronization pass (2026-07-31)
+
+Core 0.5.3 and Integration 0.7.4 address the next live MP report. The room-air
+window now requests and renders fresh authoritative snapshots every two
+seconds while open. CO2 remains volume-aware: generation per occupant is
+divided by each registered room's composite footprint area times height.
+Recirculation reports a high-precision removal fraction and contaminated-air
+equivalent m3/min. Intake normalization forces failed units to condition 0;
+the UI separates internal fallback flow from zero outside-intake flow.
+
+Broken surface intakes now have a normal server-authoritative repair path.
+Any player can stand next to the exact intake tile and perform a timed repair
+using one `Base.ScrapMetal`; the server revalidates the tile, distance, broken
+state and inventory debit. Administrator instant break/repair actions remain
+available for QA.
+
+The local integration patches WaterPipes repair completion so repaired pump
+efficiency reaches its server ModData instead of being overwritten when the
+pump is next activated. Water snapshot publication now includes condition,
+filter, contamination and active-state changes, keeping the bunker panel in
+sync with WaterPipes. Treatment filter use is additionally debited from actual
+liters moved against a 1000 L full-charge capacity and is shown with sufficient
+precision. Administrator QA can set the real treatment filter to 0%, and the
+tainted-fill action stops the pump first. Physical receivers retain their
+actual water-medium marker so a tainted sink does not silently become clean
+when WaterPipes drains its pending buffer.
+
+### Third-slice mode separation and tainted-fluid pass (2026-07-31)
+
+Core 0.5.4 and Integration 0.7.5 make the three closed-air modes observable
+and mechanically distinct. Off now exposes measurable passive outside leakage;
+Sealed has no outside exchange and only minimal passive room mixing; Internal
+recirculation consumes fan power, moves 450 m3/min internally, performs fast
+volume-conserving mixing and cleans airborne contamination without fresh air.
+The panel reports outside exchange and room-mixing rate explicitly. Filter
+activity is derived from the actual per-minute charge delta, so a falling
+percentage can no longer be paired with `no_filter_load`.
+
+The Ark intentionally initializes `intake_1` as failed. Intake context menus
+now display exact id/status/condition, and the ordinary timed repair sends its
+server request from Build 42's `perform()` path instead of waiting forever in
+an unused completion path. Right-clicking the air-vent room now opens a compact
+status submenu with active/requested modes, restriction, hardware, intakes,
+airflow, filter use and CO2.
+
+WaterPipes 42.19 hard-codes `FluidType.Water` when its receiver is backed by a
+FluidContainer, even when the virtual pipe medium is `TaintedWater`. The
+integration now replaces only that tainted bunker-receiver branch, adding real
+`FluidType.TaintedWater` and preserving the physical marker. Other WaterPipes
+networks and clean-water synchronization remain on the original code path.
+
+### Third-slice network/action correction pass (2026-07-31)
+
+Core 0.5.5 and Integration 0.7.6 close the final Build 42.19 multiplayer
+action and snapshot races. Campaign-state publication is deferred while the
+ordered life-support minute is running, then emitted once with the final power,
+ventilation and water values. A startup guard skips the global packet send when
+there are no online players, avoiding the dedicated-server `udpEngine` failure.
+The client ignores snapshots older than its current numeric revision. Rapid
+server/client polling no longer observes intermediate zero-valued telemetry.
+
+Build 42.19 reconstructs network timed actions differently when a custom
+client-only action defines `complete()`. Removing that method from
+`BunkerCampaignRepairIntakeAction` makes the normal `perform()` path reliable:
+the real queued action completes, consumes one `Base.ScrapMetal`, reaches the
+authoritative server validation and repairs the selected intake. Do not add a
+custom `complete()` or `forceComplete()` workaround back to this action.
+
+Tainted sink water required corrections on both sides. The client constructor
+patch passes the replicated per-object `BunkerCampaignWaterMedium` marker into
+`ISTakeWaterAction` without mutating shared sprite properties. On the server,
+`WaterTakeActionServerPatch.lua` replaces only the marked legacy-sink transfer:
+the source is debited through the vanilla temporary-container operation, then
+the bottle or drinking sample receives `FluidType.TaintedWater`. Clean and
+unrelated sources remain on the vanilla transfer path. This server module was
+confirmed to load normally after a clean restart.
+
+Regression coverage added in this pass:
+
+- out-of-order client snapshot rejection;
+- empty-player startup broadcast guard;
+- one atomic end-of-minute state publication after adapter mutations;
+- Build 42.19 intake-action shape without `complete()`;
+- authoritative client water-medium selection;
+- tainted server transfer plus untouched clean-water fallback.
+
+Runtime acceptance used correlation id `zb-fix-20260731-05`. Twenty-four rapid
+polls matched server/client revision and telemetry, the real intake action
+completed and consumed its material, and a real multiplayer water action filled
+the test bottle with primary fluid `TaintedWater`. The test item was removed and
+the player was returned to the bunker afterwards. Commit: `0d1490c`.
+
+### Third-slice full-storage/filter correction (2026-07-31 to 2026-08-01)
+
+Core 0.5.6 and Integration 0.7.7 fix phantom water production and duplicate
+treatment-filter debit. WaterPipes keeps its flowmeter at nominal pump
+throughput even when every bunker receiver is full. The adapter now exposes
+only accepted flow, clamped to the free physical storage capacity for the next
+minute. The core water simulation applies the same capacity bound before
+production telemetry or finite-source debit. Consequently a powered pump
+against a full reserve reports `storage_full`, accepted flow 0, campaign filter
+use 0 and no increase in produced liters.
+
+The original read-only WaterPipes mod still performs its own very slow native
+pump/filter wear while a pump is active. That behavior remains intentionally
+owned by WaterPipes. The removed defect was the campaign adapter charging the
+same filter again for nominal flow that stored no water.
+
+Automated regressions assert that a full physical reserve reports zero accepted
+flow, does not call the campaign treatment debit and does not add phantom core
+production. Syntax checks and the focused life-support and WaterPipes adapter
+suites pass. Commit: `d313569`.
+
+After a clean server/client restart on 2026-08-01, both permanent patches were
+present in the loaded-file set. With the pump on and storage set to 520 L clean:
+
+- status remained `operational` with reason `storage_full`;
+- accepted flow and campaign filter use remained 0;
+- produced liters were unchanged over the accelerated-time observation;
+- 12 snapshot samples stayed complete, and an explicit normal `requestState`
+  returned an exact server/client revision and payload match;
+- no Bunker Campaign errors appeared after the test correlation marker.
+
+The test state was restored through the existing administrator controls. The
+player was left at `9966,12622,-4`; storage was 520 L clean and 0 L tainted;
+the treatment filter was restored to effectively 100%; the main generator was
+running and refueled, and the idle backup generator was at 100% fuel.
+
+### Third-slice closure and forward constraints
+
+The user explicitly accepted the third slice on 2026-08-01. Its closure covers:
+
+- data-driven rectangular and composite room registration for future rooms;
+- per-room volume-aware CO2, contamination, occupancy and live room-map UI;
+- distinct Off, Sealed, Internal Recirculation, External Filtration and
+  Emergency ventilation behavior;
+- four physical intakes, entry breach state, repair and airlock purge;
+- authoritative power allocation and physical generator/light integration;
+- authoritative pump request, physical condition, source, filter, clean/tainted
+  storage, sink medium and decontamination water transactions;
+- administrator QA controls and restart-safe multiplayer synchronization.
+
+Relevant third-slice commit sequence:
+
+- `47e197d` - extensible bunker life support;
+- `715a720` - life-support state and administrator QA corrections;
+- `d2946bf` - room airflow and physical-water QA;
+- `eadb0cd` - WaterPipes sink-value normalization;
+- `3aa4da3` - life-support telemetry and water synchronization;
+- `847e426` - ventilation-mode separation and tainted tap water;
+- `0d1490c` - atomic synchronization and multiplayer water actions;
+- `d313569` - full-storage flow and treatment-filter correction.
+
+Known non-blocking observations at closure:
+
+- server startup still logs missing third-party item ids such as `Base.Soap`,
+  `Base.DentalFloos`, `Base.MufflerPerformance*` and `Base.TomatoBagSeed`; these
+  originate in reused external content and did not affect this slice;
+- `BunkerCampaignIntegration/42.0/docs/THIRD_SLICE_TESTING.md` has an unrelated
+  pre-existing accidental pasted block in the working tree. It was deliberately
+  excluded from all accepted commits. Repair it separately from a known-good
+  copy instead of staging it with gameplay work.
+
+No further restart is required for the accepted versions. Begin subsequent
+work from commits `0d1490c` and `d313569`, preserve the read-only dependency
+boundary, and keep all runtime strings in English.

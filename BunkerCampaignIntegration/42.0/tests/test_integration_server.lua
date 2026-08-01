@@ -32,6 +32,20 @@ BunkerCampaign.CampaignState.initialize(true)
 BunkerCampaignIntegration.IntegrationState.initialize(true)
 
 local campaign = BunkerCampaign.CampaignState.get()
+assert(#BunkerCampaignIntegration.Constants.ENTRY_DOORS == 4,
+    "entry-path telemetry must track the surface gate and all three bunker gates")
+assert(BunkerCampaign.RoomRegistry.get("laboratory"), "Ark laboratory must be discovered declaratively")
+assert(BunkerCampaign.RoomRegistry.get("garage"), "future Ark garage must be discovered without simulation edits")
+assert(BunkerCampaign.RoomRegistry.get("corridor"),
+    "The Ark corridor without legacy rectangular bounds must use declarative composite geometry")
+assert(BunkerCampaign.RoomRegistry.find(9957, 12630, -4).id == "corridor"
+    and BunkerCampaign.RoomRegistry.find(9965, 12641, -4).id == "corridor",
+    "both corridor stem and loop must resolve to the corridor ventilation room")
+assert(campaign.bunker.modules.ventilation.rooms.laboratory
+    and campaign.bunker.modules.ventilation.rooms.garage,
+    "discovered rooms must receive ventilation state")
+assert(BunkerCampaign.RoomRegistry.get("laboratory").connections[1] == "garage",
+    "touching Ark rooms must receive inferred adjacency")
 assert(campaign.bunker.modules.ventilation.enabled == false, "initial The Ark enabled state must be imported")
 assert(campaign.bunker.modules.ventilation.co2 == 900, "initial The Ark CO2 must be imported")
 assert(campaign.bunker.modules.ventilation.filterRemaining == 0.8, "initial The Ark filter must be imported")
@@ -49,12 +63,43 @@ BunkerCampaignIntegration.IntegrationState.updateOneMinute()
 assert(ark.ventilation.co2 == 1200, "authoritative CO2 must mirror to The Ark")
 assert(ark.ventilation.filter == 50, "authoritative filter must mirror to The Ark percent")
 
-local function testPlayer(name, admin)
+local function testPlayer(name, admin, x, y, z)
     return {
         getUsername = function(self) return name end,
         isAccessLevel = function(self, level) return admin and level == "admin" end,
+        getX = function(self) return x or 0 end,
+        getY = function(self) return y or 0 end,
+        getZ = function(self) return z or 0 end,
     }
 end
+
+local pumpPlayer = testPlayer("pump_operator", false, 9950, 12616, -4)
+BunkerCampaignIntegration.IntegrationState.onClientCommand(
+    "Commands", "PumpMod", pumpPlayer,
+    { x=9950, y=12616, z=-4, active=false }
+)
+assert(campaign.bunker.modules.power.consumers.water.requested == false,
+    "Waterpipes pump OFF must update the authoritative water consumer")
+BunkerCampaignIntegration.IntegrationState.onClientCommand(
+    "Commands", "PumpMod", pumpPlayer,
+    { x=9950, y=12616, z=-4, active=true }
+)
+assert(campaign.bunker.modules.power.consumers.water.requested == true,
+    "Waterpipes pump ON must update the authoritative water consumer")
+BunkerCampaignIntegration.IntegrationState.onClientCommand(
+    "Commands", "PumpMod", pumpPlayer,
+    { x=9950, y=12616, z=-4, efficiency=80 }
+)
+assert(waterpipes.Pumps["9950-12616--4"].efficiency == 80
+    and campaign.bunker.modules.water.pumpCondition == 0.8,
+    "Waterpipes repair must reach both the server pump and bunker systems snapshot")
+BunkerCampaignIntegration.IntegrationState.onClientCommand(
+    "Commands", "PumpMod", pumpPlayer,
+    { x=9950, y=12616, z=-4, filter=0 }
+)
+assert(waterpipes.Pumps["9950-12616--4"].filter == 0
+    and campaign.bunker.modules.water.filterRemaining == 0,
+    "removing the physical treatment filter must update the bunker systems snapshot")
 
 toxic.arkIntakes = { startX = 500, startY = 500, endX = 510, endY = 510 }
 BunkerCampaignIntegration.IntegrationState.onClientCommand(

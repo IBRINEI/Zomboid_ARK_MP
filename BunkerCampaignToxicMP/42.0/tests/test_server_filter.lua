@@ -34,4 +34,16 @@ Events.OnTick.handlers[1]()
 assert(target.surfaceContamination > 0,
     "a highly contaminated nearby player must transfer surface contamination")
 
+local zoneNotifications = 0
+BunkerCampaignToxicMP.Server.addZoneListener(function() zoneNotifications = zoneNotifications + 1 end)
+assert(BunkerCampaignToxicMP.Server.ensureZone("z-level-test", {
+    startX=0,startY=0,endX=5,endY=5,startZ=-4,endZ=-4,
+}), "server must accept a bounded single-level zone")
+assert(zoneNotifications == 1, "zone changes must notify the ventilation integration immediately")
+local foundLevel = false
+for _, zone in ipairs(BunkerCampaignToxicMP.Server.zones) do
+    if zone.name == "z-level-test" and zone.z1 == -4 and zone.z2 == -4 then foundLevel = true end
+end
+assert(foundLevel, "zone sanitization must preserve vertical bounds")
+
 print("BunkerCampaignToxicMP server filter tests passed")

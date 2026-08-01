@@ -9,11 +9,28 @@ Events = {
     OnTick=event(),
     OnClientCommand=event(),
 }
+ISWashClothing = {
+    GetRequiredSoap=function() return 0 end,
+    GetRequiredWater=function() return 0 end,
+    GetSoapRemaining=function() return 0 end,
+    new=function() return {maxTime=100} end,
+    complete=function() return true end,
+}
+ISWashYourself = {
+    GetRequiredSoap=function() return 0 end,
+    GetRequiredWater=function() return 0 end,
+    new=function() return {maxTime=100} end,
+    complete=function() return true end,
+}
+Fluid = { CleaningLiquid="CleaningLiquid" }
 isClient = function() return false end
 isServer = function() return true end
 
 local persisted = {
     ["BunkerCampaign.IntegrationState"] = {},
+    BanditWeekOneTheArk = {
+        airintakes={{x=9940,y=12633,z=0,broken=false,condition=1}},
+    },
     WaterPipes = {
         Pumps={ ["9950-12616--4"]={x=9950,y=12616,z=-4,efficiency=100,filter=100,active=true,source="TaintedWater"} },
         Pipes={}, Valves={}, Flowmeters={}, Sprinklers={}, Buildings={},
@@ -30,7 +47,12 @@ local now = 1000
 getTimestampMs = function() return now end
 local tabletRemoved = 0
 local inventory
+local repairInventory
 local tablet = { getContainer=function() return inventory end }
+local repairScrapRemoved = 0
+local repairScrap = {
+    getContainer=function() return repairScrapRemoved == 0 and repairInventory or nil end,
+}
 local soapUses = 20
 local soap = {
     className="DrainableComboItem",
@@ -61,7 +83,9 @@ inventory = {
 instanceof = function(object, className) return object and object.className == className end
 ZomboidGlobals = { CleanStainCleaningFluidAmount=0.1 }
 sendRemoveItemFromContainer = function(container, item)
-    assert(container == inventory and item == tablet, "tablet removal must be synchronized")
+    assert((container == inventory and item == tablet)
+        or (container == repairInventory and item == repairScrap),
+        "whole-item removal must be synchronized")
 end
 sendAddItemToContainer = function(container, item)
     assert(container == inventory and item, "QA inventory sync must use the authoritative container")
@@ -85,6 +109,25 @@ local secondPlayer = {
     getInventory=function() return inventory end,
     isDead=function() return false end,
 }
+repairInventory = {
+    getFirstTypeRecurse=function(self, itemType)
+        if itemType == "Base.ScrapMetal" and repairScrapRemoved == 0 then return repairScrap end
+        return nil
+    end,
+    Remove=function(self, item)
+        assert(item == repairScrap)
+        repairScrapRemoved = repairScrapRemoved + 1
+    end,
+}
+local repairPlayer = {
+    getUsername=function() return "intake-repairer" end,
+    isAccessLevel=function() return false end,
+    getX=function() return 9941 end,
+    getY=function() return 12633 end,
+    getZ=function() return 0 end,
+    getInventory=function() return repairInventory end,
+    isDead=function() return false end,
+}
 local online = {
     size=function() return 2 end,
     get=function(self, index) return index == 0 and player or secondPlayer end,
@@ -98,17 +141,31 @@ getCell = function()
 end
 sendServerCommand = function() end
 
-local power = { consumers={ decontamination={requested=false,allocated=false} } }
+local power = { consumers={
+    decontamination={requested=false,allocated=false},
+    water={requested=true,allocated=true},
+} }
+local campaignWater = {requested=true,pumpRequested=true,telemetry={}}
+local ventilation = {
+    intakes={intake_1={x=9940,y=12633,z=0,broken=false,condition=1,status="operational"}},
+}
 local refueledGenerator = nil
+local stateTouches, stateBroadcasts = 0, 0
 BunkerCampaign.CampaignState = {
-    get=function() return { bunker={modules={power=power}} } end,
+    get=function() return { bunker={modules={power=power,ventilation=ventilation,water=campaignWater}} } end,
     setConsumerRequested=function(id, requested)
         power.consumers[id].requested = requested
         power.consumers[id].allocated = requested
+        if id == "water" then
+            campaignWater.requested = requested
+            campaignWater.pumpRequested = requested
+        end
         return true
     end,
     setWaterSnapshot=function() return true end,
     appendLog=function() end,
+    touch=function() stateTouches = stateTouches + 1 end,
+    broadcast=function() stateBroadcasts = stateBroadcasts + 1 end,
     refuelGenerator=function(id) refueledGenerator = id; return true end,
 }
 BunkerCampaign.Util.worldAgeHours = function() return 10 end
@@ -225,13 +282,57 @@ assert(manualItemContamination == 0,
 BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
     "BunkerCampaignDecontamination", "qaGiveSupplies", player, {}
 )
-assert(addedItems == 6 and syncedAddedItems == 6,
+assert(addedItems == 10 and syncedAddedItems == 10,
     "QA supplies must be added on the server and explicitly synchronized to the client")
 
 BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
     "BunkerCampaignDecontamination", "qaRefuelGenerator", player, {generator="backup"}
 )
 assert(refueledGenerator == "backup", "QA refuel must target the requested logical generator")
+
+BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
+    "BunkerCampaignDecontamination", "qaSetIntake", player,
+    {x=9940,y=12633,z=0,broken=true}
+)
+assert(persisted.BanditWeekOneTheArk.airintakes[1].broken
+    and ventilation.intakes.intake_1.broken and ventilation.intakes.intake_1.status == "failed",
+    "QA intake failure must mutate both the Ark source state and campaign snapshot immediately")
+assert(stateTouches == 1 and stateBroadcasts == 1,
+    "QA intake failure must publish one authoritative state revision")
+
+local farRepairPlayer = {
+    getUsername=function() return "remote-intake-repairer" end,
+    isAccessLevel=function() return false end,
+    getX=function() return 9900 end,
+    getY=function() return 12633 end,
+    getZ=function() return 0 end,
+    getInventory=function() return repairInventory end,
+    isDead=function() return false end,
+}
+BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
+    "BunkerCampaignDecontamination", "repairIntake", farRepairPlayer,
+    {x=9940,y=12633,z=0}
+)
+assert(repairScrapRemoved == 0 and persisted.BanditWeekOneTheArk.airintakes[1].broken,
+    "remote forged intake repair must not consume material or mutate state")
+
+BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
+    "BunkerCampaignDecontamination", "repairIntake", repairPlayer,
+    {x=9940,y=12633,z=0}
+)
+assert(repairScrapRemoved == 1, "ordinary intake repair must consume one Scrap Metal on the server")
+assert(not persisted.BanditWeekOneTheArk.airintakes[1].broken
+    and not ventilation.intakes.intake_1.broken and ventilation.intakes.intake_1.condition == 1,
+    "ordinary intake repair must restore both authoritative intake representations")
+assert(stateTouches == 2 and stateBroadcasts == 2,
+    "ordinary intake repair must publish one authoritative state revision")
+
+BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
+    "BunkerCampaignDecontamination", "qaWaterStorage", player,
+    {fillFraction=0,stopPump=true}
+)
+assert(not power.consumers.water.requested and persisted.WaterPipes.Barrels.bunker.w == 0,
+    "empty-storage QA must stop the pump and drain the physical Waterpipes reserve")
 
 print("BunkerCampaign decontamination server tests passed")
 end

@@ -5,7 +5,7 @@ local Constants = {}
 Constants.MOD_ID = "BunkerCampaign"
 Constants.NETWORK_MODULE = "BunkerCampaign"
 Constants.STATE_KEY = "BunkerCampaign.State"
-Constants.CURRENT_STATE_VERSION = 5
+Constants.CURRENT_STATE_VERSION = 6
 Constants.MAX_AUDIT_LOG_ENTRIES = 100
 Constants.CLIENT_AUDIT_LOG_ENTRIES = 12
 Constants.SYNC_INTERVAL_MINUTES = 5
@@ -16,14 +16,36 @@ Constants.BUNKER_CONTROL_BOUNDS = {
 }
 
 Constants.VENTILATION = {
-    MIN_CO2 = 400,
-    MAX_CO2 = 10000,
-    CO2_REMOVAL_PER_MINUTE = 30,
-    CO2_RISE_PER_MINUTE = 20,
-    BASE_FILTER_USE_PER_MINUTE = 0.00025,
-    FILTER_CONTAMINATION_MULTIPLIER = 8,
-    CONTAMINATION_INGRESS_PER_MINUTE = 0.004,
-    CONTAMINATION_CLEAR_PER_MINUTE = 0.002,
+    MIN_CO2 = 420,
+    MAX_CO2 = 100000,
+    CO2_GENERATION_PPM_M3_PER_PERSON_MINUTE = 4800,
+    EXTERNAL_CO2_PPM = 420,
+    EXTERNAL_FLOW_M3_PER_MINUTE = 700,
+    RECIRCULATION_FLOW_M3_PER_MINUTE = 450,
+    EMERGENCY_FLOW_M3_PER_MINUTE = 1200,
+    -- Sealed is an intentional isolation state.  Passive leakage belongs to
+    -- OFF; a breached entry path is handled separately and still overrides it.
+    SEALED_LEAK_FRACTION_PER_MINUTE = 0,
+    OFF_MINIMUM_LEAK_FRACTION_PER_MINUTE = 0.01,
+    ROOM_MIX_FRACTION_PER_MINUTE = 0.025,
+    SEALED_ROOM_MIX_FRACTION_PER_MINUTE = 0.005,
+    RECIRCULATION_ROOM_MIX_FRACTION_PER_MINUTE = 0.15,
+    FILTER_EFFICIENCY = 1.0,
+    FILTER_LOAD_CAPACITY = 150000,
+    AIRBORNE_TRACE_CUTOFF = 0.02,
+    ENTRY_BREACH_EXCHANGE_PER_MINUTE = 0.35,
+    FAN_POWER_EXTERNAL_KW = 3.5,
+    FAN_POWER_RECIRCULATION_KW = 2.2,
+    FAN_POWER_EMERGENCY_KW = 4.5,
+    AIRLOCK_PURGE_MINUTES = 2,
+}
+
+Constants.VENTILATION_MODES = {
+    off=true,
+    external_filtration=true,
+    internal_recirculation=true,
+    emergency_ventilation=true,
+    sealed=true,
 }
 
 Constants.VALID_VENTILATION_STATUS = {
@@ -37,6 +59,11 @@ Constants.WATER = {
     MAX_STORAGE = 1000000000,
     MAX_FLOW_PER_MINUTE = 1000000,
     MAX_POWER_DEMAND_KW = 1000,
+    NOMINAL_FLOW_LPM = 12,
+    PUMP_POWER_KW = 1.5,
+    FILTER_EFFICIENCY = 0.98,
+    DRINKABLE_CONTAMINATION = 0.02,
+    MAX_TRANSACTION_HISTORY = 64,
 }
 
 Constants.VALID_WATER_STATUS = {
@@ -45,6 +72,13 @@ Constants.VALID_WATER_STATUS = {
     degraded = true,
     contaminated = true,
     failed = true,
+}
+
+Constants.VALID_ROOM_STATUS = {
+    operational=true,
+    degraded=true,
+    emergency=true,
+    uninhabitable=true,
 }
 
 Constants.POWER = {

@@ -7,6 +7,8 @@ assert(sourceCount == 2, "all source zones must be counted")
 assert(#zones == 1, "only valid zones must be imported")
 assert(rejectedCount == 1, "invalid zones must be rejected")
 assert(BunkerCampaignIntegration.ZoneSampler.isPointToxic(zones, 5, 5), "reversed coordinates must normalize")
+assert(not BunkerCampaignIntegration.ZoneSampler.isPointToxic(zones, 5, 5, -4),
+    "legacy 2D zones must default to the surface instead of extending into the bunker")
 assert(not BunkerCampaignIntegration.ZoneSampler.isPointToxic(zones, 50, 50), "outside point must be clean")
 
 local contamination, activeCount, toxicCount = BunkerCampaignIntegration.ZoneSampler.sampleAirIntakes(zones, {
@@ -19,3 +21,15 @@ assert(toxicCount == 1, "one active intake must be toxic")
 assert(contamination == 0.5, "contamination must equal toxic active-intake fraction")
 
 print("BunkerCampaign integration zone tests passed")
+
+local detailed, detailedActive, detailedToxic = BunkerCampaignIntegration.ZoneSampler.sampleAirIntakesDetailed(
+    zones,
+    {
+        {x=5, y=5, z=0, broken=false},
+        {x=50, y=50, z=0, broken=false},
+        {x=100, y=100, z=0, broken=true},
+    }
+)
+assert(detailedActive == 2 and detailedToxic == 1, "detailed sampling must count usable intakes")
+assert(detailed.intake_1 == 1 and detailed.intake_3 == 0,
+    "detailed sampling must preserve deterministic intake ids")

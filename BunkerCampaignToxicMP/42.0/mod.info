@@ -1,6 +1,6 @@
 name=Bunker Campaign: Toxic Zones MP Fork
 id=BunkerCampaignToxicMP
 description=Server-authoritative multiplayer fork of Toxic Zones STALKER resources for Build 42.19.
-version=0.4.0
+version=0.5.1
 versionMin=42.19
 incompatible=\ToxicZonesSTALKERB42
