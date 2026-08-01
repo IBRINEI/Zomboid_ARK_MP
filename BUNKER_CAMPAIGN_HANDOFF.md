@@ -857,12 +857,39 @@ player to the pipe manifold and back to the arrival point. The authoritative
 state and player position were restored afterward: no active heating failures,
 the pre-test power/heating state, and `9966,12622,-4`.
 
-Two errors after the correlation marker came only from malformed read-only
-ZombieBuddy event-inspection snippets (`Expected a table` against the v3 event
-list userdata). No gameplay callback or mod code appears in those stacks. The
-actual MP scenarios completed normally. A final clean restart is still needed
-to accept the newly added common QA menu from startup rather than its current
-hot-loaded runtime.
+Two errors after the first correlation marker came only from malformed
+read-only ZombieBuddy event-inspection snippets (`Expected a table` against the
+v3 event-list userdata). No gameplay callback or mod code appears in those
+stacks. The actual MP scenarios completed normally.
+
+The user then performed the requested clean restart. Correlation
+`slice4-heating-qa-clean-start` confirmed that CampaignState, ServerCommands,
+DecontaminationServer and DecontaminationClient all loaded from the expected
+local paths. Core state version 8 matched at revision 45 on server and client.
+Every relevant server and client callback was registered exactly once. A real
+ISContextMenu construction found the complete shared QA hierarchy, including
+all heating state controls, all six component submenus and all travel targets.
+No Bunker Campaign `require failed`, `IllegalAccessError`, Lua exception or
+stack trace appeared during startup or the clean-start network scenario.
+
+The clean run also exercised the natural accident path without a QA setter. At
+world age 10.4002 the server generated an undiagnosed controller
+`sensor_drift`, incremented the persistent accident counters and degraded heat
+output. A later QA minor-fault round trip was restored to its exact pre-test
+snapshot, so this natural fault remains in the save intentionally and is ready
+for physical diagnosis/repair testing at the controller.
+
+Commit `cc1532d` adds the last manual-test conveniences to `Heating system`:
+an administrator-only server command issues enough tools, full-repair parts and
+temporary-repair materials to exercise every component, while a clearly named
+client action uses the vanilla admin XP synchronization path to set
+Electricity, Mechanics and MetalWelding to level 10. All eleven referenced
+vanilla item scripts were present in the live Build 42.19 server. Automated
+tests verify ordinary-client rejection, item creation and per-item container
+synchronization. The two actions were hot-loaded and appeared in the real menu;
+they were not executed against the live character, avoiding unwanted inventory
+or permanent skill changes. One final restart is needed only to confirm these
+two convenience actions from startup.
 
 Fourth-slice commits so far:
 
@@ -875,4 +902,6 @@ Fourth-slice commits so far:
 - `82bee8d` - publish optional room climate to MP server thermoregulation;
 - `f022e4b` - physical heating components, dependencies, failures and repair;
 - `5be6a11` - document the completed physical heating gameplay layer;
-- `05ac9a9` - authoritative shared heating QA scenarios and travel controls.
+- `05ac9a9` - authoritative shared heating QA scenarios and travel controls;
+- `83cd42f` - record clean-start QA validation procedure;
+- `cc1532d` - complete heating repair kit and skill QA setup.
