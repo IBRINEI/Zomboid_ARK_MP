@@ -1,8 +1,8 @@
 name=Bunker Campaign: Optional Java Thermal Bridge
 id=BunkerCampaignThermalJava
-description=Optional client-side bridge that exposes authoritative bunker room temperatures to vanilla climate consumers.
-version=0.1.0
+description=Optional multiplayer bridge that exposes authoritative bunker room temperatures to vanilla climate and thermoregulation consumers.
+version=0.2.0
 versionMin=42.19
 require=\BunkerCampaign,\ZombieBuddy
-javaJarFile=media/java/client/BunkerCampaignThermalJava.jar
+javaJarFile=media/java/BunkerCampaignThermalJava.jar
 javaPkgName=brine.bunkercampaign.thermal

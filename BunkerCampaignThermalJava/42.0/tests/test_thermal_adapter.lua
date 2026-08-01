@@ -1,5 +1,5 @@
 local root = "C:/Users/BRINE/Zomboid/mods/"
-package.path = root .. "BunkerCampaignThermalJava/42.0/media/lua/client/?.lua;" .. package.path
+package.path = root .. "BunkerCampaignThermalJava/42.0/media/lua/shared/?.lua;" .. package.path
 
 require "BunkerCampaignThermalJava/ThermalOverrideAdapter"
 
