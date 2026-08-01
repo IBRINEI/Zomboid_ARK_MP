@@ -305,6 +305,15 @@ local function addQaMenu(context, player, selected)
         end)
     end
 
+    heating:addOption("[QA] Give complete heating repair kit", player, function(p)
+        sendClientCommand(p, "BunkerCampaign", "qaHeatingRepairKit", {})
+    end)
+    heating:addOption("[QA] Set heating repair skills to 10", player, function(p)
+        p:setPerkLevelDebug(Perks.Electricity, 10)
+        p:setPerkLevelDebug(Perks.Mechanics, 10)
+        p:setPerkLevelDebug(Perks.MetalWelding, 10)
+        if type(SyncXp) == "function" then SyncXp(p) end
+    end)
     heatingQa("[QA] Prepare cold powered test (+5 C rooms)", "ready")
     heatingQa("[QA] Restore all heating components to 90%", "restore_all")
     heatingQa("[QA] Set every room to +21 C", "rooms", {temperature=21})

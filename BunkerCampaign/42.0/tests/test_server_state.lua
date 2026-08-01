@@ -267,6 +267,35 @@ assert(qaModules.heating.components.pipe_manifold.fault == "none"
     and qaModules.heating.components.pipe_manifold.condition == 0.90,
     "restore-all QA must return failed components to a known healthy state")
 
+local qaKitItems, qaKitSynced = {}, 0
+local qaKitInventory = {
+    AddItem=function(self, fullType)
+        qaKitItems[fullType] = (qaKitItems[fullType] or 0) + 1
+        return {fullType=fullType}
+    end,
+}
+local qaKitPlayer = player("qa-heating-technician", true, 9966, 12622, -4)
+qaKitPlayer.getInventory=function() return qaKitInventory end
+local previousSendAddItemToContainer = sendAddItemToContainer
+sendAddItemToContainer=function(container, item)
+    assert(container == qaKitInventory and item.fullType,
+        "heating QA kit must synchronize every added item")
+    qaKitSynced = qaKitSynced + 1
+end
+BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign",
+    "qaHeatingRepairKit", normalPlayer, {})
+assert(qaKitSynced == 0 and qaKitItems["Base.Screwdriver"] == nil,
+    "ordinary clients must not receive administrator heating QA supplies")
+BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign",
+    "qaHeatingRepairKit", qaKitPlayer, {})
+assert((qaKitItems["Base.Screwdriver"] or 0) >= 1
+    and (qaKitItems["Base.BlowTorch"] or 0) >= 1
+    and (qaKitItems["Base.Wrench"] or 0) >= 1
+    and (qaKitItems["Base.ElectronicsScrap"] or 0) >= 3
+    and qaKitSynced > 0,
+    "heating QA kit must include and synchronize tools plus repair materials")
+sendAddItemToContainer = previousSendAddItemToContainer
+
 local previousVentFilter = firstReference.bunker.modules.ventilation.filterBank.remaining
 BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "replaceVentilationFilter", filterPlayer, {})
 assert(firstReference.bunker.modules.ventilation.filterBank.remaining == 0.37,

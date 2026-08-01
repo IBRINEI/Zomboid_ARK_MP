@@ -383,6 +383,36 @@ local function qaHeating(player, args)
     if not ok then replyError(player, reason or "heating_qa_failed") end
 end
 
+local function qaHeatingRepairKit(player)
+    if not isAdministrator(player) then replyError(player, "admin_required"); return end
+    local inventory = player and player:getInventory()
+    if not inventory then replyError(player, "inventory_unavailable"); return end
+    local counts = {}
+    for _, componentId in ipairs(HeatingComponents.orderedIds()) do
+        local definition = HeatingComponents.get(componentId)
+        for _, fullType in ipairs(definition.tools or {}) do
+            counts[fullType] = math.max(1, counts[fullType] or 0)
+        end
+        for fullType, count in pairs(definition.materials or {}) do
+            counts[fullType] = (counts[fullType] or 0) + count
+        end
+        for fullType, count in pairs(definition.temporaryMaterials or {}) do
+            counts[fullType] = (counts[fullType] or 0) + count
+        end
+    end
+    for fullType, count in pairs(counts) do
+        for _ = 1, count do
+            local item = inventory:AddItem(fullType)
+            if not item then replyError(player, "heating_qa_item_unavailable"); return end
+            if type(sendAddItemToContainer) == "function" then
+                sendAddItemToContainer(inventory, item)
+            end
+        end
+    end
+    CampaignState.appendLog("qa", "complete heating repair kit issued",
+        player:getUsername())
+end
+
 local function setGenerator(player, args)
     if not canOperateBunkerSystems(player) then
         CampaignState.appendLog("security", "rejected generator mutation", player and player:getUsername() or "unknown")
@@ -448,6 +478,8 @@ function ServerCommands.onClientCommand(module, command, player, args)
         triggerHeatingFault(player, args)
     elseif command == "qaHeating" then
         qaHeating(player, args)
+    elseif command == "qaHeatingRepairKit" then
+        qaHeatingRepairKit(player)
     elseif command == "setGenerator" then
         setGenerator(player, args)
     elseif command == "setConsumer" then
