@@ -8,6 +8,7 @@ require "BunkerCampaignIntegration/WaterpipesAdapter"
 require "BunkerCampaignIntegration/DecontaminationModel"
 require "BunkerCampaignIntegration/ClimateAdapter"
 require "BunkerCampaignIntegration/HeatingAdapter"
+require "BunkerCampaignIntegration/ThermalOverrideAdapter"
 require "BunkerCampaignArkMP/Constants"
 require "BunkerCampaignToxicMP/Server"
 
@@ -21,6 +22,7 @@ local WaterpipesAdapter = BunkerCampaignIntegration.WaterpipesAdapter
 local DecontaminationModel = BunkerCampaignIntegration.DecontaminationModel
 local ClimateAdapter = BunkerCampaignIntegration.ClimateAdapter
 local HeatingAdapter = BunkerCampaignIntegration.HeatingAdapter
+local ThermalOverrideAdapter = BunkerCampaignIntegration.ThermalOverrideAdapter
 local ToxicServer = BunkerCampaignToxicMP.Server
 local IntegrationState = {
     data = nil,
@@ -30,6 +32,11 @@ local IntegrationState = {
     toxicZoneListenerRegistered = false,
 }
 local getArkState
+
+local function applyHeatingPhysical(heating)
+    HeatingAdapter.apply(heating)
+    ThermalOverrideAdapter.apply(heating)
+end
 
 local function bunkerAirContamination(player)
     if not player then return 0 end
@@ -546,7 +553,7 @@ end
 local function finishLifeSupport(state)
     mirrorToArk()
     local heating = state and state.bunker and state.bunker.modules.heating
-    if heating then HeatingAdapter.apply(heating) end
+    if heating then applyHeatingPhysical(heating) end
     applyCo2Effects()
 end
 
@@ -637,7 +644,7 @@ function IntegrationState.initialize(isNewGame)
         heating.externalTemperature = climate.externalTemperature
         heating.baseExternalTemperature = climate.baseExternalTemperature
         heating.coldOffset = climate.coldOffset
-        HeatingAdapter.apply(heating)
+        applyHeatingPhysical(heating)
     end
 
     print("[BunkerCampaignIntegration] ready zones=" .. tostring(#data.toxicZones.zones)

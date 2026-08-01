@@ -6,9 +6,11 @@ require "BunkerCampaign/Util"
 require "BunkerCampaignIntegration/Constants"
 require "BunkerCampaignIntegration/ClimateAdapter"
 require "BunkerCampaignIntegration/HeatingAdapter"
+require "BunkerCampaignIntegration/ThermalOverrideAdapter"
 
 local ClimateAdapter = BunkerCampaignIntegration.ClimateAdapter
 local HeatingAdapter = BunkerCampaignIntegration.HeatingAdapter
+local ThermalOverrideAdapter = BunkerCampaignIntegration.ThermalOverrideAdapter
 
 local function assertNear(actual, expected, tolerance, message)
     assert(math.abs(actual - expected) <= tolerance,
@@ -98,5 +100,34 @@ heating.powerAllocated = false
 HeatingAdapter.apply(heating, cell)
 assert(#removed == 2 and HeatingAdapter.sourceCount() == 0,
     "shed heating power must remove all local heat sources")
+
+local staged, committed = nil, nil
+bcThermalBegin = function() staged = {}; return true end
+bcThermalAddRegion = function(roomId, x1, y1, x2, y2, z, temperature)
+    staged[#staged + 1] = {
+        roomId=roomId, x1=x1, y1=y1, x2=x2, y2=y2, z=z,
+        temperature=temperature,
+    }
+    return true
+end
+bcThermalCommit = function() committed = staged; return #staged end
+bcThermalClear = function() staged, committed = nil, nil end
+
+heating.rooms.laboratory.bounds = { x1=10, y1=20, x2=12, y2=22, z=-4 }
+heating.rooms.laboratory.regions = {
+    { x1=10, y1=20, x2=11, y2=22, z=-4 },
+    { x1=12, y1=21, x2=12, y2=22, z=-4 },
+}
+heating.rooms.laboratory.temperature = -18.5
+local thermalOk, regionCount = ThermalOverrideAdapter.apply(heating)
+assert(thermalOk and regionCount == 2 and #committed == 2,
+    "room-temperature override must atomically publish every room region")
+assert(committed[1].roomId == "laboratory" and committed[1].temperature == -18.5,
+    "published regions must carry the authoritative room temperature")
+
+bcThermalBegin, bcThermalAddRegion, bcThermalCommit, bcThermalClear = nil, nil, nil, nil
+local unavailable, unavailableReason = ThermalOverrideAdapter.apply(heating)
+assert(unavailable == false and unavailableReason == "java_override_unavailable",
+    "missing ZombieBuddy Java API must fail closed without a Lua error")
 
 print("BunkerCampaign thermal adapter tests passed")

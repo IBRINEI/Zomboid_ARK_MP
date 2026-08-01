@@ -15,7 +15,7 @@ public final class LuaTestRunner {
                 if (line.startsWith("require ")) continue;
                 if (line.startsWith("local root =")) continue;
                 if (line.startsWith("package.path =")) continue;
-                if (line.matches("return (Constants|Util|Model|StateSchema|PowerSimulation|WaterSimulation|VentilationSimulation|HeatingSimulation|RoomRegistry|CampaignState|ClientState|ServerCommands|ZoneSampler|WaterpipesAdapter|WaterService|DecontaminationModel|ManualWashShared|ClimateAdapter|HeatingAdapter|IntegrationState|TheArkClientBridge|MapRegistration|RepairIntakeAction|Client|Server|PowerGrid|BunkerCampaignArkMP|BunkerCampaignToxicMP)")) continue;
+                if (line.matches("return (Constants|Util|Model|StateSchema|PowerSimulation|WaterSimulation|VentilationSimulation|HeatingSimulation|RoomRegistry|CampaignState|ClientState|ServerCommands|ZoneSampler|WaterpipesAdapter|WaterService|DecontaminationModel|ManualWashShared|ClimateAdapter|HeatingAdapter|ThermalOverrideAdapter|IntegrationState|TheArkClientBridge|MapRegistration|RepairIntakeAction|Client|Server|PowerGrid|BunkerCampaignArkMP|BunkerCampaignToxicMP)")) continue;
                 source.append(line).append('\n');
             }
         }

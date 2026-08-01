@@ -1,5 +1,6 @@
 require "BunkerCampaignIntegration/ClimateAdapter"
 require "BunkerCampaignIntegration/HeatingAdapter"
+require "BunkerCampaignIntegration/ThermalOverrideAdapter"
 
 BunkerCampaignIntegration = BunkerCampaignIntegration or {}
 
@@ -15,6 +16,7 @@ end
 
 local ClimateAdapter = BunkerCampaignIntegration.ClimateAdapter
 local HeatingAdapter = BunkerCampaignIntegration.HeatingAdapter
+local ThermalOverrideAdapter = BunkerCampaignIntegration.ThermalOverrideAdapter
 local HeatingClient = { snapshot = previous and previous.snapshot or nil }
 
 function HeatingClient.apply()
@@ -22,6 +24,7 @@ function HeatingClient.apply()
     if type(heating) ~= "table" then return end
     ClimateAdapter.apply(heating)
     HeatingAdapter.apply(heating)
+    ThermalOverrideAdapter.apply(heating)
 end
 
 function HeatingClient.onServerCommand(module, command, args)
