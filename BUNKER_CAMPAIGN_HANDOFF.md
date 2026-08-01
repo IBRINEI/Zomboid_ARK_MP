@@ -812,12 +812,57 @@ position changes were restored. A physical audit found all six reused objects
 loaded with their expected sprites. After correlation
 `slice4-heating-final-20260801`, neither process logged a new error.
 
-The live runtime was hot-loaded for MP validation, but the two newly added Lua
-files were not in the startup-time require catalogue and produced expected
-hot-reload-only `require failed` warnings before they were loaded by absolute
-path. A clean dedicated-server and client restart is therefore mandatory before
-user acceptance. The optional Java thermal module remains fully separate and
+The live runtime was initially hot-loaded for MP validation, but the two newly
+added Lua files were not in the startup-time require catalogue and produced
+expected hot-reload-only `require failed` warnings before they were loaded by
+absolute path. The user then performed the required clean dedicated-server and
+client restart. Core state version 8, all six physical component states and the
+new client timed-action file loaded normally; no startup `require failed`
+warning remained. The optional Java thermal module remains fully separate and
 unchanged.
+
+### Shared heating QA tools and post-restart validation (2026-08-01)
+
+Commit `05ac9a9` extends the existing administrator-only
+`Bunker Campaign: QA tools` context menu instead of creating a separate debug
+UI. `Travel and resources` now includes the bunker arrival point, all six
+physical heating components and the existing ArkMP service/deep-level
+inspection commands. `Heating system` provides deterministic room-temperature
+presets, a cold powered test state, generator power-shed, ventilation-off and
+recirculation states, manual bypass, both valves, restore-all and per-component
+healthy/minor/major states. All labels are English.
+
+Every heating QA mutation is validated as administrator-only and applied by the
+authoritative core server. The cold powered state restores components to 90%,
+enables every room circuit, sets rooms to 5 C and target to 21 C, supplies the
+main generator, releases the water/main-lighting loads and starts internal
+recirculation. Per-component fault setters deliberately bypass the random
+incident concurrency/cooldown caps so QA can build exact multi-failure states;
+they still use the real component fault values and failure consequences.
+
+Automated server regressions verify ordinary-client rejection, deterministic
+cold-state setup, the ventilation dependency, exact simultaneous major faults,
+restore-all and heating-component teleport coordinates. The focused core and
+decontamination server suites pass, and every changed Lua file passes the Build
+42 Kahlua compiler.
+
+ZombieBuddy correlation `slice4-heating-qa-001` exercised the real client ->
+server -> client path after the clean restart. The server and client agreed on
+the same state revision for a 5 C cold start with operating heat. Separate
+commands produced `air_circuit_unavailable`, `power_shed`,
+`controller_failed` and `pipe_circuit_failed` for the corresponding physical
+scenarios. Closing the supply valve stopped distribution, two diagnosed major
+faults could be installed simultaneously, and the common QA teleport moved the
+player to the pipe manifold and back to the arrival point. The authoritative
+state and player position were restored afterward: no active heating failures,
+the pre-test power/heating state, and `9966,12622,-4`.
+
+Two errors after the correlation marker came only from malformed read-only
+ZombieBuddy event-inspection snippets (`Expected a table` against the v3 event
+list userdata). No gameplay callback or mod code appears in those stacks. The
+actual MP scenarios completed normally. A final clean restart is still needed
+to accept the newly added common QA menu from startup rather than its current
+hot-loaded runtime.
 
 Fourth-slice commits so far:
 
@@ -827,5 +872,7 @@ Fourth-slice commits so far:
 - `1c8ae70` - reconnect-stable emergency light identity and reconciliation;
 - `bc68dce` - local ZombieBuddy runtime marker and dependency setup;
 - `6657a0f` - isolate the optional Java bridge and repair external access;
-- `82bee8d` - publish optional room climate to MP server thermoregulation.
-- `f022e4b` - physical heating components, dependencies, failures and repair.
+- `82bee8d` - publish optional room climate to MP server thermoregulation;
+- `f022e4b` - physical heating components, dependencies, failures and repair;
+- `5be6a11` - document the completed physical heating gameplay layer;
+- `05ac9a9` - authoritative shared heating QA scenarios and travel controls.
