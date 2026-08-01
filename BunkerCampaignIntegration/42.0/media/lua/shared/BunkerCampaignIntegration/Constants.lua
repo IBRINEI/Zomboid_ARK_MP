@@ -6,7 +6,7 @@ Constants.MOD_ID = "BunkerCampaignIntegration"
 Constants.NETWORK_MODULE = "BunkerCampaignIntegration"
 Constants.DECON_NETWORK_MODULE = "BunkerCampaignDecontamination"
 Constants.STATE_KEY = "BunkerCampaign.IntegrationState"
-Constants.STATE_VERSION = 4
+Constants.STATE_VERSION = 5
 Constants.THE_ARK_STATE_KEY = "BanditWeekOneTheArk"
 Constants.TOXIC_ZONES_STATE_KEY = "ToxicZone"
 Constants.WATERPIPES_STATE_KEY = "WaterPipes"
@@ -53,6 +53,17 @@ Constants.BUNKER_WATER_PIPES = {
 }
 Constants.BUNKER_WATER_BUILDING_CONNECTION = { x = 9956, y = 12615, z = -4 }
 Constants.BUNKER_PUMP_POWER_DEMAND_KW = 1.5
+Constants.ARK_CLIMATE = {
+    FALLOUT_START_OPTIONS = { -168, -336, -744, -2208, -4416, -8832 },
+    FALLOUT_END_OPTIONS = { 168, 336, 744, 2208, 4416, 8832 },
+    FALLOUT_CURVE_OPTIONS = { 0.2, 0.35, 0.5, 0.65, 0.8 },
+    TEMPERATURE_DROP_OPTIONS = { -15, -30, -50, -60, -70 },
+    DEFAULT_FALLOUT_START = -2208,
+    DEFAULT_FALLOUT_END = 4416,
+    DEFAULT_PEAK_POINT = 0.65,
+    DEFAULT_TEMPERATURE_DROP = -50,
+    WORLD_AGE_OFFSET_HOURS = 10,
+}
 -- One full charcoal treatment charge processes this much contaminated source
 -- water.  WaterPipes' stock fixed 0.007 percentage-point loss per minute is
 -- too small to expose meaningful campaign maintenance at bunker flow rates.

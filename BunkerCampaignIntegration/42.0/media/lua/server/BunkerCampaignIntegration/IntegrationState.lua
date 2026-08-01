@@ -6,6 +6,8 @@ require "BunkerCampaignIntegration/Constants"
 require "BunkerCampaignIntegration/ZoneSampler"
 require "BunkerCampaignIntegration/WaterpipesAdapter"
 require "BunkerCampaignIntegration/DecontaminationModel"
+require "BunkerCampaignIntegration/ClimateAdapter"
+require "BunkerCampaignIntegration/HeatingAdapter"
 require "BunkerCampaignArkMP/Constants"
 require "BunkerCampaignToxicMP/Server"
 
@@ -17,6 +19,8 @@ local Constants = BunkerCampaignIntegration.Constants
 local ZoneSampler = BunkerCampaignIntegration.ZoneSampler
 local WaterpipesAdapter = BunkerCampaignIntegration.WaterpipesAdapter
 local DecontaminationModel = BunkerCampaignIntegration.DecontaminationModel
+local ClimateAdapter = BunkerCampaignIntegration.ClimateAdapter
+local HeatingAdapter = BunkerCampaignIntegration.HeatingAdapter
 local ToxicServer = BunkerCampaignToxicMP.Server
 local IntegrationState = {
     data = nil,
@@ -140,11 +144,13 @@ local function prepare(data)
     if type(data.toxicZones) ~= "table" then data.toxicZones = {} end
     if type(data.toxicZones.zones) ~= "table" then data.toxicZones.zones = {} end
     if type(data.waterpipes) ~= "table" then data.waterpipes = {} end
+    if type(data.climate) ~= "table" then data.climate = {} end
     if type(data.decontamination) ~= "table" then data.decontamination = DecontaminationModel.createDefault() end
     DecontaminationModel.normalize(data.decontamination)
 
     data.theArk.initialized = data.theArk.initialized == true
     data.theArk.powerInitialized = data.theArk.powerInitialized == true
+    data.theArk.heatingInitialized = data.theArk.heatingInitialized == true
     data.theArk.lastMirroredRevision = math.floor(Util.numberOr(data.theArk.lastMirroredRevision, -1, -1, 2147483647))
     data.toxicZones.initialized = data.toxicZones.initialized == true
     data.toxicZones.sourceCount = math.floor(Util.numberOr(data.toxicZones.sourceCount, 0, 0, Constants.MAX_IMPORTED_ZONES * 100))
@@ -179,6 +185,9 @@ local function importArkPowerOnce()
     end
     if type(ark.ventilation) == "table" then
         power.consumers.ventilation.requested = Util.booleanOr(ark.ventilation.active, power.consumers.ventilation.requested)
+        power.consumers.heating.requested = Util.booleanOr(
+            ark.ventilation.heating, Util.booleanOr(ark.ventilation.active,
+                power.consumers.heating.requested))
     end
     if type(ark.waterpump) == "table" then
         power.consumers.water.requested = Util.booleanOr(ark.waterpump.active, power.consumers.water.requested)
@@ -214,6 +223,36 @@ local function importArkVentilationOnce()
     integration.theArk.initialized = true
     CampaignState.touch()
     CampaignState.appendLog("integration", "imported initial ventilation from The Ark", "TheArk adapter")
+end
+
+local function importArkHeatingOnce()
+    local integration = IntegrationState.data
+    local campaign = CampaignState.get()
+    local ark = getArkState()
+    if integration.theArk.heatingInitialized or not campaign
+        or type(ark.ventilation) ~= "table" then return end
+
+    local source = ark.ventilation
+    local target = campaign.bunker.modules.heating
+    local enabled = Util.booleanOr(source.heating, Util.booleanOr(source.active, target.enabled))
+    target.enabled = enabled
+    target.requested = enabled
+    target.targetTemperature = Util.numberOr(source.tempTarget,
+        target.targetTemperature, BunkerCampaign.Constants.HEATING.MIN_TARGET_TEMPERATURE,
+        BunkerCampaign.Constants.HEATING.MAX_TARGET_TEMPERATURE)
+    target.averageTemperature = Util.numberOr(source.temp,
+        target.averageTemperature, BunkerCampaign.Constants.HEATING.MIN_TEMPERATURE,
+        BunkerCampaign.Constants.HEATING.MAX_TEMPERATURE)
+    for _, room in pairs(target.rooms or {}) do
+        room.temperature = target.averageTemperature
+        room.targetTemperature = target.targetTemperature
+    end
+    local consumer = campaign.bunker.modules.power.consumers.heating
+    consumer.requested = enabled
+    integration.theArk.heatingInitialized = true
+    CampaignState.recalculatePower(0, "TheArk heating adapter")
+    CampaignState.touch()
+    CampaignState.appendLog("integration", "imported initial heating from The Ark", "TheArk adapter")
 end
 
 local function importToxicZones(actor)
@@ -260,6 +299,10 @@ local function mirrorToArk()
     target.active = source.enabled
     target.co2 = source.co2
     target.filter = source.filterRemaining * 100
+    local heating = campaign.bunker.modules.heating
+    target.heating = heating.enabled
+    target.temp = heating.averageTemperature
+    target.tempTarget = heating.targetTemperature
     local power = campaign.bunker.modules.power
     if type(ark.generators) ~= "table" then ark.generators = {} end
     for _, id in ipairs({ "main", "backup" }) do
@@ -391,6 +434,15 @@ local function sampleLifeSupport(state, context)
     IntegrationState.data.toxicZones.lastActiveIntakes = activeCount
     IntegrationState.data.toxicZones.lastToxicIntakes = toxicCount
 
+    local climate = ClimateAdapter.sample(nil, Util.worldAgeHours(), SandboxVars)
+    IntegrationState.data.climate = climate
+    context.externalTemperature = climate.externalTemperature
+    context.baseExternalTemperature = climate.baseExternalTemperature
+    context.coldOffset = climate.coldOffset
+    context.windIntensity = climate.windIntensity
+    context.precipitationIntensity = climate.precipitationIntensity
+    ClimateAdapter.apply(climate)
+
     local ventilation = state.bunker.modules.ventilation
     local ordered = {}
     for _, intake in pairs(type(ark.airintakes) == "table" and ark.airintakes or {}) do
@@ -491,8 +543,10 @@ local function applyCo2Effects()
     end
 end
 
-local function finishLifeSupport()
+local function finishLifeSupport(state)
     mirrorToArk()
+    local heating = state and state.bunker and state.bunker.modules.heating
+    if heating then HeatingAdapter.apply(heating) end
     applyCo2Effects()
 end
 
@@ -504,6 +558,7 @@ function IntegrationState.snapshot()
         theArk = {
             initialized = data.theArk.initialized,
             powerInitialized = data.theArk.powerInitialized,
+            heatingInitialized = data.theArk.heatingInitialized,
             lastMirroredRevision = data.theArk.lastMirroredRevision,
         },
         toxicZones = {
@@ -519,6 +574,7 @@ function IntegrationState.snapshot()
             pumpFound = data.waterpipes.lastPumpFound == true,
             flowPerMinute = data.waterpipes.lastFlowPerMinute or 0,
         },
+        climate = data.climate,
         decontamination = {
             status = data.decontamination.status,
             reagentUnits = data.decontamination.reagentUnits,
@@ -566,11 +622,23 @@ function IntegrationState.initialize(isNewGame)
     end
 
     importArkVentilationOnce()
+    importArkHeatingOnce()
     importArkPowerOnce()
     if not data.toxicZones.initialized then importToxicZones("server initialization") end
     updateExternalContamination()
     mirrorToArk()
     syncWaterpipes()
+    local campaign = CampaignState.get()
+    if campaign then
+        local climate = ClimateAdapter.sample(nil, Util.worldAgeHours(), SandboxVars)
+        data.climate = climate
+        ClimateAdapter.apply(climate)
+        local heating = campaign.bunker.modules.heating
+        heating.externalTemperature = climate.externalTemperature
+        heating.baseExternalTemperature = climate.baseExternalTemperature
+        heating.coldOffset = climate.coldOffset
+        HeatingAdapter.apply(heating)
+    end
 
     print("[BunkerCampaignIntegration] ready zones=" .. tostring(#data.toxicZones.zones)
         .. " rooms=" .. tostring(roomCount))

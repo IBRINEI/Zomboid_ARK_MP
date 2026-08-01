@@ -3,6 +3,8 @@ ark.ventilation = {
     active = false,
     co2 = 900,
     filter = 80,
+    temp = 17,
+    tempTarget = 22,
 }
 ark.airintakes = {
     { x = 100, y = 100, broken = false },
@@ -49,6 +51,10 @@ assert(BunkerCampaign.RoomRegistry.get("laboratory").connections[1] == "garage",
 assert(campaign.bunker.modules.ventilation.enabled == false, "initial The Ark enabled state must be imported")
 assert(campaign.bunker.modules.ventilation.co2 == 900, "initial The Ark CO2 must be imported")
 assert(campaign.bunker.modules.ventilation.filterRemaining == 0.8, "initial The Ark filter must be imported")
+assert(campaign.bunker.modules.heating.averageTemperature == 17,
+    "initial The Ark bunker temperature must be imported")
+assert(campaign.bunker.modules.heating.targetTemperature == 22,
+    "initial The Ark heating target must be imported")
 assert(campaign.bunker.modules.ventilation.externalContamination == 1, "Toxic Zones must drive intake contamination")
 assert(campaign.bunker.modules.water.status == "operational", "Waterpipes pump must feed authoritative water state")
 assert(campaign.bunker.modules.water.stored == 4, "bunker water storage must be imported in liters")
@@ -62,6 +68,9 @@ BunkerCampaign.CampaignState.touch()
 BunkerCampaignIntegration.IntegrationState.updateOneMinute()
 assert(ark.ventilation.co2 == 1200, "authoritative CO2 must mirror to The Ark")
 assert(ark.ventilation.filter == 50, "authoritative filter must mirror to The Ark percent")
+assert(ark.ventilation.temp == campaign.bunker.modules.heating.averageTemperature
+    and ark.ventilation.tempTarget == campaign.bunker.modules.heating.targetTemperature,
+    "authoritative heating state must mirror to The Ark compatibility data")
 
 local function testPlayer(name, admin, x, y, z)
     return {
@@ -120,6 +129,7 @@ assert(campaign.bunker.modules.ventilation.externalContamination == 0, "administ
 
 local status = BunkerCampaignIntegration.IntegrationState.snapshot()
 assert(status.theArk.initialized, "integration status must report The Ark binding")
+assert(status.theArk.heatingInitialized, "integration status must report The Ark heating binding")
 assert(status.toxicZones.acceptedCount == 1, "integration status must report imported zones")
 assert(status.waterpipes.initialized and status.waterpipes.pumpFound, "integration status must report Waterpipes binding")
 
