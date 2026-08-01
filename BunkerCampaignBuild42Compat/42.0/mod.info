@@ -1,0 +1,8 @@
+name=Bunker Campaign: Build 42.20 Compatibility
+id=BunkerCampaignBuild42Compat
+description=Required Windows compatibility patch for the Build 42.20 mod-file relative-path regression.
+version=0.1.0
+versionMin=42.20
+require=\ZombieBuddy
+javaJarFile=media/java/BunkerCampaignBuild42Compat.jar
+javaPkgName=brine.bunkercampaign.compat

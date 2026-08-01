@@ -1,10 +1,10 @@
 name=Bunker Campaign: The Ark MP Fork
 id=BunkerCampaignArkMP
-description=Multiplayer-safe local fork of The Ark resources and bunker systems for Build 42.19. Original single-player story and menu patches are excluded.
-version=0.4.5.2
-versionMin=42.19
+description=Multiplayer-safe local fork of The Ark resources and bunker systems for Build 42.20. Original single-player story and menu patches are excluded.
+version=0.4.5.3
+versionMin=42.20
 poster=poster.png
 tiledef=theark 2281
 pack=theark
-require=\BunkerCampaign,\Bandits2,\Waterpipes
+require=\BunkerCampaign,\Bandits2,\Waterpipes,\BunkerCampaignBuild42Compat
 incompatible=\TheArk,\BanditsDayOne,\BanditsWeekOne

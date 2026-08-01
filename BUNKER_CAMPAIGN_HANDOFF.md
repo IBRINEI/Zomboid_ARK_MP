@@ -4,17 +4,18 @@ Last updated: 2026-08-01 (Europe/Moscow)
 
 ## Read this first
 
-The infrastructure/MP-foundation slice and the third, extensible life-support
-slice are complete. Both were accepted after administrator + ordinary-client
-dedicated-server testing, targeted ZombieBuddy runtime inspection and clean
-server/client restarts. The third slice closed on 2026-08-01 at Core 0.5.6 and
-Integration 0.7.7. Do not reopen it for unrelated campaign features; start the
-next dependency-ordered slice instead.
+The infrastructure/MP-foundation, extensible life-support and physical-heating
+slices are complete. Their Build 42.19 acceptance remains the gameplay
+baseline. A Build 42.20 compatibility audit was completed on 2026-08-01; read
+the dedicated audit section at the end of this file before starting more work.
+Do not reopen completed slices for unrelated campaign features; start the next
+dependency-ordered slice instead.
 
-The packaged Ark fork is **BunkerCampaignArkMP 0.4.5.1** and retains the
+The packaged Ark fork is **BunkerCampaignArkMP 0.4.5.3** and retains the
 known-good 0.4.5 lighting implementation. Versions 0.4.6 through 0.4.10 were
 lighting experiments made on 2026-07-29 and were deliberately rolled back. Do
-not reintroduce those patches.
+not reintroduce those patches. The 0.4.5.3 suffix contains only Build 42.20
+compatibility and metadata changes.
 
 Before starting another slice, inspect this file, the two original design
 specifications, and the DAG/plan from the originating Codex conversation. Build
@@ -27,7 +28,8 @@ Original specifications:
 
 ## Source and write boundaries
 
-- Target: Project Zomboid Build 42.19.
+- Target: Project Zomboid Build 42.20 (verified against 42.20.0,
+  `a2947723ca`, Steam build 24449119).
 - Treat `Z:\SteamLibrary\steamapps\common\ProjectZomboid` as read-only.
 - Treat `Z:\SteamLibrary\steamapps\workshop\content\108600` as read-only.
 - Modify only local forks under `C:\Users\BRINE\Zomboid\mods`.
@@ -40,9 +42,9 @@ Original specifications:
 ## Git workflow
 
 The Git repository root is `C:\Users\BRINE\Zomboid\mods`. It intentionally
-tracks only the four Bunker Campaign local mods and this handoff. Workshop
-junctions, unrelated mods, archives, and The Ark recovery-only disabled assets
-are excluded by `.gitignore`.
+tracks the six Bunker Campaign local mods and this handoff. Workshop junctions,
+unrelated mods, archives, and The Ark recovery-only disabled assets are excluded
+by `.gitignore`.
 
 For every future slice:
 
@@ -58,10 +60,12 @@ Enable:
 
 - Workshop `Bandits2` (read-only dependency).
 - Workshop `Waterpipes` (read-only dependency).
-- `BunkerCampaign` 0.5.6.
-- `BunkerCampaignArkMP` 0.4.5.1 (0.4.5 lighting baseline).
+- `BunkerCampaignBuild42Compat` 0.1.0 (required first on Windows Build 42.20).
+- `BunkerCampaign` 0.7.1.
+- `BunkerCampaignArkMP` 0.4.5.3 (0.4.5 lighting baseline).
 - `BunkerCampaignToxicMP` 0.5.1.
-- `BunkerCampaignIntegration` 0.7.7.
+- `BunkerCampaignIntegration` 0.8.2.
+- `BunkerCampaignThermalJava` 0.2.0 (optional thermal bridge).
 
 Disable:
 
@@ -904,4 +908,71 @@ Fourth-slice commits so far:
 - `5be6a11` - document the completed physical heating gameplay layer;
 - `05ac9a9` - authoritative shared heating QA scenarios and travel controls;
 - `83cd42f` - record clean-start QA validation procedure;
-- `cc1532d` - complete heating repair kit and skill QA setup.
+- `cc1532d` - complete heating repair kit and skill QA setup;
+- `b4ea265` - record clean-start heating QA acceptance.
+
+## Build 42.20 compatibility audit (2026-08-01)
+
+The live game was verified as Project Zomboid 42.20.0 (`a2947723ca`, Steam
+build 24449119). The current Workshop sources were compared with their previous
+versions before changing local forks. In particular, The Ark 42.20 removed the
+client-side `transmitCompleteItemToServer()` calls from `BWOABuildTools.lua`
+and changed light removal to the new transmitted object-removal path. Bandits
+42.20 replaced two `becomeCorpseSilently()` calls with `die()`. The local forks
+did not contain the obsolete Bandits corpse API; ArkMP's remaining obsolete
+complete-item client call was removed.
+
+Build 42.20 introduced a fatal Windows dedicated-server regression in
+`AdvancedAnimator.loadModMedia`: the engine lowercases a canonical mod URI
+before a case-sensitive `URI.relativize`, then passes the resulting absolute
+lowercase path to the virtual filesystem. A clean server consequently failed
+while checksumming Bandits animation files before Lua startup.
+`BunkerCampaignBuild42Compat` 0.1.0 is the narrowly scoped required Java patch.
+It instruments `ZomboidFileSystem.getRelativeFile(URI, String)` and substitutes
+a canonical, case-insensitive Windows-relative path only when vanilla returned
+the unchanged absolute input. The patch unit test passes, and live logs confirm
+that it loads before checksum collection and permits the server to reach
+`*** SERVER STARTED ****`. Keep it before ArkMP in `default.txt`; ArkMP also
+declares it as a requirement.
+
+Build 42.20 also initializes `GlobalModData` before `GameServer.udpEngine`.
+`CampaignState` now defers network publication until `OnServerStarted` while
+preserving pending changes. Its server regression deliberately makes
+`getOnlinePlayers()` throw before that event and confirms that initialization
+sends no packet; publication resumes after the event. This removes the Bunker
+Campaign startup exception. Generic `udpEngine is null` messages can still be
+emitted by Bandits/other dependencies during the same upstream lifecycle.
+
+Automated acceptance against the 42.20 game JAR:
+
+- all 126 existing local-fork Lua files pass the Build 42 Kahlua compiler;
+- all focused Core, ArkMP, ToxicMP and Integration Lua suites pass, including
+  power, ventilation, life support, heating, water, decontamination, client and
+  server entry coverage;
+- both optional thermal Java compilation/access tests and
+  `ThermalOverrideTest` pass against 42.20;
+- the compatibility patch compiles against 42.20 and its Windows-path unit test
+  passes;
+- a clean dedicated server loads all campaign server modules, migrates state to
+  version 8, activates the thermal bridge and reaches `SERVER STARTED` with
+  power and heating operational.
+
+The separate ZombieBuddy client role loaded all campaign client modules,
+received server options and player data, and completed the 42.20 world-loading
+sequence. A full server-to-client campaign-snapshot acceptance could not be
+completed under the current ZombieBuddy experimental native agent: after
+`CreatePlayerPacket.processServer`, the client retains a player without a
+current square and the server keeps zero online players. The same result occurs
+through the vanilla saved-account `MultiplayerUI`, so it is not the earlier
+low-level login shortcut. At connection time ZombieBuddy reports missing
+experimental packet-cache handlers, including `ClientCommand`. Treat the
+Build 42.19 real C -> S -> C acceptance above as the last completed gameplay
+baseline and perform one ordinary, non-instrumented manual client connection on
+42.20 before declaring the runtime network path fully re-accepted.
+
+Build 42.20 currently logs noisy non-fatal upstream errors while scanning
+missing optional `media/AnimSets` and `media/actiongroups` directories for many
+mods. The same clean run also retains vanilla/map-data warnings for mannequin
+properties, duplicate basement room meta IDs, missing sprite configurations
+and icons. These warnings did not prevent server startup and are not evidence
+of a Bunker Campaign callback failure.

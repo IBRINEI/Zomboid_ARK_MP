@@ -14,6 +14,9 @@ BunkerCampaign = {
 }
 local powerSyncCalls = 0
 BunkerCampaignArkMP.PowerGrid = {
+    buildExpectedEmergencyLights = function()
+        return {}
+    end,
     sync = function()
         powerSyncCalls = powerSyncCalls + 1
         return true

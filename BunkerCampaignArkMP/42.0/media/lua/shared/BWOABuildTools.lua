@@ -7,8 +7,6 @@ local function transmitComplete(object)
     if not object then return end
     if isServer() then
         object:transmitCompleteItemToClients()
-    elseif isClient() then
-        object:transmitCompleteItemToServer()
     end
 end
 

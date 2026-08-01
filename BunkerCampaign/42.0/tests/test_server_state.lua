@@ -16,6 +16,7 @@ end
 
 Events = {
     OnInitGlobalModData = event(),
+    OnServerStarted = event(),
     EveryOneMinute = event(),
     OnClientCommand = event(),
 }
@@ -44,7 +45,14 @@ local function player(name, admin, x, y, z)
 end
 
 function RunBunkerCampaignServerTests()
+getOnlinePlayers = function()
+    error("udpEngine is not initialized")
+end
 BunkerCampaign.CampaignState.initialize(true)
+assert(#packets == 0,
+    "initial state must not touch Build 42.20 networking before OnServerStarted")
+getOnlinePlayers = nil
+BunkerCampaign.CampaignState.onServerStarted()
 local firstReference = BunkerCampaign.CampaignState.get()
 assert(firstReference.version == 8, "server must initialize versioned state")
 assert(#firstReference.auditLog > 0, "initialization must be audited")

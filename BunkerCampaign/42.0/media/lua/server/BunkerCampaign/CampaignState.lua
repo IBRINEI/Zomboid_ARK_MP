@@ -25,6 +25,7 @@ local CampaignState = BunkerCampaign.CampaignState or {}
 CampaignState.minutesSinceSync = tonumber(CampaignState.minutesSinceSync) or 0
 CampaignState.deferBroadcast = CampaignState.deferBroadcast == true
 CampaignState.broadcastPending = CampaignState.broadcastPending == true
+CampaignState.networkReady = CampaignState.networkReady == true
 CampaignState.powerListeners = type(CampaignState.powerListeners) == "table"
     and CampaignState.powerListeners or {}
 CampaignState.lifeSupportListeners = type(CampaignState.lifeSupportListeners) == "table"
@@ -748,6 +749,10 @@ end
 
 function CampaignState.broadcast()
     if not CampaignState.data or not isServer() then return end
+    if not CampaignState.networkReady then
+        CampaignState.broadcastPending = true
+        return
+    end
     if CampaignState.deferBroadcast then
         CampaignState.broadcastPending = true
         return
@@ -757,6 +762,11 @@ function CampaignState.broadcast()
         if not players or players:size() == 0 then return end
     end
     sendServerCommand(Constants.NETWORK_MODULE, "stateSnapshot", CampaignState.snapshot())
+end
+
+function CampaignState.onServerStarted()
+    CampaignState.networkReady = true
+    CampaignState.broadcast()
 end
 
 function CampaignState.setVentilationEnabled(enabled, actor)
@@ -987,10 +997,19 @@ if BunkerCampaign.Runtime.onCampaignMinute
     and type(Events.EveryOneMinute.Remove) == "function" then
     Events.EveryOneMinute.Remove(BunkerCampaign.Runtime.onCampaignMinute)
 end
+if BunkerCampaign.Runtime.onCampaignServerStarted
+    and Events.OnServerStarted
+    and type(Events.OnServerStarted.Remove) == "function" then
+    Events.OnServerStarted.Remove(BunkerCampaign.Runtime.onCampaignServerStarted)
+end
 BunkerCampaign.Runtime.onInitCampaignState = CampaignState.initialize
 BunkerCampaign.Runtime.onCampaignMinute = CampaignState.updateOneMinute
+BunkerCampaign.Runtime.onCampaignServerStarted = CampaignState.onServerStarted
 Events.OnInitGlobalModData.Add(BunkerCampaign.Runtime.onInitCampaignState)
 Events.EveryOneMinute.Add(BunkerCampaign.Runtime.onCampaignMinute)
+if Events.OnServerStarted then
+    Events.OnServerStarted.Add(BunkerCampaign.Runtime.onCampaignServerStarted)
+end
 
 BunkerCampaign.CampaignState = CampaignState
 return CampaignState
