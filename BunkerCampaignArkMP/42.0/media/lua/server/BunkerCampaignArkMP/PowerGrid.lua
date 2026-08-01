@@ -14,6 +14,54 @@ local PowerGrid = {
     networkReady = false,
 }
 
+local EMERGENCY_SPRITE_BY_DIRECTION = {
+    N = "location_entertainment_theatre_01_138",
+    W = "location_entertainment_theatre_01_136",
+    S = "location_entertainment_theatre_01_142",
+    E = "location_entertainment_theatre_01_140",
+    XN = "lighting_indoor_01_25",
+    XW = "lighting_indoor_01_24",
+}
+
+local function lightKey(x, y, z, spriteName)
+    return tostring(math.floor(tonumber(x) or 0)) .. ":"
+        .. tostring(math.floor(tonumber(y) or 0)) .. ":"
+        .. tostring(math.floor(tonumber(z) or 0)) .. ":" .. tostring(spriteName or "")
+end
+
+function PowerGrid.buildExpectedEmergencyLights()
+    local expected = {}
+    for _, room in pairs(type(BWOARooms) == "table" and BWOARooms or {}) do
+        if type(room) == "table" and type(room.els) == "table" then
+            for _, coords in pairs(room.els) do
+                local spriteName = EMERGENCY_SPRITE_BY_DIRECTION[coords.dir]
+                if spriteName then
+                    expected[lightKey(coords.x, coords.y, coords.z, spriteName)] = true
+                end
+            end
+        end
+    end
+    return expected
+end
+
+function PowerGrid.classifyLight(object, x, y, z, expected)
+    if not object or not instanceof(object, "IsoLightSwitch") then return nil end
+    local sprite = object:getSprite()
+    local spriteName = sprite and sprite:getName() or nil
+    expected = expected or PowerGrid.buildExpectedEmergencyLights()
+    if spriteName and expected[lightKey(x, y, z, spriteName)] then return "emergency" end
+    if not object:getUseBattery() then return "main" end
+    return "decorative"
+end
+
+function PowerGrid.repairEmergencyLight(object)
+    if not object then return end
+    if object.setCanBeModified then object:setCanBeModified(false) end
+    if object.setPower then object:setPower(1000) end
+    if object.setHasBattery then object:setHasBattery(true) end
+    if object.setUseBatteryDirect then object:setUseBatteryDirect(true) end
+end
+
 local function createBridgeGenerator(square)
     local item = BanditCompatibility.InstanceItem("Bandits.Generator_Silent")
     if not item then item = BanditCompatibility.InstanceItem("Base.Generator_Old") end
@@ -57,11 +105,12 @@ local function syncBridgeGenerator(coords, active)
     return true
 end
 
-local function eachMainLight(callback)
+local function eachLight(role, callback)
     local cell = getCell()
     if not cell then return 0 end
     local found = 0
     local scan = Constants.LIGHT_SCAN
+    local expected = PowerGrid.buildExpectedEmergencyLights()
     for _, z in ipairs(scan.levels) do
         for x = scan.x1, scan.x2 do
             for y = scan.y1, scan.y2 do
@@ -70,7 +119,9 @@ local function eachMainLight(callback)
                     local objects = square:getObjects()
                     for index = 0, objects:size() - 1 do
                         local object = objects:get(index)
-                        if instanceof(object, "IsoLightSwitch") and object:getObjectIndex() >= 0 and not object:getUseBattery() then
+                        if object:getObjectIndex() >= 0
+                            and PowerGrid.classifyLight(object, x, y, z, expected) == role then
+                            if role == "emergency" then PowerGrid.repairEmergencyLight(object) end
                             found = found + 1
                             callback(object)
                         end
@@ -82,28 +133,12 @@ local function eachMainLight(callback)
     return found
 end
 
+local function eachMainLight(callback)
+    return eachLight("main", callback)
+end
+
 local function eachEmergencyLight(callback)
-    local cell = getCell()
-    if not cell or type(BWOARooms) ~= "table" then return 0 end
-    local found = 0
-    for _, room in pairs(BWOARooms) do
-        if type(room) == "table" and type(room.els) == "table" then
-            for _, coords in pairs(room.els) do
-                local square = cell:getGridSquare(coords.x, coords.y, coords.z)
-                if square and square:getChunk() then
-                    local objects = square:getObjects()
-                    for index = 0, objects:size() - 1 do
-                        local object = objects:get(index)
-                        if instanceof(object, "IsoLightSwitch") and object:getObjectIndex() >= 0 and object:getUseBattery() then
-                            found = found + 1
-                            callback(object)
-                        end
-                    end
-                end
-            end
-        end
-    end
-    return found
+    return eachLight("emergency", callback)
 end
 
 local function setLightActive(object, active)

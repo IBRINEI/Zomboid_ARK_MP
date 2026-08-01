@@ -11,6 +11,14 @@ BunkerCampaignArkMP = BunkerCampaignArkMP or {}
 
 local Constants = BunkerCampaignArkMP.Constants
 local PowerGrid = BunkerCampaignArkMP.PowerGrid
+local previous = BunkerCampaignArkMP.Server
+if type(previous) == "table" then
+    if previous.initialize then Events.OnInitGlobalModData.Remove(previous.initialize) end
+    if previous.onServerStarted then Events.OnServerStarted.Remove(previous.onServerStarted) end
+    if previous.tryBuild then Events.EveryOneMinute.Remove(previous.tryBuild) end
+    if previous.onClientCommand then Events.OnClientCommand.Remove(previous.onClientCommand) end
+    if previous.onLoadGridSquare then Events.LoadGridsquare.Remove(previous.onLoadGridSquare) end
+end
 local Server = { state = nil, missingSignature = nil, lightManifestSent = {} }
 
 local function prepareState(data)
@@ -231,7 +239,8 @@ function Server.sanitizeLightUpdaters()
     local updaters = cell and cell.getStaticUpdaterObjectList and cell:getStaticUpdaterObjectList() or nil
     if not updaters then return end
 
-    local orphaned, disabled = 0, 0
+    local orphaned, disabled, repaired = 0, 0, 0
+    local expectedEmergency = PowerGrid.buildExpectedEmergencyLights()
     for index = updaters:size() - 1, 0, -1 do
         local object = updaters:get(index)
         if instanceof(object, "IsoLightSwitch") and insideLightScan(object) then
@@ -241,6 +250,10 @@ function Server.sanitizeLightUpdaters()
                 -- is required to also detach them from staticUpdaterObjectList.
                 object:removeFromWorld()
                 orphaned = orphaned + 1
+            elseif PowerGrid.classifyLight(object, object:getX(), object:getY(), object:getZ(),
+                    expectedEmergency) == "emergency" then
+                PowerGrid.repairEmergencyLight(object)
+                repaired = repaired + 1
             elseif object:getUseBattery() and object:getCanBeModified() then
                 -- Existing valid decorative battery lights need no server tick.
                 object:setCanBeModified(false)
@@ -248,9 +261,9 @@ function Server.sanitizeLightUpdaters()
             end
         end
     end
-    if orphaned > 0 or disabled > 0 then
+    if orphaned > 0 or disabled > 0 or repaired > 0 then
         print("[BunkerCampaignArkMP] light updater cleanup orphaned=" .. tostring(orphaned)
-            .. " disabled=" .. tostring(disabled))
+            .. " disabled=" .. tostring(disabled) .. " repaired=" .. tostring(repaired))
     end
 end
 
@@ -260,15 +273,7 @@ local function sendLightManifest(player)
     local scan = Constants.LIGHT_SCAN
     local lights = {}
     local roleCounts = { main=0, emergency=0, decorative=0 }
-    local emergencyCoordinates = {}
-
-    for _, room in pairs(type(BWOARooms) == "table" and BWOARooms or {}) do
-        if type(room) == "table" and type(room.els) == "table" then
-            for _, coords in pairs(room.els) do
-                emergencyCoordinates[tostring(coords.x) .. ":" .. tostring(coords.y) .. ":" .. tostring(coords.z)] = true
-            end
-        end
-    end
+    local expectedEmergency = PowerGrid.buildExpectedEmergencyLights()
 
     for _, z in ipairs(scan.levels) do
         for x = scan.x1, scan.x2 do
@@ -285,13 +290,9 @@ local function sendLightManifest(player)
                             if spriteName then
                                 occurrences[spriteName] = (occurrences[spriteName] or 0) + 1
                                 local props = sprite:getProperties()
-                                local coordinateKey = tostring(x) .. ":" .. tostring(y) .. ":" .. tostring(z)
-                                local role = "decorative"
-                                if object:getUseBattery() and emergencyCoordinates[coordinateKey] then
-                                    role = "emergency"
-                                elseif not object:getUseBattery() then
-                                    role = "main"
-                                end
+                                local role = PowerGrid.classifyLight(object, x, y, z,
+                                    expectedEmergency) or "decorative"
+                                if role == "emergency" then PowerGrid.repairEmergencyLight(object) end
                                 roleCounts[role] = roleCounts[role] + 1
                                 lights[#lights + 1] = {
                                     x=x, y=y, z=z,
@@ -299,8 +300,8 @@ local function sendLightManifest(player)
                                     occurrence=occurrences[spriteName],
                                     role=role,
                                     active=object:isActivated(),
-                                    useBattery=object:getUseBattery(),
-                                    hasBattery=object:getHasBattery(),
+                                    useBattery=role == "emergency" or object:getUseBattery(),
+                                    hasBattery=role == "emergency" or object:getHasBattery(),
                                     lightR=tonumber(props and props:get("lightR")) or 255,
                                     lightG=tonumber(props and props:get("lightG")) or 240,
                                     lightB=tonumber(props and props:get("lightB")) or 180,

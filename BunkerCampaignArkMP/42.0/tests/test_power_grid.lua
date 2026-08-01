@@ -2,6 +2,9 @@ BunkerCampaignArkMP.PowerGrid.sync()
 local mainLight, emergencyLight = ArkMPPowerGridLights()
 assert(mainLight.active == true and emergencyLight.active == false,
     "main grid must enable main lights and keep emergency lights dark")
+assert(emergencyLight.useBattery == true and emergencyLight.hasBattery == true
+    and emergencyLight.canBeModified == false and emergencyLight.power == 1000,
+    "streamed emergency fixtures must recover their non-persistent battery identity")
 
 local commands = ArkMPPowerGridCommands()
 assert(#commands == 0,

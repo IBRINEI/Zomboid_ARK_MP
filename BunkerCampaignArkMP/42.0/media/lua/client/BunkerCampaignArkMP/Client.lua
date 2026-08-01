@@ -4,6 +4,16 @@ require "BunkerCampaignArkMP/Constants"
 BunkerCampaignArkMP = BunkerCampaignArkMP or {}
 
 local Constants = BunkerCampaignArkMP.Constants
+local previous = BunkerCampaignArkMP.Client
+if type(previous) == "table" then
+    if previous.onCreatePlayer then Events.OnCreatePlayer.Remove(previous.onCreatePlayer) end
+    if previous.onServerCommand then Events.OnServerCommand.Remove(previous.onServerCommand) end
+    if previous.onPlayerUpdate then Events.OnPlayerUpdate.Remove(previous.onPlayerUpdate) end
+    if previous.onLoadGridSquare then Events.LoadGridsquare.Remove(previous.onLoadGridSquare) end
+    if previous.addContextOptions then
+        Events.OnFillWorldObjectContextMenu.Remove(previous.addContextOptions)
+    end
+end
 local Client = {
     status = nil,
     awaitingArrival = false,
@@ -113,6 +123,14 @@ local function setClientLightActive(light, active)
     light:switchLight(active)
 end
 
+local function repairEmergencyLight(light)
+    if not light then return end
+    if light.setCanBeModified then light:setCanBeModified(false) end
+    if light.setPower then light:setPower(1000) end
+    if light.setHasBattery then light:setHasBattery(true) end
+    if light.setUseBatteryDirect then light:setUseBatteryDirect(true) end
+end
+
 local function reconcileLight(entry)
     local square = getCell():getGridSquare(entry.x, entry.y, entry.z)
     -- Do not poll every unloaded manifest entry indefinitely.  Loading a
@@ -126,6 +144,7 @@ local function reconcileLight(entry)
         local sprite = object and object:getSprite() or nil
         if instanceof(object, "IsoLightSwitch") and sprite and sprite:getName() == entry.sprite then
             count = count + 1
+            if entry.role == "emergency" then repairEmergencyLight(object) end
             setClientLightActive(object, desiredActive)
         end
     end
@@ -140,11 +159,9 @@ local function reconcileLight(entry)
     if props:has(IsoPropertyType.STREETLIGHT) then props:unset("streetlight") end
 
     local light = IsoLightSwitch.new(getCell(), square, sprite, square:getRoomID())
-    if entry.useBattery then
-        light:setCanBeModified(false)
-        light:setPower(1000)
-        light:setHasBattery(entry.hasBattery == true)
-        light:setUseBatteryDirect(true)
+    if entry.role == "emergency" or entry.useBattery then
+        repairEmergencyLight(light)
+        if entry.role ~= "emergency" then light:setHasBattery(entry.hasBattery == true) end
     else
         light:setUseBattery(false)
     end
@@ -260,11 +277,17 @@ local function addContextOptions(playerNum, context, worldObjects, test)
     end
 end
 
-Events.OnCreatePlayer.Add(onCreatePlayer)
-Events.OnServerCommand.Add(onServerCommand)
-Events.OnPlayerUpdate.Add(onPlayerUpdate)
-Events.LoadGridsquare.Add(onLoadGridSquare)
-Events.OnFillWorldObjectContextMenu.Add(addContextOptions)
+Client.onCreatePlayer = onCreatePlayer
+Client.onServerCommand = onServerCommand
+Client.onPlayerUpdate = onPlayerUpdate
+Client.onLoadGridSquare = onLoadGridSquare
+Client.addContextOptions = addContextOptions
+
+Events.OnCreatePlayer.Add(Client.onCreatePlayer)
+Events.OnServerCommand.Add(Client.onServerCommand)
+Events.OnPlayerUpdate.Add(Client.onPlayerUpdate)
+Events.LoadGridsquare.Add(Client.onLoadGridSquare)
+Events.OnFillWorldObjectContextMenu.Add(Client.addContextOptions)
 
 BunkerCampaignArkMP.Client = Client
 return Client
