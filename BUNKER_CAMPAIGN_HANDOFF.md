@@ -580,7 +580,8 @@ accepted versions remain unchanged.
 Candidate versions:
 
 - `BunkerCampaign` 0.6.0, campaign state version 7;
-- `BunkerCampaignIntegration` 0.8.1, integration state version 5;
+- `BunkerCampaignIntegration` 0.8.2, integration state version 5;
+- optional `BunkerCampaignThermalJava` 0.1.0;
 - `BunkerCampaignArkMP` 0.4.5.2 (the accepted 0.4.5 behavior plus the
   reconnect-light repair; none of the rejected 0.4.6--0.4.10 changes);
 - `BunkerCampaignToxicMP` remains exactly 0.5.1.
@@ -612,28 +613,38 @@ to 22 C and heat sources can only raise that result. They therefore cannot make
 a room colder than 22 C: the systems panel could correctly show -41 C while a
 wristwatch and the character thermoregulator still received 22 C.
 
-Integration 0.8.1 adds a ZombieBuddy Java patch at that canonical
-`ClimateManager` method. Lua atomically publishes every exact RoomRegistry
-region and its server-authoritative temperature; the patched method replaces
-the vanilla value only inside those regions. Consequently wristwatches,
-thermoregulation, cold moodles and every other vanilla square-temperature
-consumer share the same room value instead of receiving a UI-only substitute.
-The original Ark `ventilation.temp`, `tempTarget` and heating request remain
-one-time compatibility imports/mirrors. Java source is stored under
-`BunkerCampaignIntegration/42.0/src`; the runtime JAR is
-`media/java/BunkerCampaignIntegration.jar`, SHA-256
-`B56C6ED7B7103478373368D68AA6C9E35A8D068EF8AFC26A052184279DEB1B5D`.
+The Java patch is now a physically separate optional mod,
+`BunkerCampaignThermalJava` 0.1.0. It listens for the normal core heating
+snapshot on the client and atomically publishes every exact RoomRegistry
+region and its server-authoritative temperature. Its patched ClimateManager
+method replaces the vanilla value only inside those regions. Consequently
+wristwatches, thermoregulation, cold moodles and other vanilla square-
+temperature consumers share the same room value instead of receiving a UI-only
+substitute. The runtime JAR is client-only and is skipped by the dedicated
+server. Source, Lua lifecycle adapter and tests all live exclusively under
+`BunkerCampaignThermalJava/42.0`; the JAR SHA-256 is
+`44CA0AF45AC03477446F2719A3CA3E9A8980A6C6D00217952505E874F313C3E4`.
+
+`BunkerCampaignIntegration` 0.8.2 contains no Java classes, no Java JAR, no
+thermal-registry calls and no ZombieBuddy dependency. Disabling or removing
+only `BunkerCampaignThermalJava` therefore restores vanilla indoor temperature
+reporting without removing fallout climate, the server heating simulation,
+vent heat sources, power, ventilation, water, decontamination, Toxic Zones or
+ArkMP behavior. The original Ark `ventilation.temp`, `tempTarget` and heating
+request remain one-time compatibility imports/mirrors.
 
 The subscribed Workshop ZombieBuddy package currently contains framework
 2.3.2, while the already installed game-root Java agent reports
 3.0.0-alpha. Do not overwrite the newer `ZombieBuddy.jar` or `zbNative.dll`
 in the read-only game installation with that older Workshop binary. The
 repository instead tracks `ZombieBuddy/42/mod.info`, a minimal local PZ mod
-marker with `id=ZombieBuddy`. It satisfies Integration's documented
-`require=\ZombieBuddy` dependency while leaving the active 3.0.0-alpha agent
-as the only framework runtime. Local client `mods/default.txt` and dedicated
-server `Server/servertest.ini` include `ZombieBuddy` before Integration; those
-two machine-specific files remain outside the project commits.
+marker with `id=ZombieBuddy`. It satisfies the optional ThermalJava mod's
+documented `require=\ZombieBuddy` dependency while leaving the active
+3.0.0-alpha agent as the only framework runtime. Local client
+`mods/default.txt` and dedicated server `Server/servertest.ini` include
+`ZombieBuddy`; they also include `BunkerCampaignThermalJava` as the final,
+independently removable mod. Those two machine-specific files remain outside
+the project commits.
 
 The reconnect lighting fault was separate from heating. Save/stream reload
 stripped the battery flag from all 653 expected red emergency switches, so the
@@ -661,6 +672,8 @@ Automated coverage passing on this branch:
 - bounded heat-source creation, update, deduplication and removal;
 - atomic exact-region temperature publication and fallback behavior;
 - Java region lookup, overlap precedence, replacement and clearing;
+- external-package access to the method invoked by transformed game bytecode;
+- optional client module snapshot, disconnect and main-menu cleanup lifecycle;
 - reconnect-stable main/emergency light classification and battery repair;
 - Integration import/mirror of Ark heating state.
 
@@ -676,17 +689,26 @@ returned to the 21 C migration baseline before normal minute simulation
 resumed; backup fuel/condition/coolant/lubricant are 100/90/90/90%, battery
 charge is zero, water and main lighting are requested, and the backup is off.
 
-Project Zomboid's hot loader can execute newly added Lua files by absolute path
-but cannot load or approve a new Java mod JAR. The processes used during the
-0.8.1 work therefore still report `bcThermalResolve == nil`; no live watch or
-thermoregulation result from those processes is an acceptance test for the new
-patch. A clean dedicated-server and client restart is mandatory. Approve the
-new `BunkerCampaignIntegration.jar` fingerprint when ZombieBuddy asks. After
-restart verify `type(bcThermalResolve) == "function"` in both processes, exactly
-one callback for each changed event, then compare the systems-panel room value,
-wristwatch value and thermoregulator air value at the same tile. Also reconnect
-once and confirm the requested power state produces mutually exclusive main and
-red emergency lighting without unloading the bunker as a workaround.
+The first clean 0.8.1 Java test exposed a fatal access error. Both server and
+client loaded the integrated patch, but transformed ClimateManager bytecode
+could not call the package-private `ThermalOverride.resolve` method. The client
+exited at frame 2536 from the cold-moodle path; the server game thread exited at
+frame 8 immediately after player creation. That server exit left ArkMP at
+`waiting_for_chunks`, so it could neither finish bunker preparation nor issue
+the normal automatic teleport. The apparent teleport failure and the crash on
+leaving the spawn building therefore had the same Java root cause.
+
+ThermalJava 0.1.0 makes the invoked method public and compiles an access probe
+from a different Java package, which would fail compilation if this regression
+returned. A clean dedicated-server and client restart is mandatory because the
+old transformed ClimateManager cannot be hot-unpatched. The server should skip
+the client-only JAR; approve the new `BunkerCampaignThermalJava.jar` fingerprint
+on the client. Then verify `type(bcThermalResolve) == "function"` on the client,
+confirm automatic teleport, compare panel/watch/thermoregulator values, and
+reconnect once to validate both the thermal registry and mutually exclusive
+main/emergency lighting. To test the detachable fallback, disable only
+`BunkerCampaignThermalJava`; all other campaign mods must still load and the
+only expected regression is vanilla +22 C indoor reporting.
 
 Fourth-slice commits so far:
 
@@ -694,4 +716,5 @@ Fourth-slice commits so far:
 - `4b2216b` - MP adaptation of The Ark climate and heating;
 - `57e4c36` - authoritative room temperature exposed to vanilla climate;
 - `1c8ae70` - reconnect-stable emergency light identity and reconciliation;
-- `bc68dce` - local ZombieBuddy runtime marker and dependency setup.
+- `bc68dce` - local ZombieBuddy runtime marker and dependency setup;
+- `6657a0f` - isolate the optional Java bridge and repair external access.
