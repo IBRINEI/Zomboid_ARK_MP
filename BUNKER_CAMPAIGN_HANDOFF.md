@@ -624,6 +624,17 @@ one-time compatibility imports/mirrors. Java source is stored under
 `media/java/BunkerCampaignIntegration.jar`, SHA-256
 `B56C6ED7B7103478373368D68AA6C9E35A8D068EF8AFC26A052184279DEB1B5D`.
 
+The subscribed Workshop ZombieBuddy package currently contains framework
+2.3.2, while the already installed game-root Java agent reports
+3.0.0-alpha. Do not overwrite the newer `ZombieBuddy.jar` or `zbNative.dll`
+in the read-only game installation with that older Workshop binary. The
+repository instead tracks `ZombieBuddy/42/mod.info`, a minimal local PZ mod
+marker with `id=ZombieBuddy`. It satisfies Integration's documented
+`require=\ZombieBuddy` dependency while leaving the active 3.0.0-alpha agent
+as the only framework runtime. Local client `mods/default.txt` and dedicated
+server `Server/servertest.ini` include `ZombieBuddy` before Integration; those
+two machine-specific files remain outside the project commits.
+
 The reconnect lighting fault was separate from heating. Save/stream reload
 stripped the battery flag from all 653 expected red emergency switches, so the
 old classifier treated them as main lights and the client could display red and
@@ -682,4 +693,5 @@ Fourth-slice commits so far:
 - `e08672b` - server-authoritative bunker heating core;
 - `4b2216b` - MP adaptation of The Ark climate and heating;
 - `57e4c36` - authoritative room temperature exposed to vanilla climate;
-- `1c8ae70` - reconnect-stable emergency light identity and reconciliation.
+- `1c8ae70` - reconnect-stable emergency light identity and reconciliation;
+- `bc68dce` - local ZombieBuddy runtime marker and dependency setup.
