@@ -8,6 +8,7 @@ require "BunkerCampaign/VentilationSimulation"
 require "BunkerCampaign/WaterSimulation"
 require "BunkerCampaign/RoomRegistry"
 require "BunkerCampaign/HeatingSimulation"
+require "BunkerCampaign/HeatingComponents"
 
 BunkerCampaign = BunkerCampaign or {}
 
@@ -19,6 +20,7 @@ local VentilationSimulation = BunkerCampaign.VentilationSimulation
 local WaterSimulation = BunkerCampaign.WaterSimulation
 local RoomRegistry = BunkerCampaign.RoomRegistry
 local HeatingSimulation = BunkerCampaign.HeatingSimulation
+local HeatingComponents = BunkerCampaign.HeatingComponents
 local CampaignState = BunkerCampaign.CampaignState or {}
 CampaignState.minutesSinceSync = tonumber(CampaignState.minutesSinceSync) or 0
 CampaignState.deferBroadcast = CampaignState.deferBroadcast == true
@@ -537,6 +539,158 @@ function CampaignState.triggerHeatingFault(componentId, severityOrFault, actor)
         .. ": " .. tostring(fault), actor)
     CampaignState.broadcast()
     return true, fault
+end
+
+local function recountHeatingFailures(heating)
+    local active, major = 0, 0
+    for _, id in ipairs(HeatingComponents.orderedIds()) do
+        local component = heating.components[id]
+        if component.fault ~= "none" then
+            active = active + 1
+            if HeatingComponents.faultSeverity(id, component.fault) == "major" then
+                major = major + 1
+            end
+        end
+    end
+    heating.accidents.activeFailures = active
+    heating.accidents.activeMajorFailures = major
+end
+
+local function restoreHeatingComponent(heating, componentId)
+    local component = heating.components[componentId]
+    if not component then return false end
+    component.condition = 0.90
+    if component.integrity ~= nil then component.integrity = 0.90 end
+    component.fault = "none"
+    component.diagnosed = false
+    component.temporaryRepair = false
+    if component.open ~= nil then component.open = true end
+    if componentId == "heat_exchanger" then component.outputKw = 0 end
+    return true
+end
+
+local function restoreAllHeatingComponents(heating)
+    for _, id in ipairs(HeatingComponents.orderedIds()) do
+        restoreHeatingComponent(heating, id)
+    end
+    heating.manualBypass = false
+    heating.accidents.lastFailureHour = -1000
+    heating.accidents.activeFailures = 0
+    heating.accidents.activeMajorFailures = 0
+end
+
+function CampaignState.applyHeatingQa(action, args, actor)
+    if not CampaignState.data then return false, "state_unavailable" end
+    action = type(action) == "string" and action or ""
+    args = type(args) == "table" and args or {}
+    local modules = CampaignState.data.bunker.modules
+    local heating, ventilation, power = modules.heating, modules.ventilation, modules.power
+    HeatingSimulation.normalize(heating)
+    local description = action
+
+    if action == "restore_all" then
+        restoreAllHeatingComponents(heating)
+        description = "all heating components restored to 90%"
+    elseif action == "component" then
+        local componentId = args.componentId
+        local state = args.state
+        if not HeatingComponents.get(componentId) then
+            return false, "unknown_heating_component"
+        end
+        if state == "healthy" then
+            restoreHeatingComponent(heating, componentId)
+            recountHeatingFailures(heating)
+        elseif state == "minor" or state == "major" then
+            local component = heating.components[componentId]
+            local definition = HeatingComponents.get(componentId)
+            component.fault = definition.faults[state]
+            component.diagnosed = true
+            component.temporaryRepair = false
+            if component.fault == "valve_stuck_closed" then component.open = false end
+            if component.fault == "valve_stuck_open" then component.open = true end
+            heating.accidents.lastFailureHour = Util.worldAgeHours()
+            heating.accidents.totalFailures = heating.accidents.totalFailures + 1
+        else
+            return false, "invalid_component_state"
+        end
+        description = tostring(componentId) .. " set to " .. tostring(state)
+    elseif action == "rooms" then
+        if not Util.isFiniteNumber(args.temperature) then
+            return false, "invalid_temperature"
+        end
+        local temperature = Util.clamp(args.temperature,
+            Constants.HEATING.MIN_TEMPERATURE, Constants.HEATING.MAX_TEMPERATURE)
+        for _, room in pairs(heating.rooms) do room.temperature = temperature end
+        description = "all room temperatures set to "
+            .. tostring(Util.round(temperature, 1)) .. " C"
+    elseif action == "ready" then
+        restoreAllHeatingComponents(heating)
+        heating.enabled, heating.requested = true, true
+        heating.targetTemperature = 21
+        for _, room in pairs(heating.rooms) do
+            room.temperature = 5
+            room.heatingEnabled = true
+        end
+        local main = power.generators.main
+        main.requested, main.fuel = true, 1
+        main.condition, main.coolant, main.lubricant = 1, 1, 1
+        power.generators.backup.requested = false
+        VentilationSimulation.setMode(ventilation, "internal_recirculation")
+        power.consumers.ventilation.requested = true
+        modules.water.requested = false
+        modules.water.pumpRequested = false
+        power.consumers.water.requested = false
+        power.consumers.main_lighting.requested = false
+        power.consumers.heating.requested = true
+        description = "cold powered heating test state applied"
+    elseif action == "power_shed" then
+        power.generators.main.requested = false
+        power.generators.backup.requested = false
+        heating.enabled, heating.requested = true, true
+        power.consumers.heating.requested = true
+        description = "both generators stopped with heating requested"
+    elseif action == "ventilation_off" then
+        VentilationSimulation.setMode(ventilation, "off")
+        power.consumers.ventilation.requested = false
+        heating.enabled, heating.requested = true, true
+        power.consumers.heating.requested = true
+        description = "ventilation off with heating requested"
+    elseif action == "circulation_on" then
+        VentilationSimulation.setMode(ventilation, "internal_recirculation")
+        power.consumers.ventilation.requested = true
+        heating.enabled, heating.requested = true, true
+        power.consumers.heating.requested = true
+        description = "internal recirculation and heating requested"
+    elseif action == "manual_bypass" then
+        if type(args.enabled) ~= "boolean" then return false, "invalid_payload" end
+        heating.manualBypass = args.enabled
+        description = "manual heating bypass " .. (args.enabled and "enabled" or "disabled")
+    elseif action == "valves" then
+        if type(args.supplyOpen) == "boolean" then
+            heating.components.supply_valve.open = args.supplyOpen
+        end
+        if type(args.returnOpen) == "boolean" then
+            heating.components.return_valve.open = args.returnOpen
+        end
+        description = "heating valves set supply="
+            .. tostring(heating.components.supply_valve.open)
+            .. " return=" .. tostring(heating.components.return_valve.open)
+    else
+        return false, "unknown_heating_qa_action"
+    end
+
+    recountHeatingFailures(heating)
+    local heatingConsumer = power.consumers.heating
+    heatingConsumer.demandKw = HeatingSimulation.prepareDemand(heating, {
+        ventilation=ventilation,
+    })
+    local ventilationConsumer = power.consumers.ventilation
+    ventilationConsumer.demandKw = VentilationSimulation.powerDemand(ventilation.requestedMode)
+    CampaignState.recalculatePower(0, actor)
+    CampaignState.touch()
+    CampaignState.appendLog("qa", description, actor)
+    CampaignState.broadcast()
+    return true
 end
 
 local function waterValueChanged(previous, current)

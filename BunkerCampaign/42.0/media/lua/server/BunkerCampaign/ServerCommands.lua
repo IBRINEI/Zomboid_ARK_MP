@@ -373,6 +373,16 @@ local function triggerHeatingFault(player, args)
     if not ok then replyError(player, reason or "heating_failure_failed") end
 end
 
+local function qaHeating(player, args)
+    if not isAdministrator(player) then replyError(player, "admin_required"); return end
+    if type(args) ~= "table" or type(args.action) ~= "string" then
+        replyError(player, "invalid_payload"); return
+    end
+    local ok, reason = CampaignState.applyHeatingQa(
+        args.action, args, player:getUsername())
+    if not ok then replyError(player, reason or "heating_qa_failed") end
+end
+
 local function setGenerator(player, args)
     if not canOperateBunkerSystems(player) then
         CampaignState.appendLog("security", "rejected generator mutation", player and player:getUsername() or "unknown")
@@ -436,6 +446,8 @@ function ServerCommands.onClientCommand(module, command, player, args)
         setHeatingManualBypass(player, args)
     elseif command == "triggerHeatingFault" then
         triggerHeatingFault(player, args)
+    elseif command == "qaHeating" then
+        qaHeating(player, args)
     elseif command == "setGenerator" then
         setGenerator(player, args)
     elseif command == "setConsumer" then

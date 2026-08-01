@@ -221,6 +221,52 @@ BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "setHeating", no
 assert(firstReference.bunker.modules.heating.enabled == true,
     "a player outside the bunker must not change heating")
 
+local qaRoom = firstReference.bunker.modules.heating.rooms.server_test_room
+local qaTemperatureBefore = qaRoom.temperature
+BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "qaHeating", normalPlayer, {
+    action="rooms", temperature=-20,
+})
+assert(qaRoom.temperature == qaTemperatureBefore,
+    "ordinary clients must not execute heating QA mutations")
+
+BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "qaHeating", adminPlayer, {
+    action="ready",
+})
+local qaModules = firstReference.bunker.modules
+assert(qaRoom.temperature == 5 and qaModules.heating.targetTemperature == 21,
+    "cold heating QA must set a deterministic room and target temperature")
+assert(qaModules.power.generators.main.requested
+    and not qaModules.power.generators.backup.requested,
+    "cold heating QA must provide deterministic main-generator power")
+assert(not qaModules.water.requested and not qaModules.power.consumers.water.requested,
+    "cold heating QA must release the competing water load")
+assert(qaModules.ventilation.requestedMode == "internal_recirculation"
+    and qaModules.heating.operating and qaModules.heating.reason == "heating",
+    "cold heating QA must start the required air circuit and heater")
+
+BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "qaHeating", adminPlayer, {
+    action="ventilation_off",
+})
+assert(qaModules.heating.reason == "air_circuit_unavailable",
+    "ventilation-off QA must stop heating through its air-circuit dependency")
+
+BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "qaHeating", adminPlayer, {
+    action="component", componentId="controller", state="major",
+})
+BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "qaHeating", adminPlayer, {
+    action="component", componentId="pipe_manifold", state="major",
+})
+assert(qaModules.heating.components.controller.fault == "controller_offline"
+    and qaModules.heating.components.pipe_manifold.fault == "pipe_rupture"
+    and qaModules.heating.components.pipe_manifold.diagnosed,
+    "component QA must set exact diagnosed faults independently of random-failure caps")
+BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "qaHeating", adminPlayer, {
+    action="restore_all",
+})
+assert(qaModules.heating.components.pipe_manifold.fault == "none"
+    and qaModules.heating.components.pipe_manifold.condition == 0.90,
+    "restore-all QA must return failed components to a known healthy state")
+
 local previousVentFilter = firstReference.bunker.modules.ventilation.filterBank.remaining
 BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "replaceVentilationFilter", filterPlayer, {})
 assert(firstReference.bunker.modules.ventilation.filterBank.remaining == 0.37,

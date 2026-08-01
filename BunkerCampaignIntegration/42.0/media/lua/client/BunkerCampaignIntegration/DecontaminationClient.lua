@@ -187,6 +187,7 @@ local function addQaMenu(context, player, selected)
     local travel = submenu(menu, "[QA] Travel and resources")
     local atmosphere = submenu(menu, "[QA] Atmosphere and airlock")
     local water = submenu(menu, "[QA] Water system")
+    local heating = submenu(menu, "[QA] Heating system")
 
     local function teleport(title, target)
         travel:addOption(title, player, function(p) send(p, "qaTeleport", { target=target }) end)
@@ -198,6 +199,19 @@ local function addQaMenu(context, player, selected)
     teleport("[QA] Decontamination chamber", "chamber")
     teleport("[QA] Clean-side exit", "clean")
     teleport("[QA] NBC tablet locker", "reagent")
+    teleport("[QA] Bunker arrival point", "spawn")
+    teleport("[QA] Heating controller", "heating_controller")
+    teleport("[QA] Heat exchanger", "heat_exchanger")
+    teleport("[QA] Circulation blower", "circulation_blower")
+    teleport("[QA] Heating supply valve", "supply_valve")
+    teleport("[QA] Heating return valve", "return_valve")
+    teleport("[QA] Heating pipe manifold", "pipe_manifold")
+    travel:addOption("[QA] Inspect service level", player, function(p)
+        sendClientCommand(p, "BunkerCampaignArkMP", "inspectLevel", {level="service"})
+    end)
+    travel:addOption("[QA] Inspect deep level", player, function(p)
+        sendClientCommand(p, "BunkerCampaignArkMP", "inspectLevel", {level="deep"})
+    end)
     travel:addOption("Set body and worn gear to 80%", player, function(p) send(p, "qaContaminate", {}) end)
     travel:addOption("Reset all carried contamination", player, function(p) send(p, "qaClean", {}) end)
     travel:addOption("Give tablets and cleaning agents", player, function(p) send(p, "qaGiveSupplies", {}) end)
@@ -281,6 +295,60 @@ local function addQaMenu(context, player, selected)
     water:addOption("Report physical water state", player, function(p)
         send(p, "qaReport", {kind="water"})
     end)
+
+    local function heatingQa(title, action, args)
+        heating:addOption(title, player, function(p)
+            local payload = {}
+            for key, value in pairs(args or {}) do payload[key] = value end
+            payload.action = action
+            sendClientCommand(p, "BunkerCampaign", "qaHeating", payload)
+        end)
+    end
+
+    heatingQa("[QA] Prepare cold powered test (+5 C rooms)", "ready")
+    heatingQa("[QA] Restore all heating components to 90%", "restore_all")
+    heatingQa("[QA] Set every room to +21 C", "rooms", {temperature=21})
+    heatingQa("[QA] Set every room to +5 C", "rooms", {temperature=5})
+    heatingQa("[QA] Set every room to -20 C", "rooms", {temperature=-20})
+    heatingQa("[QA] Stop both generators (force power shed)", "power_shed")
+    heatingQa("[QA] Ventilation OFF with heating requested", "ventilation_off")
+    heatingQa("[QA] Internal recirculation ON with heating requested", "circulation_on")
+    heatingQa("[QA] Enable manual circulation bypass", "manual_bypass", {enabled=true})
+    heatingQa("[QA] Disable manual circulation bypass", "manual_bypass", {enabled=false})
+    heatingQa("[QA] Open both heating valves", "valves", {supplyOpen=true,returnOpen=true})
+    heatingQa("[QA] Close supply valve", "valves", {supplyOpen=false,returnOpen=true})
+    heatingQa("[QA] Close return valve", "valves", {supplyOpen=true,returnOpen=false})
+
+    local componentLabels = {
+        controller="Controller",
+        heat_exchanger="Heat exchanger",
+        circulation_blower="Circulation blower",
+        supply_valve="Supply valve",
+        return_valve="Return valve",
+        pipe_manifold="Pipe manifold",
+    }
+    local componentOrder = {
+        "controller", "heat_exchanger", "circulation_blower",
+        "supply_valve", "return_valve", "pipe_manifold",
+    }
+    for _, componentId in ipairs(componentOrder) do
+        local id = componentId
+        local componentMenu = submenu(heating, "[QA] " .. componentLabels[id])
+        local function componentState(title, state)
+            componentMenu:addOption(title, player, function(p)
+                sendClientCommand(p, "BunkerCampaign", "qaHeating", {
+                    action="component", componentId=id, state=state,
+                })
+            end)
+        end
+        componentState("Restore to 90%", "healthy")
+        componentState("Set diagnosed minor fault", "minor")
+        componentState("Set diagnosed major fault", "major")
+        componentMenu:addOption("Teleport to component", player, function(p)
+            send(p, "qaTeleport", {target=id == "controller"
+                and "heating_controller" or id})
+        end)
+    end
 end
 
 local function selectedTile(playerNum, context, player, worldObjects)
@@ -454,10 +522,30 @@ local function draw()
     end
 end
 
-Events.OnCreatePlayer.Add(onCreatePlayer)
-Events.OnServerCommand.Add(onServerCommand)
-Events.OnFillWorldObjectContextMenu.Add(addContextOptions)
-Events.OnPreUIDraw.Add(draw)
+BunkerCampaignIntegration.Runtime = BunkerCampaignIntegration.Runtime or {}
+local runtime = BunkerCampaignIntegration.Runtime.decontaminationClient or {}
+if runtime.onCreatePlayer and type(Events.OnCreatePlayer.Remove) == "function" then
+    Events.OnCreatePlayer.Remove(runtime.onCreatePlayer)
+end
+if runtime.onServerCommand and type(Events.OnServerCommand.Remove) == "function" then
+    Events.OnServerCommand.Remove(runtime.onServerCommand)
+end
+if runtime.addContextOptions
+    and type(Events.OnFillWorldObjectContextMenu.Remove) == "function" then
+    Events.OnFillWorldObjectContextMenu.Remove(runtime.addContextOptions)
+end
+if runtime.draw and type(Events.OnPreUIDraw.Remove) == "function" then
+    Events.OnPreUIDraw.Remove(runtime.draw)
+end
+runtime.onCreatePlayer = onCreatePlayer
+runtime.onServerCommand = onServerCommand
+runtime.addContextOptions = addContextOptions
+runtime.draw = draw
+BunkerCampaignIntegration.Runtime.decontaminationClient = runtime
+Events.OnCreatePlayer.Add(runtime.onCreatePlayer)
+Events.OnServerCommand.Add(runtime.onServerCommand)
+Events.OnFillWorldObjectContextMenu.Add(runtime.addContextOptions)
+Events.OnPreUIDraw.Add(runtime.draw)
 
 BunkerCampaignIntegration.DecontaminationClient = Client
 return Client

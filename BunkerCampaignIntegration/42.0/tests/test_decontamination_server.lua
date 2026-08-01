@@ -140,6 +140,10 @@ getCell = function()
     end }
 end
 sendServerCommand = function() end
+local teleportedTo = nil
+player.teleportTo = function(self, x, y, z)
+    teleportedTo = {x=x,y=y,z=z}
+end
 
 local power = { consumers={
     decontamination={requested=false,allocated=false},
@@ -289,6 +293,13 @@ BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
     "BunkerCampaignDecontamination", "qaRefuelGenerator", player, {generator="backup"}
 )
 assert(refueledGenerator == "backup", "QA refuel must target the requested logical generator")
+
+BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
+    "BunkerCampaignDecontamination", "qaTeleport", player, {target="pipe_manifold"}
+)
+assert(teleportedTo and teleportedTo.x == 9966.5 and teleportedTo.y == 12640.5
+    and teleportedTo.z == -4,
+    "common QA travel must include the physical heating components")
 
 BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
     "BunkerCampaignDecontamination", "qaSetIntake", player,

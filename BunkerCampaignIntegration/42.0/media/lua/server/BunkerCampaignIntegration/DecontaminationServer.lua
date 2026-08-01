@@ -645,6 +645,13 @@ local function runQa(player, command, args)
             chamber=Rules.CHAMBER,
             clean=Rules.CLEAN_EXIT,
             reagent=Rules.REAGENT_STORAGE,
+            spawn={x=9966.5,y=12622.5,z=-4},
+            heating_controller={x=9963.5,y=12627.5,z=-4},
+            heat_exchanger={x=9968.5,y=12633.5,z=-4},
+            circulation_blower={x=9967.5,y=12635.5,z=-4},
+            supply_valve={x=9966.5,y=12637.5,z=-4},
+            return_valve={x=9966.5,y=12639.5,z=-4},
+            pipe_manifold={x=9966.5,y=12640.5,z=-4},
         }
         local target = targets[targetId]
         if not target then return false, "unknown_target" end
@@ -835,9 +842,24 @@ function Server.onClientCommand(module, command, player, args)
     sendResult(player, false, command, "unknown_command")
 end
 
-Events.OnInitGlobalModData.Add(Server.initialize)
-if Events.OnTick then Events.OnTick.Add(Server.update) end
-Events.OnClientCommand.Add(Server.onClientCommand)
+BunkerCampaignIntegration.Runtime = BunkerCampaignIntegration.Runtime or {}
+local runtime = BunkerCampaignIntegration.Runtime.decontaminationServer or {}
+if runtime.initialize and type(Events.OnInitGlobalModData.Remove) == "function" then
+    Events.OnInitGlobalModData.Remove(runtime.initialize)
+end
+if runtime.update and Events.OnTick and type(Events.OnTick.Remove) == "function" then
+    Events.OnTick.Remove(runtime.update)
+end
+if runtime.onClientCommand and type(Events.OnClientCommand.Remove) == "function" then
+    Events.OnClientCommand.Remove(runtime.onClientCommand)
+end
+runtime.initialize = Server.initialize
+runtime.update = Server.update
+runtime.onClientCommand = Server.onClientCommand
+BunkerCampaignIntegration.Runtime.decontaminationServer = runtime
+Events.OnInitGlobalModData.Add(runtime.initialize)
+if Events.OnTick then Events.OnTick.Add(runtime.update) end
+Events.OnClientCommand.Add(runtime.onClientCommand)
 
 BunkerCampaignIntegration.DecontaminationServer = Server
 return Server
