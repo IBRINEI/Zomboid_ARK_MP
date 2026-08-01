@@ -570,3 +570,84 @@ Known non-blocking observations at closure:
 No further restart is required for the accepted versions. Begin subsequent
 work from commits `0d1490c` and `d313569`, preserve the read-only dependency
 boundary, and keep all runtime strings in English.
+
+## Fourth slice candidate: fallout climate and bunker heating (2026-08-01)
+
+Development is isolated on branch `slice-4-heating`. This is a candidate for
+the fourth slice, not yet user-accepted. The stable third-slice branch and its
+accepted versions remain unchanged.
+
+Candidate versions:
+
+- `BunkerCampaign` 0.6.0, campaign state version 7;
+- `BunkerCampaignIntegration` 0.8.0, integration state version 5;
+- `BunkerCampaignArkMP` remains exactly 0.4.5.1;
+- `BunkerCampaignToxicMP` remains exactly 0.5.1.
+
+The dependency order is now explicit. The server first evaluates the reused
+The Ark two-sided sine fallout curve from the existing `SandboxVars.BWOA`
+options. It records base outdoor temperature, fallout offset, authoritative
+outdoor temperature, wind and precipitation. Only after that does the core
+calculate per-room heat loss and heating demand; power allocation then decides
+whether the heat exchanger can operate. This avoids the earlier architectural
+mistake of introducing a powered appliance before its energy model.
+
+The core owns persistent heating state, target temperature, heat-exchanger and
+pipe condition, per-room temperature, room circuit isolation, demand, output,
+loss and failure reasons. Heating is an explicit 65-priority consumer: it is
+shed before the already accepted water and main-lighting loads because thermal
+inertia gives it more tolerance than those immediate services. A cold bunker
+can exceed backup capacity while every other load is requested; operators must
+then shed lower-priority loads or restore the main generator. That behavior is
+observable in the systems panel rather than hidden.
+
+The integration reuses The Ark's room vents and its `+7 C` local heat-source
+correction. It deliberately replaces the original client-owned radius-1000
+sources with replicated, removable radius-5 `IsoHeatSource` objects at actual
+vent coordinates on both server and client. The server remains authoritative
+for room temperatures; clients only mirror snapshots into local climate and
+heat-source objects. The original Ark `ventilation.temp`, `tempTarget` and
+heating request are imported once and kept as compatibility mirrors.
+
+The Bunker Systems panel now contains heating enable/disable, 0.5 C target
+adjustment, current-room circuit isolation, average/outdoor/current/coldest
+temperature, thermal output/loss and power demand. All runtime strings in both
+EN and RU translation files are English.
+
+Automated coverage passing on this branch:
+
+- power allocation and backup shedding;
+- heating normalization, demand, room loss/mixing, failures and room control;
+- state 6 -> 7 migration and server command validation;
+- ventilation, water and full life-support regressions;
+- client snapshot ordering and heating commands;
+- exact The Ark climate option mapping and curve endpoints/peak;
+- bounded heat-source creation, update, deduplication and removal;
+- Integration import/mirror of Ark heating state.
+
+ZombieBuddy correlation `slice4-heating-20260801-a` validated the live dedicated
+server path. A real client command changed the target to 21.5 C. With the
+existing exhausted main generator, heating correctly reported `power_shed`.
+Starting the backup generator while all loads remained requested was still
+insufficient at the current fallout temperature. After the client shed water
+and main lighting, the backup carried 6.73 kW, heating was allocated, produced
+4.89 kW and created 38 loaded vent heat sources. Removing power deleted all 38
+sources. Test changes were cleaned up: the target and room temperatures were
+returned to the 21 C migration baseline before normal minute simulation
+resumed; backup fuel/condition/coolant/lubricant are 100/90/90/90%, battery
+charge is zero, water and main lighting are requested, and the backup is off.
+
+Project Zomboid's hot loader can execute newly added files by absolute path but
+does not add them to the running `require` index. The current process therefore
+logged expected hot-reload-only `require(...) failed` warnings and its
+server-to-client command path did not resume, although client-to-server command
+delivery and the authoritative simulation were verified. A clean server and
+client restart is required before user acceptance testing. After restart,
+verify exactly one callback for each new/changed event, request a client
+snapshot, open the systems panel, and repeat power-shed/backup/room-isolation
+scenarios. Do not treat the hot-reload warnings as startup expectations.
+
+Fourth-slice commits so far:
+
+- `e08672b` - server-authoritative bunker heating core;
+- `4b2216b` - MP adaptation of The Ark climate and heating.
