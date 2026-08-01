@@ -27,7 +27,7 @@ local migrated = {
 }
 local changed, messages = BunkerCampaign.StateSchema.prepare(migrated, false)
 assert(changed, "version 0 state must be migrated")
-assert(migrated.version == 7, "migration must set state version")
+assert(migrated.version == 8, "migration must set state version")
 assert(migrated.bunker.modules.water.status == "offline", "migration must add water defaults")
 assert(migrated.bunker.modules.power.generators.main.fuel == 0.87, "migration must add power defaults")
 assert(migrated.bunker.modules.ventilation.enabled == false, "migration must preserve valid existing values")

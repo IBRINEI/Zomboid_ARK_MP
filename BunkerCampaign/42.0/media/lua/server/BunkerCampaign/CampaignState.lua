@@ -19,18 +19,20 @@ local VentilationSimulation = BunkerCampaign.VentilationSimulation
 local WaterSimulation = BunkerCampaign.WaterSimulation
 local RoomRegistry = BunkerCampaign.RoomRegistry
 local HeatingSimulation = BunkerCampaign.HeatingSimulation
-local CampaignState = {
-    data = nil,
-    minutesSinceSync = 0,
-    deferBroadcast = false,
-    broadcastPending = false,
-    powerListeners = {},
-    lifeSupportListeners = {
-        sample = {},
-        postPower = {},
-        postSimulation = {},
-    },
-}
+local CampaignState = BunkerCampaign.CampaignState or {}
+CampaignState.minutesSinceSync = tonumber(CampaignState.minutesSinceSync) or 0
+CampaignState.deferBroadcast = CampaignState.deferBroadcast == true
+CampaignState.broadcastPending = CampaignState.broadcastPending == true
+CampaignState.powerListeners = type(CampaignState.powerListeners) == "table"
+    and CampaignState.powerListeners or {}
+CampaignState.lifeSupportListeners = type(CampaignState.lifeSupportListeners) == "table"
+    and CampaignState.lifeSupportListeners or {}
+CampaignState.lifeSupportListeners.sample = type(CampaignState.lifeSupportListeners.sample) == "table"
+    and CampaignState.lifeSupportListeners.sample or {}
+CampaignState.lifeSupportListeners.postPower = type(CampaignState.lifeSupportListeners.postPower) == "table"
+    and CampaignState.lifeSupportListeners.postPower or {}
+CampaignState.lifeSupportListeners.postSimulation = type(CampaignState.lifeSupportListeners.postSimulation) == "table"
+    and CampaignState.lifeSupportListeners.postSimulation or {}
 
 local function trimAuditLog(log)
     while #log > Constants.MAX_AUDIT_LOG_ENTRIES do
@@ -216,6 +218,23 @@ function CampaignState.snapshot()
             status=room.status,
         }
     end
+    local heatingComponentSnapshot = {}
+    for id, component in pairs(heating.components or {}) do
+        local severity = BunkerCampaign.HeatingComponents
+            and BunkerCampaign.HeatingComponents.faultSeverity(id, component.fault) or "none"
+        heatingComponentSnapshot[id] = {
+            id=id,
+            condition=component.condition,
+            integrity=component.integrity,
+            fault=component.diagnosed and component.fault
+                or (component.fault ~= "none" and "undiagnosed" or "none"),
+            faultSeverity=severity,
+            diagnosed=component.diagnosed,
+            temporaryRepair=component.temporaryRepair,
+            open=component.open,
+            outputKw=component.outputKw,
+        }
+    end
 
     return {
         version = state.version,
@@ -290,8 +309,11 @@ function CampaignState.snapshot()
             coldOffset = heating.coldOffset,
             powerDemandKw = heating.powerDemandKw,
             fuelAvailable = heating.fuelAvailable,
-            heatExchanger = heating.heatExchanger,
-            pipes = heating.pipes,
+            heatExchanger = heatingComponentSnapshot.heat_exchanger,
+            pipes = heatingComponentSnapshot.pipe_manifold,
+            components = heatingComponentSnapshot,
+            manualBypass = heating.manualBypass,
+            accidents = heating.accidents,
             rooms = heatingRoomSnapshot,
             telemetry = heating.telemetry,
         },
@@ -449,6 +471,72 @@ function CampaignState.setHeatingRoomEnabled(roomId, enabled, actor)
         .. (enabled and " circuit enabled" or " circuit isolated"), actor)
     CampaignState.broadcast()
     return true
+end
+
+function CampaignState.setHeatingValve(componentId, open, actor)
+    local heating = CampaignState.data and CampaignState.data.bunker.modules.heating
+    if not heating then return false, "state_unavailable" end
+    local ok, reason = HeatingSimulation.setValve(heating, componentId, open)
+    if not ok then return false, reason end
+    CampaignState.recalculatePower(0, actor)
+    CampaignState.touch()
+    CampaignState.appendLog("heating", tostring(componentId)
+        .. (open and " opened" or " closed"), actor)
+    CampaignState.broadcast()
+    return true, reason
+end
+
+function CampaignState.setHeatingManualBypass(enabled, actor)
+    local heating = CampaignState.data and CampaignState.data.bunker.modules.heating
+    if not heating then return false, "state_unavailable" end
+    local ok, reason = HeatingSimulation.setManualBypass(heating, enabled)
+    if not ok then return false, reason end
+    CampaignState.recalculatePower(0, actor)
+    CampaignState.touch()
+    CampaignState.appendLog("heating", "manual circulation bypass "
+        .. (enabled and "enabled" or "disabled"), actor)
+    CampaignState.broadcast()
+    return true, reason
+end
+
+function CampaignState.diagnoseHeatingComponent(componentId, actor)
+    local heating = CampaignState.data and CampaignState.data.bunker.modules.heating
+    if not heating then return false, "state_unavailable" end
+    local ok, fault = HeatingSimulation.diagnoseComponent(heating, componentId)
+    if not ok then return false, fault end
+    CampaignState.touch()
+    CampaignState.appendLog("heating", tostring(componentId)
+        .. " diagnosed: " .. tostring(fault), actor)
+    CampaignState.broadcast()
+    return true, fault
+end
+
+function CampaignState.repairHeatingComponent(componentId, mode, improvement, actor)
+    local heating = CampaignState.data and CampaignState.data.bunker.modules.heating
+    if not heating then return false, "state_unavailable" end
+    local ok, reason = HeatingSimulation.repairComponent(
+        heating, componentId, mode, improvement)
+    if not ok then return false, reason end
+    CampaignState.recalculatePower(0, actor)
+    CampaignState.touch()
+    CampaignState.appendLog("heating", tostring(componentId) .. " "
+        .. tostring(mode) .. " repair completed", actor)
+    CampaignState.broadcast()
+    return true
+end
+
+function CampaignState.triggerHeatingFault(componentId, severityOrFault, actor)
+    local heating = CampaignState.data and CampaignState.data.bunker.modules.heating
+    if not heating then return false, "state_unavailable" end
+    local ok, fault = HeatingSimulation.triggerFault(heating,
+        componentId, severityOrFault, Util.worldAgeHours())
+    if not ok then return false, fault end
+    CampaignState.recalculatePower(0, actor)
+    CampaignState.touch()
+    CampaignState.appendLog("heating", "forced failure " .. tostring(componentId)
+        .. ": " .. tostring(fault), actor)
+    CampaignState.broadcast()
+    return true, fault
 end
 
 local function waterValueChanged(previous, current)
@@ -676,6 +764,8 @@ function CampaignState.updateOneMinute()
         externalTemperature=heating.externalTemperature,
         baseExternalTemperature=heating.baseExternalTemperature,
         coldOffset=heating.coldOffset,
+        allowHeatingFailures=true,
+        worldAgeHours=Util.worldAgeHours(),
     }
     notifyLifeSupportListeners("sample", context)
 
@@ -717,6 +807,11 @@ function CampaignState.updateOneMinute()
         CampaignState.appendLog("heating", "status changed "
             .. tostring(heatingEvents.previousStatus) .. " -> " .. tostring(heating.status), "server")
     end
+    if heatingEvents.failure then
+        CampaignState.appendLog("heating", "failure "
+            .. tostring(heatingEvents.failure.componentId) .. ": "
+            .. tostring(heatingEvents.failure.fault), "server")
+    end
 
     CampaignState.minutesSinceSync = CampaignState.minutesSinceSync + 1
     local periodicSync = CampaignState.minutesSinceSync >= Constants.SYNC_INTERVAL_MINUTES
@@ -729,8 +824,19 @@ function CampaignState.updateOneMinute()
     if publish then CampaignState.broadcast() end
 end
 
-Events.OnInitGlobalModData.Add(CampaignState.initialize)
-Events.EveryOneMinute.Add(CampaignState.updateOneMinute)
+BunkerCampaign.Runtime = BunkerCampaign.Runtime or {}
+if BunkerCampaign.Runtime.onInitCampaignState
+    and type(Events.OnInitGlobalModData.Remove) == "function" then
+    Events.OnInitGlobalModData.Remove(BunkerCampaign.Runtime.onInitCampaignState)
+end
+if BunkerCampaign.Runtime.onCampaignMinute
+    and type(Events.EveryOneMinute.Remove) == "function" then
+    Events.EveryOneMinute.Remove(BunkerCampaign.Runtime.onCampaignMinute)
+end
+BunkerCampaign.Runtime.onInitCampaignState = CampaignState.initialize
+BunkerCampaign.Runtime.onCampaignMinute = CampaignState.updateOneMinute
+Events.OnInitGlobalModData.Add(BunkerCampaign.Runtime.onInitCampaignState)
+Events.EveryOneMinute.Add(BunkerCampaign.Runtime.onCampaignMinute)
 
 BunkerCampaign.CampaignState = CampaignState
 return CampaignState

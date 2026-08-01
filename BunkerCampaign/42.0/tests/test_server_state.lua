@@ -46,7 +46,7 @@ end
 function RunBunkerCampaignServerTests()
 BunkerCampaign.CampaignState.initialize(true)
 local firstReference = BunkerCampaign.CampaignState.get()
-assert(firstReference.version == 7, "server must initialize versioned state")
+assert(firstReference.version == 8, "server must initialize versioned state")
 assert(#firstReference.auditLog > 0, "initialization must be audited")
 assert(firstReference.bunker.modules.water.status == "offline", "water module must migrate with safe defaults")
 assert(firstReference.bunker.modules.water.adapterOnline == false, "water adapter must start offline")
@@ -97,7 +97,7 @@ assert(not invalidWater, "malformed water snapshot must be rejected")
 
 local normalPlayer = player("survivor", false)
 local adminPlayer = player("administrator", true, 9966, 12622, -4)
-local bunkerPlayer = player("bunker-survivor", false, 9966, 12622, -4)
+local bunkerPlayer = player("bunker-survivor", false, 9963, 12627, -4)
 local filterPlayer = player("filter-technician", false, 9966, 12622, -4)
 local incomingFilter
 local returnedFilterDelta = nil
@@ -161,6 +161,60 @@ BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "setHeatingRoom"
 })
 assert(firstReference.bunker.modules.heating.rooms.server_test_room.heatingEnabled == false,
     "room heating isolation must be server authoritative")
+
+Perks = { Electricity={}, Mechanics={}, MetalWelding={} }
+local controllerDefinition = BunkerCampaign.HeatingComponents.get("controller")
+local physicalSprite = { getName=function() return controllerDefinition.sprite end }
+local physicalObject = { getSprite=function() return physicalSprite end }
+local physicalObjects = {
+    size=function() return 1 end,
+    get=function(self, index) return index == 0 and physicalObject or nil end,
+}
+getCell = function()
+    return { getGridSquare=function() return {
+        getObjects=function() return physicalObjects end,
+    } end }
+end
+local materialCounts = {
+    ["Base.Screwdriver"]=1,
+    ["Base.ElectronicsScrap"]=2,
+    ["Base.ElectricWire"]=1,
+}
+local repairInventory = {}
+repairInventory.getNumberOfItem=function(self, fullType)
+    return materialCounts[fullType] or 0
+end
+repairInventory.getFirstTypeRecurse=function(self, fullType)
+    if (materialCounts[fullType] or 0) <= 0 then return nil end
+    return {
+        getContainer=function() return repairInventory end,
+        fullType=fullType,
+    }
+end
+repairInventory.Remove=function(self, item)
+    materialCounts[item.fullType] = materialCounts[item.fullType] - 1
+end
+local repairXp = { AddXP=function() end }
+local repairPlayer = player("heating-technician", false,
+    controllerDefinition.x, controllerDefinition.y, controllerDefinition.z)
+repairPlayer.getInventory=function() return repairInventory end
+repairPlayer.getPerkLevel=function() return 10 end
+repairPlayer.getXp=function() return repairXp end
+assert(BunkerCampaign.CampaignState.triggerHeatingFault(
+    "controller", "major", "test"), "test controller fault must be created")
+BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign",
+    "diagnoseHeatingComponent", repairPlayer, { componentId="controller" })
+assert(firstReference.bunker.modules.heating.components.controller.diagnosed,
+    "component diagnosis must be server authoritative")
+BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign",
+    "repairHeatingComponent", repairPlayer,
+    { componentId="controller", mode="full" })
+assert(firstReference.bunker.modules.heating.components.controller.fault == "none",
+    "a valid skilled repair must clear the controller fault")
+assert(materialCounts["Base.ElectronicsScrap"] == 0
+    and materialCounts["Base.ElectricWire"] == 0,
+    "server repair must consume replacement parts")
+
 BunkerCampaign.ServerCommands.onClientCommand("BunkerCampaign", "setHeating", normalPlayer, {
     enabled=false,
 })

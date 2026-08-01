@@ -1,11 +1,16 @@
 require "ISUI/ISCollapsableWindow"
 require "ISUI/ISButton"
 require "ISUI/ISModalRichText"
+require "TimedActions/ISTimedActionQueue"
 require "BunkerCampaign/ClientState"
+require "BunkerCampaign/HeatingComponents"
+require "BunkerCampaign/HeatingComponentAction"
 
 BunkerCampaign = BunkerCampaign or {}
 
 local ClientState = BunkerCampaign.ClientState
+local HeatingComponents = BunkerCampaign.HeatingComponents
+local HeatingComponentAction = BunkerCampaign.HeatingComponentAction
 local VentilationPanel = ISCollapsableWindow:derive("BunkerCampaignVentilationPanel")
 VentilationPanel.instance = nil
 
@@ -25,11 +30,16 @@ local function canControl()
     if not isClient() then return true end
     local player = getPlayer()
     if not player then return false end
-    local bounds = BunkerCampaign.Constants.BUNKER_CONTROL_BOUNDS
-    local z = math.floor(player:getZ())
-    return player:getX() >= bounds.x1 and player:getX() <= bounds.x2
-        and player:getY() >= bounds.y1 and player:getY() <= bounds.y2
-        and bounds.levels[z] == true
+    local controller = HeatingComponents.get("controller")
+    if not HeatingComponents.isNear(player, controller,
+        BunkerCampaign.Constants.HEATING.COMPONENT_INTERACTION_DISTANCE) then
+        return false
+    end
+    local heating = ClientState.snapshot and ClientState.snapshot.heating
+    local component = heating and heating.components and heating.components.controller
+    return component ~= nil
+        and component.condition > BunkerCampaign.Constants.HEATING.FAILED_CONDITION
+        and component.faultSeverity ~= "major"
 end
 
 local function roomAtPlayer(rooms, player)
@@ -588,6 +598,15 @@ function VentilationPanel:render()
         local thermalRooms = heating.rooms or {}
         local currentRoom = roomAtPlayer(thermalRooms, getSpecificPlayer(self.playerNum))
         local coldest = heating.telemetry and thermalRooms[heating.telemetry.coldestRoomId] or nil
+        local components = heating.components or {}
+        local function componentText(id)
+            local component = components[id] or {}
+            local fault = component.diagnosed and tostring(component.fault or "none")
+                or (component.fault ~= nil and component.fault ~= "none"
+                    and "undiagnosed" or "none")
+            return percent(component.condition) .. ", " .. fault
+                .. (component.temporaryRepair and ", temporary" or "")
+        end
         drawRows({
             { getText("UI_BC_Status"), tostring(heating.status or "-") },
             { getText("UI_BC_Restriction"), tostring(heating.reason or "none") },
@@ -606,6 +625,17 @@ function VentilationPanel:render()
             { getText("UI_BC_HeatOutput"), number(heating.heatExchanger and heating.heatExchanger.outputKw, 1)
                 .. " kW | loss " .. number(heating.telemetry and heating.telemetry.heatLossKw, 1) .. " kW" },
             { getText("UI_BC_PowerDemand"), number(heating.powerDemandKw, 1) .. " kW" },
+            { "Heat distribution", percent(heating.telemetry
+                and heating.telemetry.distributionEfficiency or 0)
+                .. " | bypass " .. (heating.manualBypass and "ON" or "off") },
+            { "Controller / exchanger", componentText("controller") .. " / "
+                .. componentText("heat_exchanger") },
+            { "Blower / pipe circuit", componentText("circulation_blower") .. " / "
+                .. componentText("pipe_manifold") },
+            { "Active heating faults", tostring(heating.telemetry
+                and heating.telemetry.activeFailures or 0) .. " / "
+                .. tostring(heating.telemetry and heating.telemetry.activeMajorFailures or 0)
+                .. " major" },
         })
     end
 
@@ -664,12 +694,133 @@ function VentilationPanel.open(playerNum)
     ClientState.request(getSpecificPlayer(playerNum or 0))
 end
 
-local function addContextOption(playerNum, context, worldObjects, test)
-    if test and ISWorldObjectContextMenu and ISWorldObjectContextMenu.Test then return true end
-    context:addOption(getText("UI_BC_ContextOpen"), playerNum, VentilationPanel.open)
+local function queueHeatingAction(playerNum, object, componentId, actionKind, value)
+    local player = getSpecificPlayer(playerNum)
+    if not player then return end
+    ISTimedActionQueue.add(HeatingComponentAction:new(
+        player, object, componentId, actionKind, value))
 end
 
-Events.OnFillWorldObjectContextMenu.Add(addContextOption)
+local function triggerFault(playerNum, componentId, severity)
+    local player = getSpecificPlayer(playerNum)
+    if player then ClientState.triggerHeatingFault(player, componentId, severity) end
+end
+
+local function matchingComponent(worldObjects)
+    for _, object in ipairs(type(worldObjects) == "table" and worldObjects or {}) do
+        local definition = HeatingComponents.matchObject(object)
+        if definition then return definition, object end
+    end
+    return nil, nil
+end
+
+local function clientPerk(name)
+    if name == "Electricity" then return Perks.Electricity end
+    if name == "Mechanics" then return Perks.Mechanics end
+    if name == "MetalWelding" then return Perks.MetalWelding end
+    return nil
+end
+
+local function requirementLevel(required, mode)
+    if mode == "diagnose" then return math.max(1, math.floor(required / 2)) end
+    if mode == "temporary" then return math.max(0, required - 1) end
+    return required
+end
+
+local function repairTooltip(player, definition, mode)
+    local tooltip = ISWorldObjectContextMenu.addToolTip()
+    tooltip:setVisible(false)
+    tooltip:setName(definition.label)
+    local lines = { mode == "diagnose" and "Diagnosis requirements"
+        or (mode == "temporary" and "Temporary repair requirements"
+            or "Full repair requirements") }
+    local available = true
+    for _, name in ipairs({ "Electricity", "Mechanics", "MetalWelding" }) do
+        local required = definition.skills and definition.skills[name]
+        if required then
+            local current = player:getPerkLevel(clientPerk(name))
+            local needed = requirementLevel(required, mode)
+            if current < needed then available = false end
+            lines[#lines + 1] = name .. ": " .. tostring(current) .. "/" .. tostring(needed)
+        end
+    end
+    if mode ~= "diagnose" then
+        local inventory = player:getInventory()
+        if mode == "full" then
+            for _, fullType in ipairs(definition.tools or {}) do
+                local present = inventory:getFirstTypeRecurse(fullType) ~= nil
+                if not present then available = false end
+                lines[#lines + 1] = fullType:gsub("^Base%.", "") .. ": "
+                    .. (present and "present" or "missing")
+            end
+        end
+        local materials = mode == "temporary"
+            and definition.temporaryMaterials or definition.materials
+        for fullType, count in pairs(materials or {}) do
+            local current = inventory:getNumberOfItem(fullType, false, true)
+            if current < count then available = false end
+            lines[#lines + 1] = fullType:gsub("^Base%.", "") .. ": "
+                .. tostring(current) .. "/" .. tostring(count)
+        end
+    end
+    tooltip.description = table.concat(lines, " <LINE> ")
+    return tooltip, available
+end
+
+local function addContextOption(playerNum, context, worldObjects, test)
+    local definition, object = matchingComponent(worldObjects)
+    if not definition then return end
+    if test and ISWorldObjectContextMenu and ISWorldObjectContextMenu.Test then return true end
+
+    local snapshot = ClientState.snapshot and ClientState.snapshot.heating
+    local component = snapshot and snapshot.components and snapshot.components[definition.id] or {}
+    local condition = math.floor((tonumber(component.condition) or 0) * 100 + 0.5)
+    local fault = component.diagnosed and tostring(component.fault or "none")
+        or (component.fault ~= nil and component.fault ~= "none" and "undiagnosed fault" or "none")
+    local title = definition.label .. " (" .. tostring(condition) .. "%, " .. fault .. ")"
+    local header = context:addOption(title, nil, nil)
+    header.notAvailable = true
+
+    if definition.id == "controller" then
+        context:addOption("Open bunker systems", playerNum, VentilationPanel.open)
+    end
+    local player = getSpecificPlayer(playerNum)
+    local diagnose = context:addOption("Diagnose heating component", playerNum,
+        queueHeatingAction, object, definition.id, "diagnose", nil)
+    diagnose.toolTip, diagnose.notAvailable = repairTooltip(player, definition, "diagnose")
+    local temporary = context:addOption("Temporary heating repair", playerNum,
+        queueHeatingAction, object, definition.id, "temporary", nil)
+    temporary.toolTip, temporary.notAvailable = repairTooltip(player, definition, "temporary")
+    local full = context:addOption("Full heating repair", playerNum,
+        queueHeatingAction, object, definition.id, "full", nil)
+    full.toolTip, full.notAvailable = repairTooltip(player, definition, "full")
+
+    if definition.role == "valve" then
+        local open = component.open == true
+        context:addOption(open and "Close heating valve" or "Open heating valve",
+            playerNum, queueHeatingAction, object, definition.id, "valve", not open)
+    elseif definition.id == "heat_exchanger" then
+        local bypass = snapshot and snapshot.manualBypass == true
+        context:addOption(bypass and "Disable manual heating bypass"
+            or "Enable manual heating bypass", playerNum, queueHeatingAction,
+            object, definition.id, "bypass", not bypass)
+    end
+
+    if player and player:isAccessLevel("admin") then
+        context:addOption("[Admin] Trigger minor heating fault", playerNum,
+            triggerFault, definition.id, "minor")
+        context:addOption("[Admin] Trigger major heating fault", playerNum,
+            triggerFault, definition.id, "major")
+    end
+end
+
+BunkerCampaign.Runtime = BunkerCampaign.Runtime or {}
+if BunkerCampaign.Runtime.onHeatingContextMenu
+    and type(Events.OnFillWorldObjectContextMenu.Remove) == "function" then
+    Events.OnFillWorldObjectContextMenu.Remove(BunkerCampaign.Runtime.onHeatingContextMenu)
+end
+BunkerCampaign.Runtime.onHeatingContextMenu = addContextOption
+Events.OnFillWorldObjectContextMenu.Add(BunkerCampaign.Runtime.onHeatingContextMenu)
 
 BunkerCampaign.VentilationPanel = VentilationPanel
 return VentilationPanel

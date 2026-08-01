@@ -43,7 +43,8 @@ HeatingSimulation.update(heating, 1, {
     baseExternalTemperature=8,
     coldOffset=-48,
     fuelAvailable=true,
-    ventilation={activeMode="sealed",telemetry={outsideExchangeM3PerMinute=0}},
+    ventilation={operating=true,activeMode="internal_recirculation",
+        telemetry={outsideExchangeM3PerMinute=0}},
 })
 assert(heating.operating and heating.heatExchanger.outputKw > 0,
     "an allocated healthy exchanger must produce heat")
@@ -53,11 +54,40 @@ assert(heating.rooms.thermal_laboratory.temperature - beforeWarm
     <= HeatingRules.MAX_TEMPERATURE_CHANGE_PER_MINUTE,
     "heating must respect thermal inertia")
 
+local normalOutput = heating.heatExchanger.outputKw
+HeatingSimulation.update(heating, 0, {
+    externalTemperature=-40,
+    ventilation={operating=false,activeMode="off",
+        telemetry={outsideExchangeM3PerMinute=0}},
+})
+assert(not heating.operating and heating.reason == "air_circuit_unavailable",
+    "normal heating distribution must require operating ventilation and circulation")
+assert(HeatingSimulation.setManualBypass(heating, true))
+HeatingSimulation.update(heating, 0, {
+    externalTemperature=-40,
+    ventilation={operating=false,activeMode="off",
+        telemetry={outsideExchangeM3PerMinute=0}},
+})
+assert(heating.operating and heating.reason == "manual_bypass"
+    and heating.heatExchanger.outputKw > 0 and heating.heatExchanger.outputKw < normalOutput,
+    "manual bypass must provide only reduced emergency heat without ventilation")
+assert(HeatingSimulation.setManualBypass(heating, false))
+assert(HeatingSimulation.setValve(heating, "supply_valve", false))
+HeatingSimulation.update(heating, 0, {
+    externalTemperature=-40,
+    ventilation={operating=true,activeMode="internal_recirculation",
+        telemetry={outsideExchangeM3PerMinute=0}},
+})
+assert(not heating.operating and heating.reason == "air_circuit_unavailable",
+    "a closed physical heating valve must stop normal distribution")
+assert(HeatingSimulation.setValve(heating, "supply_valve", true))
+
 heating.powerAllocated = false
 local beforeCool = heating.rooms.thermal_laboratory.temperature
 HeatingSimulation.update(heating, 1, {
     externalTemperature=-40,
-    ventilation={activeMode="sealed",telemetry={outsideExchangeM3PerMinute=0}},
+    ventilation={operating=true,activeMode="internal_recirculation",
+        telemetry={outsideExchangeM3PerMinute=0}},
 })
 assert(not heating.operating and heating.reason == "power_shed",
     "load shedding must stop the heat exchanger")
@@ -92,9 +122,48 @@ assert(heating.targetTemperature == HeatingRules.MAX_TARGET_TEMPERATURE,
 heating.heatExchanger.fault = "test_fault"
 HeatingSimulation.update(heating, 1, {
     externalTemperature=-40,
-    ventilation={activeMode="sealed",telemetry={outsideExchangeM3PerMinute=0}},
+    ventilation={operating=true,activeMode="internal_recirculation",
+        telemetry={outsideExchangeM3PerMinute=0}},
 })
 assert(not heating.operating and heating.reason == "heat_exchanger_failed",
     "an exchanger fault must stop heat production without erasing room temperatures")
+
+heating.heatExchanger.fault = "none"
+local faultOk, faultName = HeatingSimulation.triggerFault(
+    heating, "circulation_blower", "minor", 100)
+assert(faultOk and faultName == "worn_bearing"
+    and heating.accidents.activeFailures == 1,
+    "server incidents must create a bounded component fault")
+assert(HeatingSimulation.diagnoseComponent(heating, "circulation_blower"))
+assert(heating.components.circulation_blower.diagnosed,
+    "diagnosis must persist on the authoritative component")
+assert(HeatingSimulation.repairComponent(
+    heating, "circulation_blower", "temporary", 0.2))
+assert(heating.components.circulation_blower.fault == "none"
+    and heating.components.circulation_blower.temporaryRepair,
+    "temporary repair must restore operation but retain accelerated wear")
+
+heating.accidents.lastFailureHour = 0
+local natural = HeatingSimulation.update(heating, 1, {
+    externalTemperature=-60,
+    worldAgeHours=20,
+    allowHeatingFailures=true,
+    failureRoll=0,
+    ventilation={operating=true,activeMode="internal_recirculation",
+        airflowM3PerMinute=450,telemetry={outsideExchangeM3PerMinute=0}},
+})
+assert(natural.failure ~= nil and heating.accidents.activeFailures <= 2
+    and heating.accidents.activeMajorFailures <= 1,
+    "stressed equipment must generate bounded natural failures")
+local cooldown = HeatingSimulation.update(heating, 1, {
+    externalTemperature=-60,
+    worldAgeHours=20.1,
+    allowHeatingFailures=true,
+    failureRoll=0,
+    ventilation={operating=true,activeMode="internal_recirculation",
+        airflowM3PerMinute=450,telemetry={outsideExchangeM3PerMinute=0}},
+})
+assert(cooldown.failure == nil,
+    "failure cooldown must prevent cascading tick-by-tick accidents")
 
 print("BunkerCampaign heating tests passed")

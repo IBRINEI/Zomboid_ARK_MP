@@ -152,6 +152,10 @@ function StateSchema.prepare(state, isNewGame)
         table.insert(changes, "state migration 6 -> 7: server room heating")
         changed = true
     end
+    if oldVersion < 8 then
+        table.insert(changes, "state migration 7 -> 8: physical heating components and failures")
+        changed = true
+    end
 
     if copyMissing(state, {
         campaignId = defaults.campaignId,

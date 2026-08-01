@@ -3,11 +3,8 @@ require "BunkerCampaign/Constants"
 BunkerCampaign = BunkerCampaign or {}
 
 local Constants = BunkerCampaign.Constants
-local ClientState = {
-    snapshot = nil,
-    lastError = nil,
-    listeners = {},
-}
+local ClientState = BunkerCampaign.ClientState or {}
+ClientState.listeners = type(ClientState.listeners) == "table" and ClientState.listeners or {}
 
 local function notifyListeners()
     for _, listener in ipairs(ClientState.listeners) do
@@ -140,6 +137,56 @@ function ClientState.setHeatingRoomEnabled(player, roomId, enabled)
     end
 end
 
+function ClientState.diagnoseHeatingComponent(player, componentId)
+    if type(componentId) ~= "string" then return end
+    player = player or getPlayer()
+    if isClient() and player then
+        sendClientCommand(player, Constants.NETWORK_MODULE, "diagnoseHeatingComponent", {
+            componentId=componentId,
+        })
+    end
+end
+
+function ClientState.repairHeatingComponent(player, componentId, mode)
+    if type(componentId) ~= "string" or (mode ~= "temporary" and mode ~= "full") then return end
+    player = player or getPlayer()
+    if isClient() and player then
+        sendClientCommand(player, Constants.NETWORK_MODULE, "repairHeatingComponent", {
+            componentId=componentId, mode=mode,
+        })
+    end
+end
+
+function ClientState.setHeatingValve(player, componentId, open)
+    if type(componentId) ~= "string" or type(open) ~= "boolean" then return end
+    player = player or getPlayer()
+    if isClient() and player then
+        sendClientCommand(player, Constants.NETWORK_MODULE, "setHeatingValve", {
+            componentId=componentId, open=open,
+        })
+    end
+end
+
+function ClientState.setHeatingManualBypass(player, enabled)
+    if type(enabled) ~= "boolean" then return end
+    player = player or getPlayer()
+    if isClient() and player then
+        sendClientCommand(player, Constants.NETWORK_MODULE, "setHeatingManualBypass", {
+            enabled=enabled,
+        })
+    end
+end
+
+function ClientState.triggerHeatingFault(player, componentId, severity)
+    if type(componentId) ~= "string" or (severity ~= "minor" and severity ~= "major") then return end
+    player = player or getPlayer()
+    if isClient() and player then
+        sendClientCommand(player, Constants.NETWORK_MODULE, "triggerHeatingFault", {
+            componentId=componentId, severity=severity,
+        })
+    end
+end
+
 function ClientState.setGeneratorRequested(player, generatorId, requested)
     if type(generatorId) ~= "string" or type(requested) ~= "boolean" then return end
     player = player or getPlayer()
@@ -183,8 +230,19 @@ local function onCreatePlayer(playerIndex, player)
     ClientState.request(player)
 end
 
-Events.OnServerCommand.Add(ClientState.onServerCommand)
-Events.OnCreatePlayer.Add(onCreatePlayer)
+BunkerCampaign.Runtime = BunkerCampaign.Runtime or {}
+if BunkerCampaign.Runtime.onServerCommand
+    and type(Events.OnServerCommand.Remove) == "function" then
+    Events.OnServerCommand.Remove(BunkerCampaign.Runtime.onServerCommand)
+end
+if BunkerCampaign.Runtime.onCreatePlayer
+    and type(Events.OnCreatePlayer.Remove) == "function" then
+    Events.OnCreatePlayer.Remove(BunkerCampaign.Runtime.onCreatePlayer)
+end
+BunkerCampaign.Runtime.onServerCommand = ClientState.onServerCommand
+BunkerCampaign.Runtime.onCreatePlayer = onCreatePlayer
+Events.OnServerCommand.Add(BunkerCampaign.Runtime.onServerCommand)
+Events.OnCreatePlayer.Add(BunkerCampaign.Runtime.onCreatePlayer)
 
 BunkerCampaign.ClientState = ClientState
 return ClientState
