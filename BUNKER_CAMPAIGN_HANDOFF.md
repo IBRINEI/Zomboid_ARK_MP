@@ -579,7 +579,7 @@ accepted versions remain unchanged.
 
 Candidate versions:
 
-- `BunkerCampaign` 0.6.0, campaign state version 7;
+- `BunkerCampaign` 0.7.0, campaign state version 8;
 - `BunkerCampaignIntegration` 0.8.2, integration state version 5;
 - optional `BunkerCampaignThermalJava` 0.2.0;
 - `BunkerCampaignArkMP` 0.4.5.2 (the accepted 0.4.5 behavior plus the
@@ -668,7 +668,7 @@ Automated coverage passing on this branch:
 
 - power allocation and backup shedding;
 - heating normalization, demand, room loss/mixing, failures and room control;
-- state 6 -> 7 migration and server command validation;
+- state 6 -> 7 and 7 -> 8 migrations plus server command validation;
 - ventilation, water and full life-support regressions;
 - client snapshot ordering and heating commands;
 - exact The Ark climate option mapping and curve endpoints/peak;
@@ -745,6 +745,80 @@ still load and the only expected regression is vanilla +22 C indoor reporting
 and thermoregulation. That disabled-module restart has not yet been exercised
 because it would interrupt the currently accepted enabled-module runtime.
 
+### Physical heating, failures and repair completion pass (2026-08-01)
+
+Core 0.7.0 completes the gameplay layer that was still missing from the fourth
+slice. It reuses six existing Ark objects rather than creating replacement
+furniture:
+
+- controller: `9963,12627,-4`, `appliances_com_01_52`;
+- heat exchanger: `9968,12633,-4`, `industry_02_17`;
+- circulation blower: `9967,12635,-4`, `rooftop_furniture_5`;
+- supply valve: `9966,12637,-4`, `industry_02_55`;
+- return valve: `9966,12639,-4`, `industry_02_62`;
+- pipe manifold: `9966,12640,-4`, `industry_02_16`.
+
+The Bunker Systems context option now exists only on the physical controller.
+Heating enable, target and room-circuit mutations are also validated against
+controller distance and controller health on the server, so a forged client
+command cannot operate heating remotely. Every component interaction validates
+the exact coordinate, sprite and player distance on the server.
+
+Normal heat distribution now requires allocated heating power, a serviceable
+controller, exchanger, pipe circuit and circulation blower, both supply and
+return valves open, and an actually operating ventilation mode with nonzero
+airflow. `off`, `sealed`, power-shed ventilation, a stopped fan, a closed valve
+or a seized blower therefore stops normal distribution. A physical action at
+the exchanger can enable a manual emergency bypass; it preserves only 25% of
+normal distribution and does not remove the power, exchanger or pipe-circuit
+requirements.
+
+Persistent component condition, pipe integrity, valve position, diagnosis,
+temporary-repair state and accident counters are introduced by state migration
+7 -> 8. Operating equipment wears gradually; temporary repairs wear four times
+faster. Extreme cold can also damage an unheated pipe manifold. Automatic
+incidents are bounded to two active failures, at most one major failure, and a
+six-game-hour global cooldown. Faults have local consequences: controller and
+major exchanger/circuit faults stop the relevant path, fouling/leaks/bearing
+wear reduce output, seized circulation and stuck-closed valves stop normal
+distribution, and stuck-open valves cannot be isolated. Administrator-only
+minor/major fault actions remain available for scenario and QA setup.
+
+Right-clicking an exact component now exposes diagnosis, temporary repair and
+full repair timed actions with English requirement tooltips. The server checks
+Electricity, Mechanics and MetalWelding as appropriate, requires the matching
+tools, consumes only validated vanilla replacement parts, awards small skill
+XP and broadcasts the authoritative result. Temporary repairs use Duct Tape,
+Wire/Scrap Metal and lower skill thresholds; full repairs use combinations of
+Screwdriver, Wrench, Blow Torch, Welding Mask, Electronics Scrap, Electric
+Wire, Iron Pipe and Sheet Metal. A full repair is deliberately capped below
+perfect condition, while a temporary repair only restores an emergency service
+level.
+
+Automated tests cover ventilation/circulation/valve dependency, reduced manual
+bypass output, legacy exchanger/pipe compatibility, natural and forced failure
+bounds, cooldown, diagnosis, temporary repair, full server-side skilled repair,
+part consumption and all earlier core regressions. Every Core Lua file passes
+the Build 42 Kahlua compiler.
+
+ZombieBuddy correlations `slice4-heating-control-20260801` and
+`slice4-heating-valve-20260801` exercised real client -> dedicated server ->
+client paths. A target change from the old arbitrary bunker position was
+rejected with `heating_controller_required`; the same command beside the Ark
+controller changed and replicated the target. The physical supply valve closed
+and reopened only from its own tile, and the exchanger manual bypass enabled
+and disabled only from the exchanger. All target, valve, bypass and player
+position changes were restored. A physical audit found all six reused objects
+loaded with their expected sprites. After correlation
+`slice4-heating-final-20260801`, neither process logged a new error.
+
+The live runtime was hot-loaded for MP validation, but the two newly added Lua
+files were not in the startup-time require catalogue and produced expected
+hot-reload-only `require failed` warnings before they were loaded by absolute
+path. A clean dedicated-server and client restart is therefore mandatory before
+user acceptance. The optional Java thermal module remains fully separate and
+unchanged.
+
 Fourth-slice commits so far:
 
 - `e08672b` - server-authoritative bunker heating core;
@@ -754,3 +828,4 @@ Fourth-slice commits so far:
 - `bc68dce` - local ZombieBuddy runtime marker and dependency setup;
 - `6657a0f` - isolate the optional Java bridge and repair external access;
 - `82bee8d` - publish optional room climate to MP server thermoregulation.
+- `f022e4b` - physical heating components, dependencies, failures and repair.
