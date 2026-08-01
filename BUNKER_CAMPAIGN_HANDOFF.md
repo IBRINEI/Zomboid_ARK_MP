@@ -6,8 +6,9 @@ Last updated: 2026-08-01 (Europe/Moscow)
 
 The infrastructure/MP-foundation, extensible life-support and physical-heating
 slices are complete. Their Build 42.19 acceptance remains the gameplay
-baseline. A Build 42.20 compatibility audit was completed on 2026-08-01; read
-the dedicated audit section at the end of this file before starting more work.
+baseline. A Build 42.20 Lua/API compatibility audit was completed on
+2026-08-01; its non-instrumented runtime acceptance is still pending. Read the
+dedicated audit section at the end of this file before starting more work.
 Do not reopen completed slices for unrelated campaign features; start the next
 dependency-ordered slice instead.
 
@@ -42,7 +43,7 @@ Original specifications:
 ## Git workflow
 
 The Git repository root is `C:\Users\BRINE\Zomboid\mods`. It intentionally
-tracks the six Bunker Campaign local mods and this handoff. Workshop junctions,
+tracks the five Bunker Campaign local mods and this handoff. Workshop junctions,
 unrelated mods, archives, and The Ark recovery-only disabled assets are excluded
 by `.gitignore`.
 
@@ -60,7 +61,6 @@ Enable:
 
 - Workshop `Bandits2` (read-only dependency).
 - Workshop `Waterpipes` (read-only dependency).
-- `BunkerCampaignBuild42Compat` 0.1.0 (required first on Windows Build 42.20).
 - `BunkerCampaign` 0.7.1.
 - `BunkerCampaignArkMP` 0.4.5.3 (0.4.5 lighting baseline).
 - `BunkerCampaignToxicMP` 0.5.1.
@@ -922,18 +922,16 @@ and changed light removal to the new transmitted object-removal path. Bandits
 did not contain the obsolete Bandits corpse API; ArkMP's remaining obsolete
 complete-item client call was removed.
 
-Build 42.20 introduced a fatal Windows dedicated-server regression in
-`AdvancedAnimator.loadModMedia`: the engine lowercases a canonical mod URI
-before a case-sensitive `URI.relativize`, then passes the resulting absolute
-lowercase path to the virtual filesystem. A clean server consequently failed
-while checksumming Bandits animation files before Lua startup.
-`BunkerCampaignBuild42Compat` 0.1.0 is the narrowly scoped required Java patch.
-It instruments `ZomboidFileSystem.getRelativeFile(URI, String)` and substitutes
-a canonical, case-insensitive Windows-relative path only when vanilla returned
-the unchanged absolute input. The patch unit test passes, and live logs confirm
-that it loads before checksum collection and permits the server to reach
-`*** SERVER STARTED ****`. Keep it before ArkMP in `default.txt`; ArkMP also
-declares it as a requirement.
+Build 42.20 exposes a Windows QA-layout problem when a mod containing animation
+XML is reached through a directory junction. `AdvancedAnimator.loadModMedia`
+canonicalizes the junction root to its Workshop target but walks child paths
+through the local junction, so `URI.relativize` returns an absolute path. This
+was reproduced with the local `Bandits` junction before Lua startup. It is not
+handled by a shipped Bunker Campaign Java patch: the project rule permits Java
+only for the optional thermal bridge. For instrumented dedicated-server QA,
+use a direct Workshop path or a complete temporary real-directory mirror of
+Bandits and WaterPipes, not root or nested junctions. Production Workshop
+loading should likewise use the direct Workshop item paths.
 
 Build 42.20 also initializes `GlobalModData` before `GameServer.udpEngine`.
 `CampaignState` now defers network publication until `OnServerStarted` while
@@ -950,29 +948,21 @@ Automated acceptance against the 42.20 game JAR:
   power, ventilation, life support, heating, water, decontamination, client and
   server entry coverage;
 - both optional thermal Java compilation/access tests and
-  `ThermalOverrideTest` pass against 42.20;
-- the compatibility patch compiles against 42.20 and its Windows-path unit test
-  passes;
-- a clean dedicated server loads all campaign server modules, migrates state to
-  version 8, activates the thermal bridge and reaches `SERVER STARTED` with
-  power and heating operational.
+  `ThermalOverrideTest` pass against 42.20.
 
-The separate ZombieBuddy client role loaded all campaign client modules,
-received server options and player data, and completed the 42.20 world-loading
-sequence. A full server-to-client campaign-snapshot acceptance could not be
-completed under the current ZombieBuddy experimental native agent: after
-`CreatePlayerPacket.processServer`, the client retains a player without a
-current square and the server keeps zero online players. The same result occurs
-through the vanilla saved-account `MultiplayerUI`, so it is not the earlier
-low-level login shortcut. At connection time ZombieBuddy reports missing
-experimental packet-cache handlers, including `ClientCommand`. Treat the
-Build 42.19 real C -> S -> C acceptance above as the last completed gameplay
-baseline and perform one ordinary, non-instrumented manual client connection on
-42.20 before declaring the runtime network path fully re-accepted.
+No Build 42.20 dedicated-server/client runtime run is accepted yet. An earlier
+diagnostic run that reached `SERVER STARTED` used a temporary mandatory Java
+path patch and is explicitly rejected by the project architecture; that patch
+has been removed. A second no-patch attempt confirmed that nested junctions are
+also insufficient because Lua file lookup then canonicalizes to the Workshop
+target. Treat the Build 42.19 real C -> S -> C acceptance above as the last
+completed gameplay baseline. Perform one ordinary Steam/Workshop server and
+client connection with direct Workshop item paths before declaring the 42.20
+runtime path re-accepted.
 
 Build 42.20 currently logs noisy non-fatal upstream errors while scanning
 missing optional `media/AnimSets` and `media/actiongroups` directories for many
 mods. The same clean run also retains vanilla/map-data warnings for mannequin
 properties, duplicate basement room meta IDs, missing sprite configurations
-and icons. These warnings did not prevent server startup and are not evidence
-of a Bunker Campaign callback failure.
+and icons. These are upstream/data warnings rather than evidence of a Bunker
+Campaign callback failure.

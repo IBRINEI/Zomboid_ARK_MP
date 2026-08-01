@@ -6,5 +6,5 @@ versionMin=42.20
 poster=poster.png
 tiledef=theark 2281
 pack=theark
-require=\BunkerCampaign,\Bandits2,\Waterpipes,\BunkerCampaignBuild42Compat
+require=\BunkerCampaign,\Bandits2,\Waterpipes
 incompatible=\TheArk,\BanditsDayOne,\BanditsWeekOne
