@@ -11,6 +11,9 @@
 !/BunkerCampaignIntegration/**
 !/BunkerCampaignToxicMP/
 !/BunkerCampaignToxicMP/**
+!/ZombieBuddy/
+!/ZombieBuddy/42/
+!/ZombieBuddy/42/mod.info
 
 # Original The Ark assets retained only as a local recovery source. They are
 # not scanned by the game and are reproducible from the read-only Workshop mod.

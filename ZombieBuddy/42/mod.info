@@ -1,0 +1,6 @@
+name=ZombieBuddy Runtime Marker
+id=ZombieBuddy
+author=Zed / local runtime adapter
+url=https://github.com/zed-0xff/ZombieBuddy
+description=Local Project Zomboid mod marker for the already installed ZombieBuddy 3.0.0-alpha Java agent.
+versionMin=42.0
