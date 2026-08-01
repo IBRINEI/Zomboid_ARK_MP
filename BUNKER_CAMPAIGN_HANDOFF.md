@@ -700,15 +700,30 @@ leaving the spawn building therefore had the same Java root cause.
 
 ThermalJava 0.1.0 makes the invoked method public and compiles an access probe
 from a different Java package, which would fail compilation if this regression
-returned. A clean dedicated-server and client restart is mandatory because the
-old transformed ClimateManager cannot be hot-unpatched. The server should skip
-the client-only JAR; approve the new `BunkerCampaignThermalJava.jar` fingerprint
-on the client. Then verify `type(bcThermalResolve) == "function"` on the client,
-confirm automatic teleport, compare panel/watch/thermoregulator values, and
-reconnect once to validate both the thermal registry and mutually exclusive
-main/emergency lighting. To test the detachable fallback, disable only
-`BunkerCampaignThermalJava`; all other campaign mods must still load and the
-only expected regression is vanilla +22 C indoor reporting.
+returned. The mandatory clean dedicated-server and client restart was accepted
+with correlation `slice4-thermal-optional-20260801-a`. The dedicated server
+correctly skipped the client-only API (`bcThermalResolve == nil`), reached ArkMP
+`ready`, and automatically placed `admin` in the infirmary at
+9965.86,12622.04,-4. The client loaded the optional API, published 25 exact
+thermal regions and applied 5.288 C consistently through character, square and
+registry climate lookups. Both ZombieBuddy endpoints remained healthy.
+
+The same clean run validated lighting after reconnect. The client received all
+847 manifest entries and completed reconciliation. Its loaded world contained
+193 main and 653 emergency matches; main was requested on, emergency was
+requested off, and neither class had any activation mismatch. ArkMP server and
+client callbacks, plus every optional ThermalJava lifecycle callback, each had
+exactly one registration. No `IllegalAccessError` recurred. Early bunker object
+streaming still logs transient `ObjectChangePacket` index misses while the
+client receives the dynamically built structure, but they stop after loading;
+the manifest reconciliation is what establishes the final correct client
+lighting state.
+
+To test the detachable fallback, disable only `BunkerCampaignThermalJava` and
+restart the client; all other campaign mods must still load and the only
+expected regression is vanilla +22 C indoor reporting. That disabled-module
+restart has not yet been exercised because it would interrupt the currently
+accepted enabled-module runtime.
 
 Fourth-slice commits so far:
 
