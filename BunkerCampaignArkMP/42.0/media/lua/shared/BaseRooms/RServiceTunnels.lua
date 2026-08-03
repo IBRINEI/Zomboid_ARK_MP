@@ -106,8 +106,7 @@ BWOARooms.ServiceTunnels.Prepare = function ()
     local md = leaflet1:getModData()
     md.printContent = "leaflet_decon"
     md.BWOA = {}
-    md.BWOA.onRead = {}
-    md.BWOA.onRead.progressMissionId = 15
+    md.BWOA.legacyStoryInactive = {progressMissionId = 15}
 
     local leaflet2 = BanditCompatibility.InstanceItem("Bandits.Note")
     leaflet2:setCanBeWrite(false)
@@ -115,8 +114,7 @@ BWOARooms.ServiceTunnels.Prepare = function ()
     local md = leaflet2:getModData()
     md.printContent = "leaflet_nbctablets"
     md.BWOA = {}
-    md.BWOA.onRead = {}
-    md.BWOA.onRead.progressMissionId = 15
+    md.BWOA.legacyStoryInactive = {progressMissionId = 15}
     BWOAPrepareTools.AddItemsToContainer(9950, 12621, -5, {leaflet1, leaflet2}, "Locker", true)
 
     local generatorItems = {["Bandits.EngineCoolant"] = 4, ["Bandits.EngineLubricant"] = 2, ["Base.Charcoal"] = 4}
@@ -150,8 +148,7 @@ BWOARooms.ServiceTunnels.Prepare = function ()
     local md = leaflet3:getModData()
     md.printContent = "leaflet_backpacksprayer"
     md.BWOA = {}
-    md.BWOA.onRead = {}
-    md.BWOA.onRead.progressMissionId = 15
+    md.BWOA.legacyStoryInactive = {progressMissionId = 15}
 
     local leaflet4 = BanditCompatibility.InstanceItem("Bandits.Note")
     leaflet4:setCanBeWrite(false)
@@ -159,8 +156,7 @@ BWOARooms.ServiceTunnels.Prepare = function ()
     local md = leaflet4:getModData()
     md.printContent = "leaflet_acid"
     md.BWOA = {}
-    md.BWOA.onRead = {}
-    md.BWOA.onRead.progressMissionId = 15
+    md.BWOA.legacyStoryInactive = {progressMissionId = 15}
     BWOAPrepareTools.AddItemsToContainer(9968, 12625, -5, {leaflet3, leaflet4}, "Locker", true)
 
     -- control room
@@ -170,8 +166,7 @@ BWOARooms.ServiceTunnels.Prepare = function ()
     local md = leaflet2:getModData()
     md.printContent = "leaflet_noah"
     md.BWOA = {}
-    md.BWOA.onRead = {}
-    md.BWOA.onRead.progressMissionId = 15
+    md.BWOA.legacyStoryInactive = {progressMissionId = 15}
     BWOAPrepareTools.AddWorldItemSpecial(9962, 12623, -5, leaflet2, {x=0.05, y=0.05, z=0})
 
     -- vent room
@@ -181,8 +176,7 @@ BWOARooms.ServiceTunnels.Prepare = function ()
     local md = leaflet3:getModData()
     md.printContent = "leaflet_ventilation"
     md.BWOA = {}
-    md.BWOA.onRead = {}
-    md.BWOA.onRead.progressMissionId = 15
+    md.BWOA.legacyStoryInactive = {progressMissionId = 15}
     BWOAPrepareTools.AddWorldItemSpecial(9966, 12633, -5, leaflet3, {x=0.48, y=0.73, z=0.00, rx=0, ry=0, rz=0})
 
     -- plant life restoration
@@ -210,4 +204,3 @@ BWOARooms.ServiceTunnels.Prepare = function ()
     BWOAPrepareTools.AddItemsToContainer(9963, 12615, -5, items6, "Shelves")
 
 end
-

@@ -169,8 +169,7 @@ BWOARooms.Bedroom.Prepare = function ()
     local md = healthEffectsRadiation:getModData()
     md.printContent = "health_effects_radiation"
     md.BWOA = {}
-    md.BWOA.onRead = {}
-    md.BWOA.onRead.progressMissionId = 15
+    md.BWOA.legacyStoryInactive = {progressMissionId = 15}
 
     local x = BanditUtils.Choice({9948, 9950, 9952, 9954, 9956})
     local y = BanditUtils.Choice({12642, 12636})
@@ -180,5 +179,4 @@ BWOARooms.Bedroom.Prepare = function ()
     BWOAPrepareTools.AddWorldItem(9945, 12636, -4, "Base.GuitarAcoustic", {x=0.5, y=0.27, z=0.18, rx=0, ry=295, rz=90})
 
 end
-
 

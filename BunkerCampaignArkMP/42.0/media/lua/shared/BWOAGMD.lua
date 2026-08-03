@@ -1,6 +1,8 @@
 require "BunkerCampaignArkMP/Constants"
 
 BWOAGlobalData = BWOAGlobalData or {}
+BunkerCampaignArkMP = BunkerCampaignArkMP or {}
+BunkerCampaignArkMP.Network = BunkerCampaignArkMP.Network or {}
 
 local Constants = BunkerCampaignArkMP.Constants
 
@@ -77,7 +79,9 @@ function InitBWOAModData(isNewGame)
     end
 
     BWOAGlobalData = ensureState(ModData.getOrCreate(Constants.ARK_STATE_KEY))
-    if isServer() then ModData.transmit(Constants.ARK_STATE_KEY) end
+    if isServer() and BunkerCampaignArkMP.Network.ready then
+        ModData.transmit(Constants.ARK_STATE_KEY)
+    end
 end
 
 function LoadBWOAModData(key, globalData)
@@ -91,11 +95,31 @@ function GetBWOAModData()
 end
 
 function TransmitBWOAModData()
-    if isServer() then ModData.transmit(Constants.ARK_STATE_KEY) end
+    if isServer() and BunkerCampaignArkMP.Network.ready then
+        ModData.transmit(Constants.ARK_STATE_KEY)
+    end
 end
 
-Events.OnInitGlobalModData.Add(InitBWOAModData)
-Events.OnReceiveGlobalModData.Add(LoadBWOAModData)
+local runtime = BunkerCampaignArkMP.Network
+if runtime.onInit and type(Events.OnInitGlobalModData.Remove) == "function" then
+    Events.OnInitGlobalModData.Remove(runtime.onInit)
+end
+if runtime.onReceive and type(Events.OnReceiveGlobalModData.Remove) == "function" then
+    Events.OnReceiveGlobalModData.Remove(runtime.onReceive)
+end
+if runtime.onServerStarted and Events.OnServerStarted
+    and type(Events.OnServerStarted.Remove) == "function" then
+    Events.OnServerStarted.Remove(runtime.onServerStarted)
+end
+runtime.onInit = InitBWOAModData
+runtime.onReceive = LoadBWOAModData
+runtime.onServerStarted = function()
+    runtime.ready = true
+    if isServer() then ModData.transmit(Constants.ARK_STATE_KEY) end
+end
+Events.OnInitGlobalModData.Add(runtime.onInit)
+Events.OnReceiveGlobalModData.Add(runtime.onReceive)
+if Events.OnServerStarted then Events.OnServerStarted.Add(runtime.onServerStarted) end
 
 BunkerCampaignArkMP.ensureArkState = ensureState
 return BunkerCampaignArkMP

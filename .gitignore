@@ -3,6 +3,11 @@
 !/.gitignore
 !/.gitattributes
 !/BUNKER_CAMPAIGN_HANDOFF.md
+!/AGENTS.md
+!/docs/
+!/docs/**
+!/tools/
+!/tools/**
 !/BunkerCampaign/
 !/BunkerCampaign/**
 !/BunkerCampaignArkMP/
@@ -13,9 +18,6 @@
 !/BunkerCampaignToxicMP/**
 !/BunkerCampaignThermalJava/
 !/BunkerCampaignThermalJava/**
-!/ZombieBuddy/
-!/ZombieBuddy/42/
-!/ZombieBuddy/42/mod.info
 
 # Original The Ark assets retained only as a local recovery source. They are
 # not scanned by the game and are reproducible from the read-only Workshop mod.
@@ -26,3 +28,4 @@
 **/*.tmp
 **/.DS_Store
 **/Thumbs.db
+/artifacts/

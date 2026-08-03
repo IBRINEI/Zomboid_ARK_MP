@@ -18,6 +18,8 @@ function Model.createDefault()
         nextCycleId = 1,
         activeCycle = nil,
         lastResult = nil,
+        manualTransactions = {},
+        manualTransactionOrder = {},
     }
 end
 
@@ -58,6 +60,8 @@ function Model.normalize(state)
         end
     end
     if state.lastResult ~= nil and type(state.lastResult) ~= "string" then state.lastResult = tostring(state.lastResult) end
+    if type(state.manualTransactions) ~= "table" then state.manualTransactions = {} end
+    if type(state.manualTransactionOrder) ~= "table" then state.manualTransactionOrder = {} end
     return state
 end
 

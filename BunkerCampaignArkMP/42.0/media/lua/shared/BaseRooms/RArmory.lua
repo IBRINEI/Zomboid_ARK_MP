@@ -70,8 +70,7 @@ BWOARooms.Armory.Prepare = function ()
     local md = leaflet:getModData()
     md.printContent = "leaflet_hazmat"
     md.BWOA = {}
-    md.BWOA.onRead = {}
-    md.BWOA.onRead.progressMissionId = 15
+    md.BWOA.legacyStoryInactive = {progressMissionId = 15}
 
     BWOAPrepareTools.AddItemsToContainer(9974, 12614, -4, {leaflet}, "Locker", true)
 
@@ -112,5 +111,4 @@ BWOARooms.Armory.Prepare = function ()
     BWOAPrepareTools.AddItemsToContainer(9976, 12617, -4, items, "Locker")
 
 end
-
 

@@ -13,6 +13,7 @@ local HeatingComponents = BunkerCampaign.HeatingComponents
 local HeatingSimulation = BunkerCampaign.HeatingSimulation
 local ServerCommands = {
     lastStateRequest = {},
+    debug = {},
 }
 
 local function isAdministrator(player)
@@ -141,19 +142,23 @@ local function grantRepairXp(player, definition, amount)
 end
 
 local function replyError(player, code)
+    ServerCommands.debug.lastValidation = {success=false, reason=code}
+    ServerCommands.debug.lastError = tostring(code or "unknown_error")
     if isServer() and player then
         sendServerCommand(player, Constants.NETWORK_MODULE, "commandError", { code = code })
     end
 end
 
-local function requestState(player)
+local function requestState(player, args)
     if not player then return end
     local username = player:getUsername()
     local now = getGametimeTimestamp()
     local previous = ServerCommands.lastStateRequest[username] or 0
     if now - previous < 500 then return end
     ServerCommands.lastStateRequest[username] = now
-    CampaignState.sendToPlayer(player)
+    CampaignState.sendToPlayer(player, {
+        correlationId=type(args) == "table" and args.correlationId or nil,
+    })
 end
 
 local function setVentilation(player, args)
@@ -445,9 +450,17 @@ end
 
 function ServerCommands.onClientCommand(module, command, player, args)
     if module ~= Constants.NETWORK_MODULE then return end
+    ServerCommands.debug.lastReceivedCommand = {
+        module=module,
+        command=command,
+        username=player and player:getUsername() or "unknown",
+        correlationId=type(args) == "table" and args.correlationId or nil,
+    }
+    ServerCommands.debug.lastValidation = {success=true, reason=nil}
+    ServerCommands.debug.lastError = nil
 
     if command == "requestState" then
-        requestState(player)
+        requestState(player, args)
     elseif command == "setVentilation" then
         setVentilation(player, args)
     elseif command == "setVentilationMode" then
@@ -488,6 +501,12 @@ function ServerCommands.onClientCommand(module, command, player, args)
         CampaignState.appendLog("security", "rejected unknown command " .. tostring(command), player and player:getUsername() or "unknown")
         replyError(player, "unknown_command")
     end
+    if ServerCommands.debug.lastValidation.success then
+        ServerCommands.debug.lastMutation = {
+            command=command,
+            username=player and player:getUsername() or "unknown",
+        }
+    end
 end
 
 BunkerCampaign.Runtime = BunkerCampaign.Runtime or {}
@@ -497,6 +516,36 @@ if BunkerCampaign.Runtime.onClientCommand
 end
 BunkerCampaign.Runtime.onClientCommand = ServerCommands.onClientCommand
 Events.OnClientCommand.Add(BunkerCampaign.Runtime.onClientCommand)
+
+BunkerCampaign.Debug = BunkerCampaign.Debug or {}
+function BunkerCampaign.Debug.getServerState()
+    local state = CampaignState.get()
+    local modules = state and state.bunker and state.bunker.modules or {}
+    return {
+        context="server",
+        revision=state and state.revision or nil,
+        powerStatus=modules.power and modules.power.status or nil,
+        ventilationStatus=modules.ventilation and modules.ventilation.status or nil,
+        waterStatus=modules.water and modules.water.status or nil,
+        heatingStatus=modules.heating and modules.heating.status or nil,
+        lastReceivedCommand=ServerCommands.debug.lastReceivedCommand,
+        lastValidation=ServerCommands.debug.lastValidation,
+        lastMutation=ServerCommands.debug.lastMutation,
+        lastError=ServerCommands.debug.lastError,
+    }
+end
+function BunkerCampaign.Debug.getLastServerCommand()
+    return ServerCommands.debug.lastReceivedCommand
+end
+function BunkerCampaign.Debug.getLastServerError() return ServerCommands.debug.lastError end
+function BunkerCampaign.Debug.runServerScenario(name)
+    if name == "snapshot" then return BunkerCampaign.Debug.getServerState() end
+    return {ok=false, code="unknown_scenario"}
+end
+function BunkerCampaign.Debug.resetServerState()
+    ServerCommands.debug = {}
+    return true
+end
 
 BunkerCampaign.ServerCommands = ServerCommands
 return ServerCommands

@@ -264,12 +264,22 @@ assert(worldRemovalFractions[2] == 0.5,
 persisted.WaterPipes.Barrels.bunker.w = 1000
 
 BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
-    "BunkerCampaignDecontamination", "manualWashBunker", player, {target="item", itemId=991}
+    "BunkerCampaignDecontamination", "manualWashBunker", player,
+    {target="item", itemId=991, correlationId="manual-test-001"}
 )
 assert(manualItemContamination == 0, "individual bunker wash must clean the selected item")
 assert(soapUses == 18, "50% contamination must consume two soap uses without deleting the soap bar")
 assert(persisted.WaterPipes.Barrels.bunker.w == 100,
     "individual bunker wash must consume nine liters from bunker storage")
+
+local soapAfterWash = soapUses
+local waterAfterWash = persisted.WaterPipes.Barrels.bunker.w
+BunkerCampaignIntegration.DecontaminationServer.onClientCommand(
+    "BunkerCampaignDecontamination", "manualWashBunker", player,
+    {target="item", itemId=991, correlationId="manual-test-001"}
+)
+assert(soapUses == soapAfterWash and persisted.WaterPipes.Barrels.bunker.w == waterAfterWash,
+    "replaying a manual-wash correlation id must not consume resources twice")
 
 manualItemContamination = 50
 BunkerCampaignIntegration.DecontaminationServer.onClientCommand(

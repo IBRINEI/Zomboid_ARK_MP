@@ -88,6 +88,7 @@ Constants.DECONTAMINATION = {
         contaminationPerAdditionalLiter=10,
         contaminationPerAgentUse=25,
         minimumDuration=100,
+        maxTransactions=64,
     },
     MODES = {
         emergency = {

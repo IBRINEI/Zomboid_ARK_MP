@@ -60,7 +60,16 @@ end
 
 local addWorldItem = function(x, y, z, item, data)
     local cell = getCell()
+    if not cell then error("world item placement failed: cell unavailable") end
     local square = cell:getOrCreateGridSquare(x, y, z)
+    if not square then
+        error("world item placement failed: square unavailable at "
+            .. tostring(x) .. "," .. tostring(y) .. "," .. tostring(z))
+    end
+    if not item then
+        error("world item placement failed: inventory item is nil at "
+            .. tostring(x) .. "," .. tostring(y) .. "," .. tostring(z))
+    end
     
     if not data then data = {} end
     if not data.x then data.x = 0.5 end
@@ -68,6 +77,10 @@ local addWorldItem = function(x, y, z, item, data)
     if not data.z then data.z = 0 end
 
     item = square:AddWorldInventoryItem(item, data.x, data.y, data.z)
+    if not item then
+        error("world item placement failed: AddWorldInventoryItem returned nil at "
+            .. tostring(x) .. "," .. tostring(y) .. "," .. tostring(z))
+    end
 
     if data.rx then
         item:setWorldXRotation(data.rx)
@@ -78,6 +91,7 @@ local addWorldItem = function(x, y, z, item, data)
     if data.rz then
         item:setWorldZRotation(data.rz)
     end
+    return item
 end
 
 BWOAPrepareTools.AddWorldItem = function(x, y, z, itemType, data)
@@ -90,7 +104,7 @@ BWOAPrepareTools.AddWorldItem = function(x, y, z, itemType, data)
 end 
 
 BWOAPrepareTools.AddWorldItemSpecial = function(x, y, z, item, data)
-    addWorldItem(x, y, z, item, data)
+    return addWorldItem(x, y, z, item, data)
 end 
 
 BWOAPrepareTools.AddItemsToContainer = function(x, y, z, items, customName, preserveCurrent)

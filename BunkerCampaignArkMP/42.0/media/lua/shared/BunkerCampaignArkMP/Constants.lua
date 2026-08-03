@@ -24,6 +24,15 @@ local Constants = {
         y1 = 12595, y2 = 12652,
         levels = { -4, -5, -7 },
     },
+    -- The original single-player room logic unlocked these garage doors when
+    -- the local player or a friendly Bandit approached.  The MP fork keeps
+    -- them physically closed but unlocked; ventilation still treats an open
+    -- door as an entry-path breach.
+    UNDERGROUND_ENTRY_DOORS = {
+        {id="outer_gate", x=9924, y=12625, z=-4},
+        {id="middle_gate", x=9934, y=12625, z=-4},
+        {id="airlock_gate", x=9944, y=12625, z=-4},
+    },
     DARKENED_MAP_LIGHTS = {
         {x=9973,y=12614,z=-4}, {x=9956,y=12640,z=-4}, {x=9944,y=12627,z=-4},
         {x=9970,y=12636,z=-4}, {x=9956,y=12650,z=-4}, {x=9951,y=12649,z=-4},

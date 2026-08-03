@@ -26,10 +26,21 @@ local function precisePercent(value)
     return string.format("%.4f%%", (tonumber(value) or 0) * 100)
 end
 
-local function canControl()
+local function canOperateBunkerSystems()
     if not isClient() then return true end
     local player = getPlayer()
     if not player then return false end
+    local bounds = BunkerCampaign.Constants.BUNKER_CONTROL_BOUNDS
+    local x, y, z = player:getX(), player:getY(), math.floor(player:getZ())
+    return x >= bounds.x1 and x <= bounds.x2
+        and y >= bounds.y1 and y <= bounds.y2
+        and bounds.levels[z] == true
+end
+
+local function canSetHeatingTarget()
+    if not canOperateBunkerSystems() then return false end
+    if not isClient() then return true end
+    local player = getPlayer()
     local controller = HeatingComponents.get("controller")
     if not HeatingComponents.isNear(player, controller,
         BunkerCampaign.Constants.HEATING.COMPONENT_INTERACTION_DISTANCE) then
@@ -280,7 +291,7 @@ end
 local function toggleGenerator(self, id)
     local power = ClientState.snapshot and ClientState.snapshot.power
     local generator = power and power.generators and power.generators[id]
-    if generator and canControl() then
+    if generator and canOperateBunkerSystems() then
         ClientState.setGeneratorRequested(getSpecificPlayer(self.playerNum), id, not generator.requested)
     end
 end
@@ -291,14 +302,14 @@ function VentilationPanel:onToggleBackup() toggleGenerator(self, "backup") end
 function VentilationPanel:onToggleLighting()
     local power = ClientState.snapshot and ClientState.snapshot.power
     local consumer = power and power.consumers and power.consumers.main_lighting
-    if consumer and canControl() then
+    if consumer and canOperateBunkerSystems() then
         ClientState.setConsumerRequested(getSpecificPlayer(self.playerNum), "main_lighting", not consumer.requested)
     end
 end
 
 function VentilationPanel:onCycleMode()
     local snapshot = ClientState.snapshot
-    if not snapshot or not snapshot.ventilation or not canControl() then return end
+    if not snapshot or not snapshot.ventilation or not canOperateBunkerSystems() then return end
     local current = snapshot.ventilation.requestedMode or "off"
     local modes = { "external_filtration", "emergency_ventilation", "sealed", "off" }
     if snapshot.ventilation.recirculationUnlocked then table.insert(modes, 2, "internal_recirculation") end
@@ -310,16 +321,16 @@ function VentilationPanel:onCycleMode()
 end
 
 function VentilationPanel:onPurge()
-    if canControl() then ClientState.startAirlockPurge(getSpecificPlayer(self.playerNum), "decontamination_chamber") end
+    if canOperateBunkerSystems() then ClientState.startAirlockPurge(getSpecificPlayer(self.playerNum), "decontamination_chamber") end
 end
 
 function VentilationPanel:onReplaceFilter()
-    if canControl() then ClientState.replaceVentilationFilter(getSpecificPlayer(self.playerNum)) end
+    if canOperateBunkerSystems() then ClientState.replaceVentilationFilter(getSpecificPlayer(self.playerNum)) end
 end
 
 function VentilationPanel:onToggleBypass()
     local water = ClientState.snapshot and ClientState.snapshot.water
-    if water and water.treatment and canControl() then
+    if water and water.treatment and canOperateBunkerSystems() then
         ClientState.setWaterBypass(getSpecificPlayer(self.playerNum), not water.treatment.bypass)
     end
 end
@@ -327,21 +338,21 @@ end
 function VentilationPanel:onToggleWater()
     local power = ClientState.snapshot and ClientState.snapshot.power
     local consumer = power and power.consumers and power.consumers.water
-    if consumer and canControl() then
+    if consumer and canOperateBunkerSystems() then
         ClientState.setConsumerRequested(getSpecificPlayer(self.playerNum), "water", not consumer.requested)
     end
 end
 
 function VentilationPanel:onToggleHeating()
     local heating = ClientState.snapshot and ClientState.snapshot.heating
-    if heating and canControl() then
+    if heating and canSetHeatingTarget() then
         ClientState.setHeatingEnabled(getSpecificPlayer(self.playerNum), not heating.requested)
     end
 end
 
 local function adjustHeatingTarget(self, delta)
     local heating = ClientState.snapshot and ClientState.snapshot.heating
-    if heating and canControl() then
+    if heating and canSetHeatingTarget() then
         ClientState.setHeatingTarget(getSpecificPlayer(self.playerNum),
             (tonumber(heating.targetTemperature) or 21) + delta)
     end
@@ -353,7 +364,7 @@ function VentilationPanel:onHeatingUp() adjustHeatingTarget(self, 0.5) end
 function VentilationPanel:onToggleRoomHeating()
     local heating = ClientState.snapshot and ClientState.snapshot.heating
     local room = heating and roomAtPlayer(heating.rooms, getSpecificPlayer(self.playerNum))
-    if room and type(room.vents) == "table" and #room.vents > 0 and canControl() then
+    if room and type(room.vents) == "table" and #room.vents > 0 and canSetHeatingTarget() then
         ClientState.setHeatingRoomEnabled(getSpecificPlayer(self.playerNum),
             room.id, room.heatingEnabled == false)
     end
@@ -361,7 +372,7 @@ end
 
 function VentilationPanel:onCycleWaterSource()
     local water = ClientState.snapshot and ClientState.snapshot.water
-    if not water or type(water.sources) ~= "table" or not canControl() then return end
+    if not water or type(water.sources) ~= "table" or not canOperateBunkerSystems() then return end
     local preferred = { "underground_well", "external_tank", "collected_water", "portable_supply" }
     local available = {}
     for _, sourceId in ipairs(preferred) do
@@ -409,14 +420,16 @@ function VentilationPanel:prerender()
         self.heatingUpButton:setTitle(getText("UI_BC_TargetUp") .. " "
             .. number(heating.targetTemperature, 1) .. " C")
     end
-    self.modeButton:setEnable(ventilation ~= nil and canControl())
-    self.mainButton:setEnable(main ~= nil and canControl())
-    self.backupButton:setEnable(backup ~= nil and canControl())
-    self.waterButton:setEnable(waterConsumer ~= nil and canControl())
-    self.lightingButton:setEnable(lightingConsumer ~= nil and canControl())
-    self.heatingButton:setEnable(heating ~= nil and canControl())
-    self.heatingDownButton:setEnable(heating ~= nil and canControl())
-    self.heatingUpButton:setEnable(heating ~= nil and canControl())
+    local bunkerControl = canOperateBunkerSystems()
+    local heatingControl = canSetHeatingTarget()
+    self.modeButton:setEnable(ventilation ~= nil and bunkerControl)
+    self.mainButton:setEnable(main ~= nil and bunkerControl)
+    self.backupButton:setEnable(backup ~= nil and bunkerControl)
+    self.waterButton:setEnable(waterConsumer ~= nil and bunkerControl)
+    self.lightingButton:setEnable(lightingConsumer ~= nil and bunkerControl)
+    self.heatingButton:setEnable(heating ~= nil and heatingControl)
+    self.heatingDownButton:setEnable(heating ~= nil and heatingControl)
+    self.heatingUpButton:setEnable(heating ~= nil and heatingControl)
     local heatingRoom = heating and roomAtPlayer(heating.rooms, getSpecificPlayer(self.playerNum))
     local roomHasHeat = heatingRoom and type(heatingRoom.vents) == "table" and #heatingRoom.vents > 0
     if heatingRoom then
@@ -425,12 +438,13 @@ function VentilationPanel:prerender()
     else
         self.roomHeatingButton:setTitle(getText("UI_BC_RoomHeating"))
     end
-    self.roomHeatingButton:setEnable(roomHasHeat and canControl())
-    self.purgeButton:setEnable(ventilation ~= nil and ventilation.airlock ~= nil and not ventilation.airlock.active and canControl())
-    self.filterButton:setEnable(ventilation ~= nil and canControl())
+    self.roomHeatingButton:setEnable(roomHasHeat and heatingControl)
+    self.purgeButton:setEnable(ventilation ~= nil and ventilation.airlock ~= nil
+        and not ventilation.airlock.active and bunkerControl)
+    self.filterButton:setEnable(ventilation ~= nil and bunkerControl)
     local treatment = ClientState.snapshot and ClientState.snapshot.water and ClientState.snapshot.water.treatment
     if treatment then self.bypassButton:setTitle(treatment.bypass and getText("UI_BC_CloseBypass") or getText("UI_BC_OpenBypass")) end
-    self.bypassButton:setEnable(treatment ~= nil and canControl())
+    self.bypassButton:setEnable(treatment ~= nil and bunkerControl)
     local water = ClientState.snapshot and ClientState.snapshot.water
     local availableSources = 0
     if water and type(water.sources) == "table" then
@@ -442,19 +456,25 @@ function VentilationPanel:prerender()
         self.sourceButton:setTitle(getText("UI_BC_SelectWaterSource") .. ": "
             .. tostring(water.selectedSource or water.source or "none"))
     end
-    self.sourceButton:setEnable(availableSources > 1 and canControl())
+    self.sourceButton:setEnable(availableSources > 1 and bunkerControl)
     self.roomStatusButton:setEnable(ventilation ~= nil)
 end
 
 function VentilationPanel:render()
     ISCollapsableWindow.render(self)
     local x = 14
-    local y = self:titleBarHeight() + 12
+    local contentTop = self:titleBarHeight() + 8
+    local contentBottom = self.height - 214
+    local contentHeight = math.max(1, contentBottom - contentTop)
+    self:setStencilRect(0, contentTop, self.width, contentHeight)
+    local y = self:titleBarHeight() + 12 - (self.contentScroll or 0)
     local lineHeight = 18
     local snapshot = ClientState.snapshot
 
     if not snapshot or not snapshot.ventilation then
         self:drawText(getText("UI_BC_WaitingForServer"), x, y, 1, 0.8, 0.3, 1, UIFont.Small)
+        self.contentExtent = lineHeight
+        self:clearStencilRect()
         return
     end
 
@@ -643,18 +663,31 @@ function VentilationPanel:render()
     self:drawText(getText("UI_BC_RecentLog") .. ":", x, y, 0.75, 0.80, 0.85, 1, UIFont.Small)
     y = y + lineHeight
     local log = snapshot.auditLog or {}
-    local first = math.max(1, #log)
-    for index = first, #log do
+    local first = math.max(1, #log - 4)
+    for index = #log, first, -1 do
         local entry = log[index]
         self:drawText("[" .. tostring(entry.category or "system") .. "] " .. tostring(entry.message or ""), x, y, 0.85, 0.85, 0.85, 1, UIFont.Small)
         y = y + lineHeight
     end
 
+    self.contentExtent = y + (self.contentScroll or 0) - (self:titleBarHeight() + 12)
+    local maximumScroll = math.max(0, self.contentExtent - contentHeight)
+    self.contentScroll = math.min(self.contentScroll or 0, maximumScroll)
+    self:clearStencilRect()
+
     if ClientState.lastError then
         self:drawText(getText("UI_BC_Error") .. ": " .. ClientState.lastError, x, self.height - 208, 1, 0.25, 0.25, 1, UIFont.Small)
-    elseif not canControl() then
+    elseif not canOperateBunkerSystems() then
         self:drawText(getText("UI_BC_BunkerOnly"), x, self.height - 208, 1, 0.75, 0.25, 1, UIFont.Small)
     end
+end
+
+function VentilationPanel:onMouseWheel(delta)
+    local visible = math.max(1, self.height - 214 - (self:titleBarHeight() + 8))
+    local maximum = math.max(0, (self.contentExtent or 0) - visible)
+    self.contentScroll = math.max(0, math.min(maximum,
+        (self.contentScroll or 0) + (tonumber(delta) or 0) * 36))
+    return true
 end
 
 function VentilationPanel:close()
@@ -667,12 +700,14 @@ function VentilationPanel:close()
 end
 
 function VentilationPanel:new(x, y, playerNum)
-    local width = 980
-    local height = 820
+    local width = math.min(980, math.max(620, getCore():getScreenWidth() - 24))
+    local height = math.min(820, math.max(620, getCore():getScreenHeight() - 24))
     local panel = ISCollapsableWindow:new(x, y, width, height)
     setmetatable(panel, self)
     self.__index = self
     panel.playerNum = playerNum or 0
+    panel.contentScroll = 0
+    panel.contentExtent = 0
     panel.title = getText("UI_BC_SystemsTitle")
     panel:setResizable(false)
     return panel
@@ -683,8 +718,8 @@ function VentilationPanel.open(playerNum)
         VentilationPanel.instance:close()
     end
 
-    local width = 980
-    local height = 820
+    local width = math.min(980, math.max(620, getCore():getScreenWidth() - 24))
+    local height = math.min(820, math.max(620, getCore():getScreenHeight() - 24))
     local x = (getCore():getScreenWidth() - width) / 2
     local y = (getCore():getScreenHeight() - height) / 2
     local panel = VentilationPanel:new(x, y, playerNum or 0)

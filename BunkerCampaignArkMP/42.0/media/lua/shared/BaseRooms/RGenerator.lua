@@ -193,8 +193,7 @@ BWOARooms.Generator.Prepare = function ()
     local md = leaflet:getModData()
     md.printContent = "leaflet_gx9"
     md.BWOA = {}
-    md.BWOA.onRead = {}
-    md.BWOA.onRead.progressMissionId = 15
+    md.BWOA.legacyStoryInactive = {progressMissionId = 15}
 
     BWOAPrepareTools.AddWorldItemSpecial(9947, 12617, -4, leaflet, {x=0.05, y=0.05, z=0})
 
@@ -206,11 +205,9 @@ BWOARooms.Generator.Prepare = function ()
     local md = leafletEli:getModData()
     md.printContent = "leaflet_eli"
     md.BWOA = {}
-    md.BWOA.onRead = {}
-    md.BWOA.onRead.progressMissionId = 15
+    md.BWOA.legacyStoryInactive = {progressMissionId = 15}
 
 
     BWOAPrepareTools.AddWorldItemSpecial(9952, 12623, -4, leafletEli, {x=0.62, y=0.41, z=0.27})
 
 end
-

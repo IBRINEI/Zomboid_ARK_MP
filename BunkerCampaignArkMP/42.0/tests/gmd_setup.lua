@@ -3,12 +3,13 @@ isClient = function() return clientMode end
 isServer = function() return not clientMode end
 
 local function event()
-    return { Add=function(handler) end }
+    return { Add=function(handler) end, Remove=function(handler) end }
 end
 
 Events = {
     OnInitGlobalModData=event(),
     OnReceiveGlobalModData=event(),
+    OnServerStarted=event(),
 }
 
 local persisted = {}

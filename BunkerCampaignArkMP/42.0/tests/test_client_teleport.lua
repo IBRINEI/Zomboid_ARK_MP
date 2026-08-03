@@ -58,4 +58,8 @@ for _ = 1, 5 do Events.OnPlayerUpdate.handlers[1](player) end
 assert(redLight.active == false,
     "a light restored from a saved chunk must be reconciled without another bunker entry")
 
+for _ = 1, 115 do Events.OnPlayerUpdate.handlers[1](player) end
+assert(commands[#commands].command == "requestLightManifest",
+    "streaming bunker chunks must request a replacement for an incomplete join manifest")
+
 print("BunkerCampaignArkMP client teleport tests passed")

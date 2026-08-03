@@ -22,6 +22,14 @@ Events.OnTick.handlers[1]()
 assert(ToxicFilterMaskData().percent < inZoneRemaining,
     "a worn gas-mask filter must continue draining outside toxic zones")
 
+local ambientRecord = BunkerCampaignToxicMP.Server.getPlayerRecord(ToxicFilterPlayer())
+ambientRecord.surfaceContamination = 0
+BunkerCampaignToxicMP.Server.addAmbientProvider(function() return 0.5 end)
+ToxicFilterAdvance(2000)
+Events.OnTick.handlers[1]()
+assert(ambientRecord.surfaceContamination > 0,
+    "dirty ambient bunker air must deposit surface contamination outside explicit zones")
+
 ToxicFilterEnableContactTarget()
 local source = BunkerCampaignToxicMP.Server.getPlayerRecord(ToxicFilterPlayer())
 local target = BunkerCampaignToxicMP.Server.getPlayerRecord(ToxicFilterContactTarget())

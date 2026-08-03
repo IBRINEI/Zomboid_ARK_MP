@@ -148,8 +148,7 @@ BWOARooms.Infirmary.Prepare = function ()
     local md = leafletPotassiumIodine:getModData()
     md.printContent = "leaflet_potassium_iodine"
     md.BWOA = {}
-    md.BWOA.onRead = {}
-    md.BWOA.onRead.progressMissionId = 15
+    md.BWOA.legacyStoryInactive = {progressMissionId = 15}
 
     BWOAPrepareTools.AddItemsToContainer(9970, 12626, -4, {leafletPotassiumIodine}, "Shelves", true)
 
@@ -159,8 +158,7 @@ BWOARooms.Infirmary.Prepare = function ()
     local md = leafletNikethamide:getModData()
     md.printContent = "leaflet_nikethamide"
     md.BWOA = {}
-    md.BWOA.onRead = {}
-    md.BWOA.onRead.progressMissionId = 15
+    md.BWOA.legacyStoryInactive = {progressMissionId = 15}
     BWOAPrepareTools.AddItemsToContainer(9970, 12626, -4, {leafletNikethamide}, "Shelves", true)
 
     local leafletPentoxifylline = BanditCompatibility.InstanceItem("Bandits.Note")
@@ -169,8 +167,7 @@ BWOARooms.Infirmary.Prepare = function ()
     local md = leafletPentoxifylline:getModData()
     md.printContent = "leaflet_pentoxifylline"
     md.BWOA = {}
-    md.BWOA.onRead = {}
-    md.BWOA.onRead.progressMissionId = 15
+    md.BWOA.legacyStoryInactive = {progressMissionId = 15}
     BWOAPrepareTools.AddItemsToContainer(9970, 12626, -4, {leafletPentoxifylline}, "Shelves", true)
 
     --[[
@@ -183,5 +180,4 @@ BWOARooms.Infirmary.Prepare = function ()
     ]]
     
 end
-
 

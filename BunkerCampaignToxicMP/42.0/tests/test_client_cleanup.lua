@@ -21,5 +21,8 @@ assert(ClientCleanupFloorData()[key] == 0 and ClientCleanupNestedData()[key] == 
     "world cleanup must refresh floor items and their nested contents")
 assert(ClientCleanupCorpseItemData()[key] == 0 and ClientCleanupCorpseData()[key] == 0,
     "world cleanup must refresh corpses and their inventory contents")
+assert(ClientCleanupCarriedData().radiated == false
+    and ClientCleanupCorpseItemData().radiated == false,
+    "client cleanup must clear the legacy radiated flag used by inventory highlighting")
 
 print("BunkerCampaignToxicMP client cleanup tests passed")

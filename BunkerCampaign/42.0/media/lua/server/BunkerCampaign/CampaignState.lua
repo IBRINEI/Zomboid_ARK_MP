@@ -742,9 +742,13 @@ function CampaignState.setWaterSnapshot(values, source)
     return true
 end
 
-function CampaignState.sendToPlayer(player)
+function CampaignState.sendToPlayer(player, metadata)
     if not CampaignState.data or not isServer() or not player then return end
-    sendServerCommand(player, Constants.NETWORK_MODULE, "stateSnapshot", CampaignState.snapshot())
+    local snapshot = CampaignState.snapshot()
+    if type(metadata) == "table" and type(metadata.correlationId) == "string" then
+        snapshot.debugCorrelationId = string.sub(metadata.correlationId, 1, 128)
+    end
+    sendServerCommand(player, Constants.NETWORK_MODULE, "stateSnapshot", snapshot)
 end
 
 function CampaignState.broadcast()

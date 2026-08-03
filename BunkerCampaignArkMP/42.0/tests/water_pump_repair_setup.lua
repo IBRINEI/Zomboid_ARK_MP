@@ -1,14 +1,29 @@
 BunkerCampaignArkMP = BunkerCampaignArkMP or {}
 BWOARooms = {}
+BunkerCampaign = {
+    CampaignState = { addPowerListener = function() end },
+}
+BunkerCampaignArkMP.PowerGrid = {
+    sync = function() return true end,
+    setNetworkReady = function() end,
+    buildExpectedEmergencyLights = function() return {} end,
+    getLightingState = function() return {mainActive=true, emergencyActive=false} end,
+}
 
 local function event()
     local result = { handlers = {} }
     result.Add = function(handler) result.handlers[#result.handlers + 1] = handler end
+    result.Remove = function(handler)
+        for index = #result.handlers, 1, -1 do
+            if result.handlers[index] == handler then table.remove(result.handlers, index) end
+        end
+    end
     return result
 end
 
 Events = {
     OnInitGlobalModData = event(),
+    OnServerStarted = event(),
     EveryOneMinute = event(),
     OnClientCommand = event(),
     LoadGridsquare = event(),

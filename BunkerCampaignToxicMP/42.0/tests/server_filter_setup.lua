@@ -3,11 +3,17 @@ BunkerCampaignToxicMP = {}
 local function event()
     local result = { handlers = {} }
     result.Add = function(handler) result.handlers[#result.handlers + 1] = handler end
+    result.Remove = function(handler)
+        for index = #result.handlers, 1, -1 do
+            if result.handlers[index] == handler then table.remove(result.handlers, index) end
+        end
+    end
     return result
 end
 
 Events = {
     OnInitGlobalModData = event(),
+    OnServerStarted = event(),
     OnTick = event(),
     OnClientCommand = event(),
 }

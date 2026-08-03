@@ -1,6 +1,13 @@
 require 'Foraging/forageSystem'
 
-Events.onAddForageDefs.Add(function()
+BunkerCampaignToxicMP = BunkerCampaignToxicMP or {}
+BunkerCampaignToxicMP.Runtime = BunkerCampaignToxicMP.Runtime or {}
+
+if BunkerCampaignToxicMP.Runtime.onAddForageDefs then
+    Events.onAddForageDefs.Remove(BunkerCampaignToxicMP.Runtime.onAddForageDefs)
+end
+
+local function onAddForageDefs()
 
 --New items
 
@@ -42,4 +49,7 @@ Events.onAddForageDefs.Add(function()
 forageSystem.addItemDef(RadiationMag);
 forageSystem.addItemDef(ContaminantDetector);
 
-end)
+end
+
+BunkerCampaignToxicMP.Runtime.onAddForageDefs = onAddForageDefs
+Events.onAddForageDefs.Add(onAddForageDefs)

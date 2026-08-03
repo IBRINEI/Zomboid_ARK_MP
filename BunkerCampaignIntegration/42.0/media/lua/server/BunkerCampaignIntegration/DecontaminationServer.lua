@@ -331,14 +331,23 @@ local function startCycle(player, modeId)
         return completeStart(false, code)
     end
 
-    local consumed = WaterService.consume(mode.waterLiters, "clean", "decontamination")
+    local cycle = Model.start(state, modeId, actor(player), Util.worldAgeHours())
+    if not cycle then
+        if mode.requiresPower then setPowerRequested(false, actor(player)) end
+        return completeStart(false, "cycle_start_failed")
+    end
+
+    local consumed = WaterService.consume(mode.waterLiters, "clean", "decontamination",
+        "decontamination-cycle:" .. tostring(cycle.id))
     if not consumed then
+        Model.finish(state, "start_failed")
         if mode.requiresPower then setPowerRequested(false, actor(player)) end
         return completeStart(false, "clean_water_changed")
     end
 
     if inventoryReagent then
         if not consumeInventoryItem(player, inventoryReagent) then
+            Model.finish(state, "start_failed")
             if mode.requiresPower then setPowerRequested(false, actor(player)) end
             return completeStart(false, "reagent_transaction_failed")
         end
@@ -346,11 +355,6 @@ local function startCycle(player, modeId)
         state.reagentUnits = state.reagentUnits - mode.mixerUnits
     end
 
-    local cycle = Model.start(state, modeId, actor(player), Util.worldAgeHours())
-    if not cycle then
-        if mode.requiresPower then setPowerRequested(false, actor(player)) end
-        return completeStart(false, "cycle_start_failed")
-    end
     cycle.participants = participants
     cycle.resources = {
         waterLiters=mode.waterLiters,
@@ -428,7 +432,26 @@ local function loadReagent(player)
 end
 
 local function manualWashBunker(player, args)
-    if not inInteractionRange(player) then return false, "decon_access_required" end
+    local state = deconState()
+    local correlationId = type(args) == "table" and type(args.correlationId) == "string"
+        and string.sub(args.correlationId, 1, 128) or nil
+    local transactionKey = correlationId and (actor(player) .. ":" .. correlationId) or nil
+    local existing = transactionKey and state.manualTransactions[transactionKey] or nil
+    if type(existing) == "table" then return existing.ok == true, existing.code end
+
+    local function complete(ok, code)
+        if transactionKey then
+            state.manualTransactions[transactionKey] = { ok=ok == true, code=code }
+            state.manualTransactionOrder[#state.manualTransactionOrder + 1] = transactionKey
+            while #state.manualTransactionOrder > Rules.MANUAL_WASH.maxTransactions do
+                local expired = table.remove(state.manualTransactionOrder, 1)
+                state.manualTransactions[expired] = nil
+            end
+        end
+        return ok, code
+    end
+
+    if not inInteractionRange(player) then return complete(false, "decon_access_required") end
     local target = type(args) == "table" and args.target or nil
     local contamination = 0
     local item = nil
@@ -437,26 +460,30 @@ local function manualWashBunker(player, args)
         contamination = tonumber(record and record.surfaceContamination) or 0
     elseif target == "item" then
         item = ToxicServer.findCarriedItem(player, args.itemId)
-        if not item then return false, "item_unavailable" end
+        if not item then return complete(false, "item_unavailable") end
         contamination = ToxicServer.getItemContamination(item)
     else
-        return false, "unknown_manual_target"
+        return complete(false, "unknown_manual_target")
     end
-    if contamination <= BunkerCampaignToxicMP.Constants.SURFACE_TRACE then return false, "already_clean" end
+    if contamination <= BunkerCampaignToxicMP.Constants.SURFACE_TRACE then
+        return complete(false, "already_clean")
+    end
 
     local manual = Rules.MANUAL_WASH
     local waterLiters = manual.baseWaterLiters
         + math.ceil(contamination / manual.contaminationPerAdditionalLiter)
     local agentUses = math.max(1, math.ceil(contamination / manual.contaminationPerAgentUse))
     if WaterService.available("clean") + 0.0001 < waterLiters then
-        return false, "clean_water_required"
+        return complete(false, "clean_water_required")
     end
     local agents, availableUses = manualAgents(player)
-    if availableUses < agentUses then return false, "cleaning_agent_required" end
-    if not WaterService.consume(waterLiters, "clean", "manual_wash") then
-        return false, "clean_water_changed"
+    if availableUses < agentUses then return complete(false, "cleaning_agent_required") end
+    if not WaterService.consume(waterLiters, "clean", "manual_wash", transactionKey) then
+        return complete(false, "clean_water_changed")
     end
-    if not consumeManualAgentUses(agents, agentUses) then return false, "reagent_transaction_failed" end
+    if not consumeManualAgentUses(agents, agentUses) then
+        return complete(false, "reagent_transaction_failed")
+    end
 
     if target == "body" then
         ToxicServer.cleanPlayer(player, 1, 0, false)
@@ -467,7 +494,7 @@ local function manualWashBunker(player, args)
     CampaignState.appendLog("decontamination", "manual wash target=" .. target
         .. " contamination=" .. tostring(contamination) .. " water=" .. tostring(waterLiters)
         .. " agentUses=" .. tostring(agentUses), actor(player))
-    return true
+    return complete(true)
 end
 
 local function nativeTeleport(player, target)

@@ -5,6 +5,19 @@ require "BunkerCampaignToxicMP/ContaminationModel"
 
 BunkerCampaignToxicMP = BunkerCampaignToxicMP or {}
 
+local previous = BunkerCampaignToxicMP.Server
+if type(previous) == "table" then
+    if previous.initialize then Events.OnInitGlobalModData.Remove(previous.initialize) end
+    if previous.update then Events.OnTick.Remove(previous.update) end
+    if previous.onClientCommand then Events.OnClientCommand.Remove(previous.onClientCommand) end
+    if previous.onServerStarted and Events.OnServerStarted then
+        Events.OnServerStarted.Remove(previous.onServerStarted)
+    end
+    if previous.onPlayerDeath and Events.OnPlayerDeath then
+        Events.OnPlayerDeath.Remove(previous.onPlayerDeath)
+    end
+end
+
 local Constants = BunkerCampaignToxicMP.Constants
 local ContaminationModel = BunkerCampaignToxicMP.ContaminationModel
 local Server = {
@@ -12,9 +25,22 @@ local Server = {
     zones = {},
     lastTickMs = 0,
     statusAccumulator = 0,
-    ambientProviders = {},
-    zoneListeners = {},
+    ambientProviders = type(previous) == "table" and previous.ambientProviders or {},
+    zoneListeners = type(previous) == "table" and previous.zoneListeners or {},
+    networkReady = type(previous) == "table" and previous.networkReady == true,
+    transmitPending = false,
 }
+
+local function transmitState()
+    if not isServer() then return end
+    if not Server.networkReady then
+        Server.transmitPending = true
+        return
+    end
+    Server.transmitPending = false
+    ModData.transmit(Constants.ZONES_KEY)
+    ModData.transmit(Constants.STATE_KEY)
+end
 
 local function finite(value)
     return type(value) == "number" and value == value and value ~= math.huge and value ~= -math.huge
@@ -139,11 +165,19 @@ local function setItemContamination(player, item, value, forceSync, suppressNetw
     value = ContaminationModel.clamp(value)
     local md = item:getModData()
     local previous = ContaminationModel.clamp(md[Constants.CONTAMINATION_MODDATA_KEY])
-    if math.abs(previous - value) < 0.0001 then return false end
+    local radiated = value > Constants.SURFACE_TRACE
+    local legacyChanged = md.radiated ~= radiated
+    if math.abs(previous - value) < 0.0001 and not legacyChanged then return false end
     md[Constants.CONTAMINATION_MODDATA_KEY] = value
+    -- Preserve the flag used by The ARK and third-party inventory renderers.
+    -- The numeric value remains the authoritative MP state.
+    md.radiated = radiated
 
     local lastSynced = tonumber(md.BunkerCampaignLastSyncedContamination) or 0
-    if not suppressNetworkSync
+    local inventoryItem = type(instanceof) ~= "function"
+        or instanceof(item, "InventoryItem")
+        or instanceof(item, "InventoryContainer")
+    if inventoryItem and not suppressNetworkSync
         and (forceSync or math.abs(value - lastSynced) >= Constants.SURFACE_ITEM_SYNC_DELTA) then
         md.BunkerCampaignLastSyncedContamination = value
         syncItem(player, item)
@@ -216,17 +250,20 @@ local function applyPlayerContact(player, record, sourceContamination, fraction)
     record.gearContamination = maximum
 end
 
-local function updateSurfaceContamination(player, record, zone, elapsed, scanCarried, carriedElapsed)
+local function updateSurfaceContamination(player, record, depositionLevel, elapsed, scanCarried, carriedElapsed)
     local surface = ContaminationModel.clamp(record.surfaceContamination)
     local wornItems = collectWornItems(player)
+    local carriedItems = scanCarried
+        and collectCarriedItems(player, Constants.MAX_CARRIED_ITEMS_PER_SCAN) or nil
     local gearMaximum = 0
 
-    if zone then
-        surface = ContaminationModel.deposit(surface, Constants.SURFACE_BODY_DEPOSIT_PER_SECOND, elapsed)
+    if depositionLevel > 0 then
+        surface = ContaminationModel.deposit(surface,
+            Constants.SURFACE_BODY_DEPOSIT_PER_SECOND * depositionLevel, elapsed)
         for _, item in ipairs(wornItems) do
             local nextValue = ContaminationModel.deposit(
                 itemContamination(item),
-                Constants.SURFACE_GEAR_DEPOSIT_PER_SECOND,
+                Constants.SURFACE_GEAR_DEPOSIT_PER_SECOND * depositionLevel,
                 elapsed
             )
             setItemContamination(player, item, nextValue, false)
@@ -235,11 +272,11 @@ local function updateSurfaceContamination(player, record, zone, elapsed, scanCar
         if scanCarried then
             local wornSet = {}
             for _, item in ipairs(wornItems) do wornSet[item] = true end
-            for _, item in ipairs(collectCarriedItems(player, Constants.MAX_CARRIED_ITEMS_PER_SCAN)) do
+            for _, item in ipairs(carriedItems) do
                 if not wornSet[item] then
                     local nextValue = ContaminationModel.deposit(
                         itemContamination(item),
-                        Constants.SURFACE_PACKED_ITEM_DEPOSIT_PER_SECOND,
+                        Constants.SURFACE_PACKED_ITEM_DEPOSIT_PER_SECOND * depositionLevel,
                         carriedElapsed or elapsed
                     )
                     setItemContamination(player, item, nextValue, false)
@@ -252,7 +289,7 @@ local function updateSurfaceContamination(player, record, zone, elapsed, scanCar
             gearMaximum = math.max(gearMaximum, itemContamination(item))
         end
         if scanCarried then
-            for _, item in ipairs(collectCarriedItems(player, Constants.MAX_CARRIED_ITEMS_PER_SCAN)) do
+            for _, item in ipairs(carriedItems) do
                 gearMaximum = math.max(gearMaximum, itemContamination(item))
             end
         end
@@ -265,6 +302,17 @@ local function updateSurfaceContamination(player, record, zone, elapsed, scanCar
 
     if not scanCarried then
         gearMaximum = math.max(gearMaximum, ContaminationModel.clamp(record.gearContamination))
+    elseif gearMaximum > Constants.SURFACE_TRACE then
+        -- A contaminated carried item slowly contaminates the other contents
+        -- of the same unsealed inventory tree, matching The ARK's retro-
+        -- contamination behavior without trusting a client-side mutation.
+        local contactFraction = math.min(1,
+            Constants.SURFACE_CONTACT_FRACTION_PER_SECOND * (carriedElapsed or elapsed))
+        for _, item in ipairs(carriedItems) do
+            local nextValue = ContaminationModel.contact(
+                itemContamination(item), gearMaximum, contactFraction)
+            setItemContamination(player, item, nextValue, false)
+        end
     end
 
     record.surfaceContamination = surface
@@ -363,7 +411,8 @@ local function updatePlayer(player, elapsed, scanCarried, carriedElapsed)
         record.exposure = math.max(0, record.exposure - Constants.EXPOSURE_DECAY_PER_SECOND * elapsed)
     end
 
-    updateSurfaceContamination(player, record, zone, elapsed, scanCarried, carriedElapsed)
+    local depositionLevel = zone and 1 or (ambient >= Constants.SURFACE_DIRTY / 100 and ambient or 0)
+    updateSurfaceContamination(player, record, depositionLevel, elapsed, scanCarried, carriedElapsed)
 
     record.inZone = zone ~= nil or ambient > 0.01
     record.ambientContamination = ambient
@@ -373,6 +422,15 @@ end
 
 local function sendStatus(player, record)
     if not isServer() or not player or not record then return end
+    local carriedContamination = {}
+    for _, item in ipairs(collectCarriedItems(player, Constants.MAX_CARRIED_ITEMS_PER_SCAN)) do
+        if item.getID then
+            carriedContamination[#carriedContamination + 1] = {
+                itemId=item:getID(),
+                value=itemContamination(item),
+            }
+        end
+    end
     sendServerCommand(player, Constants.NETWORK_MODULE, "exposureStatus", {
         inZone = record.inZone == true,
         exposure = record.exposure or 0,
@@ -382,6 +440,7 @@ local function sendStatus(player, record)
         surfaceContamination = record.surfaceContamination or 0,
         gearContamination = record.gearContamination or 0,
         surfaceClass = ContaminationModel.classify(record.surfaceContamination),
+        carriedContamination = carriedContamination,
     })
 end
 
@@ -423,7 +482,7 @@ function Server.ensureZone(name, bounds)
     local zones = ModData.getOrCreate(Constants.ZONES_KEY)
     zones[name] = candidate[name]
     refreshZones()
-    if isServer() then ModData.transmit(Constants.ZONES_KEY) end
+    transmitState()
     notifyZoneListeners()
     return true
 end
@@ -435,7 +494,7 @@ function Server.removeZone(name)
     zones[name] = nil
     if not existed then return true end
     refreshZones()
-    if isServer() then ModData.transmit(Constants.ZONES_KEY) end
+    transmitState()
     notifyZoneListeners()
     return true
 end
@@ -594,6 +653,96 @@ function Server.cleanWorldInBounds(bounds, removalFraction)
     return true, cleanedItems, cleanedCorpses
 end
 
+local function collectWorldContaminationTargets(bounds)
+    local result, seen = {}, {}
+    local cell = getCell and getCell() or nil
+    if not cell then return result end
+
+    local function add(item, owner)
+        if item and item.getModData and not seen[item] and #result < Constants.MAX_WORLD_ITEMS_PER_CYCLE then
+            seen[item] = true
+            result[#result + 1] = { item=item, owner=owner }
+        end
+    end
+
+    local function addContainer(container, owner)
+        for _, item in ipairs(collectContainerItems(container,
+            Constants.MAX_WORLD_ITEMS_PER_CYCLE - #result)) do
+            add(item, owner)
+        end
+    end
+
+    for x = math.ceil(tonumber(bounds.x1) or 0), math.floor(tonumber(bounds.x2) or -1) do
+        for y = math.ceil(tonumber(bounds.y1) or 0), math.floor(tonumber(bounds.y2) or -1) do
+            if #result >= Constants.MAX_WORLD_ITEMS_PER_CYCLE then break end
+            local square = cell:getGridSquare(x, y, tonumber(bounds.z) or 0)
+            if square then
+                local worldObjects = square:getWorldObjects()
+                if worldObjects then
+                    for index = 0, worldObjects:size() - 1 do
+                        local object = worldObjects:get(index)
+                        local item = object and instanceof(object, "IsoWorldInventoryObject")
+                            and object:getItem() or nil
+                        if item then
+                            add(item, object)
+                            if instanceof(item, "InventoryContainer") then
+                                addContainer(item:getInventory(), object)
+                            end
+                        end
+                    end
+                end
+
+                local staticObjects = square:getStaticMovingObjects()
+                if staticObjects then
+                    for index = 0, staticObjects:size() - 1 do
+                        local object = staticObjects:get(index)
+                        if object and instanceof(object, "IsoDeadBody") then
+                            add(object, object)
+                            addContainer(object:getContainer(), object)
+                        end
+                    end
+                end
+
+                local objects = square.getObjects and square:getObjects() or nil
+                if objects then
+                    for index = 0, objects:size() - 1 do
+                        local object = objects:get(index)
+                        local container = object and object.getContainer and object:getContainer() or nil
+                        if container then addContainer(container, object) end
+                    end
+                end
+            end
+        end
+        if #result >= Constants.MAX_WORLD_ITEMS_PER_CYCLE then break end
+    end
+    return result
+end
+
+function Server.spreadWorldContaminationInBounds(bounds, externalSource, fraction)
+    if type(bounds) ~= "table" then return false, "invalid_bounds" end
+    local targets = collectWorldContaminationTargets(bounds)
+    local sourceMaximum = ContaminationModel.clamp(externalSource)
+    for _, entry in ipairs(targets) do
+        sourceMaximum = math.max(sourceMaximum, itemContamination(entry.item))
+    end
+    if sourceMaximum <= Constants.SURFACE_TRACE then return true, 0, #targets, sourceMaximum end
+
+    local changed, owners = 0, {}
+    fraction = math.max(0, math.min(1, tonumber(fraction) or 0))
+    for _, entry in ipairs(targets) do
+        local nextValue = ContaminationModel.contact(
+            itemContamination(entry.item), sourceMaximum, fraction)
+        if setItemContamination(nil, entry.item, nextValue, false, false) then
+            changed = changed + 1
+            if entry.owner then owners[entry.owner] = true end
+        end
+    end
+    for owner, _ in pairs(owners) do
+        if owner.transmitModData then pcall(owner.transmitModData, owner) end
+    end
+    return true, changed, #targets, sourceMaximum
+end
+
 function Server.cleanPlayer(player, bodyRemoval, gearRemoval, onlyMostContaminated)
     local record = Server.getPlayerRecord(player)
     if not record or type(player) == "string" then return false, "player_unavailable" end
@@ -672,6 +821,36 @@ function Server.update()
     end
 
     if sendNow then
+        local radius = Constants.WORLD_CONTACT_RADIUS
+        local fraction = math.min(1,
+            Constants.WORLD_CONTACT_FRACTION_PER_SECOND * Server.statusAccumulator)
+        for _, entry in ipairs(updated) do
+            local player = entry.player
+            local bounds = {
+                x1=player:getX() - radius, x2=player:getX() + radius,
+                y1=player:getY() - radius, y2=player:getY() + radius,
+                z=math.floor(player:getZ()),
+            }
+            local ok, changed, scanned, sourceMaximum =
+                Server.spreadWorldContaminationInBounds(bounds,
+                    entry.sourceContamination, fraction)
+            if ok and sourceMaximum and sourceMaximum > Constants.SURFACE_TRACE then
+                applyPlayerContact(player, entry.record, sourceMaximum, fraction)
+                if changed > 0 then
+                    local playersForSync = getOnlinePlayers()
+                    for index = 0, playersForSync:size() - 1 do
+                        sendServerCommand(playersForSync:get(index), Constants.NETWORK_MODULE,
+                            "worldContaminationSpread", {
+                                x1=bounds.x1, x2=bounds.x2,
+                                y1=bounds.y1, y2=bounds.y2, z=bounds.z,
+                                sourceContamination=sourceMaximum,
+                                fraction=fraction,
+                                scanned=scanned,
+                            })
+                    end
+                end
+            end
+        end
         for _, entry in ipairs(updated) do sendStatus(entry.player, entry.record) end
     end
     if sendNow then Server.statusAccumulator = 0 end
@@ -725,7 +904,7 @@ function Server.onClientCommand(module, command, player, args)
         return
     end
     refreshZones()
-    ModData.transmit(Constants.ZONES_KEY)
+    transmitState()
     print("[BunkerCampaignToxicMP] command=" .. tostring(command)
         .. " player=" .. player:getUsername() .. " zones=" .. tostring(#Server.zones))
     commandResult(player, true, command, nil)
@@ -752,11 +931,13 @@ function Server.initialize(isNewGame)
         end
     end
     refreshZones()
-    if isServer() then
-        ModData.transmit(Constants.ZONES_KEY)
-        ModData.transmit(Constants.STATE_KEY)
-    end
+    transmitState()
     print("[BunkerCampaignToxicMP] server ready zones=" .. tostring(#Server.zones))
+end
+
+function Server.onServerStarted()
+    Server.networkReady = true
+    transmitState()
 end
 
 function Server.onPlayerDeath(player)
@@ -768,6 +949,7 @@ function Server.onPlayerDeath(player)
 end
 
 Events.OnInitGlobalModData.Add(Server.initialize)
+if Events.OnServerStarted then Events.OnServerStarted.Add(Server.onServerStarted) end
 Events.OnTick.Add(Server.update)
 Events.OnClientCommand.Add(Server.onClientCommand)
 if Events.OnPlayerDeath then Events.OnPlayerDeath.Add(Server.onPlayerDeath) end

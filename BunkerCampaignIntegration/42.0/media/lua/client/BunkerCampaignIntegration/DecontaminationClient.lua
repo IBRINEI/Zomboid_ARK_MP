@@ -138,10 +138,12 @@ end
 local function addMode(menu, player, modeId, title)
     local mode = Rules.MODES[modeId]
     local label = string.format(
-        "%s (%.0f L water%s)",
+        "%s (%.0f L water%s; body -%.0f%%, gear -%.0f%%)",
         title,
         mode.waterLiters,
-        mode.requiresPower and ", power" or ""
+        mode.requiresPower and ", power" or "",
+        (tonumber(mode.bodyRemoval) or 0) * 100,
+        (tonumber(mode.gearRemoval) or 0) * 100
     )
     menu:addOption(label, player, function(p)
         send(p, "startCycle", { mode=modeId })

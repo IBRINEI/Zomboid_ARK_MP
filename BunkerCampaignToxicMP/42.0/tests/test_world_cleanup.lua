@@ -72,4 +72,19 @@ assert(invalidOwnerSyncs == 0,
 assert(cleanupBroadcasts == 2,
     "each world cleanup must tell nearby clients to refresh their local floor and corpse copies")
 
+floorData[key] = 80
+floorData.radiated = true
+nestedData[key] = 0
+corpseItemData[key] = 0
+corpseData[key] = 0
+local spreadOk, spreadChanged, spreadScanned, sourceMaximum =
+    BunkerCampaignToxicMP.Server.spreadWorldContaminationInBounds(
+        {x1=1,x2=1,y1=1,y2=1,z=0}, 0, 0.25)
+assert(spreadOk and spreadChanged == 3 and spreadScanned == 4 and sourceMaximum == 80,
+    "a contaminated nearby item must spread to clean floor, nested and corpse inventory targets")
+assert(nestedData[key] == 20 and corpseItemData[key] == 20 and corpseData[key] == 20,
+    "world contact must move every nearby surface toward the strongest source")
+assert(nestedData.radiated == true and corpseItemData.radiated == true,
+    "numeric MP contamination must also maintain The ARK's visual radiated compatibility flag")
+
 print("BunkerCampaignToxicMP world cleanup tests passed")

@@ -19,7 +19,14 @@ if type(previous) == "table" then
     if previous.onClientCommand then Events.OnClientCommand.Remove(previous.onClientCommand) end
     if previous.onLoadGridSquare then Events.LoadGridsquare.Remove(previous.onLoadGridSquare) end
 end
-local Server = { state = nil, missingSignature = nil, lightManifestSent = {} }
+local Server = {
+    state = nil,
+    missingSignature = nil,
+    lightManifestSent = {},
+    networkReady = type(previous) == "table" and previous.networkReady == true,
+    transmitPending = false,
+}
+local transmitState
 
 local function prepareState(data)
     if type(data) ~= "table" then error("Ark MP state must be a table") end
@@ -34,6 +41,7 @@ local function prepareState(data)
     if type(data.preparedRooms) ~= "table" then data.preparedRooms = {} end
     if type(data.errors) ~= "table" then data.errors = {} end
     if type(data.players) ~= "table" then data.players = {} end
+    data.safetyInitialized = data.safetyInitialized == true
     -- A version change is an explicit one-time retry after code migration.
     -- Failures on the current version remain latched until an admin retries.
     if storedVersion < Constants.STATE_VERSION
@@ -42,8 +50,89 @@ local function prepareState(data)
     end
 end
 
-local function transmitState()
-    if isServer() then ModData.transmit(Constants.STATE_KEY) end
+local function insideBunker(x, y, z)
+    local bounds = Constants.LIGHT_SCAN
+    local level = math.floor(tonumber(z) or 0)
+    local validLevel = false
+    for _, candidate in ipairs(bounds.levels or {}) do
+        if level == candidate then validLevel = true; break end
+    end
+    return validLevel
+        and x >= bounds.x1 and x <= bounds.x2
+        and y >= bounds.y1 and y <= bounds.y2
+end
+
+local function removeBunkerZombie(zombie)
+    if not zombie or not insideBunker(zombie:getX(), zombie:getY(), zombie:getZ()) then
+        return false
+    end
+    zombie:removeFromWorld()
+    zombie:removeFromSquare()
+    return true
+end
+
+function Server.maintainSafeBunker(cleanupExistingZombies)
+    local removed = 0
+    local cell = getCell and getCell() or nil
+    local zombies = cleanupExistingZombies and cell and cell.getZombieList
+        and cell:getZombieList() or nil
+    if cleanupExistingZombies and zombies then
+        for index = zombies:size() - 1, 0, -1 do
+            if removeBunkerZombie(zombies:get(index)) then removed = removed + 1 end
+        end
+    end
+
+    local unlocked = 0
+    for _, definition in ipairs(Constants.UNDERGROUND_ENTRY_DOORS or {}) do
+        local square = cell and cell:getGridSquare(definition.x, definition.y, definition.z)
+        if square then
+            local objects = square:getObjects()
+            for index = 0, objects:size() - 1 do
+                local object = objects:get(index)
+                local isDoor = instanceof(object, "IsoDoor")
+                    or (instanceof(object, "IsoThumpable") and object.isDoor and object:isDoor())
+                if isDoor then
+                    local modData = object:getModData()
+                    if object:isLocked() or object:isLockedByKey() or modData.CustomLock then
+                        object:setLocked(false)
+                        object:setLockedByKey(false)
+                        object:setIsLocked(false)
+                        modData.CustomLock = false
+                        if object.transmitModData then object:transmitModData() end
+                        -- Vanilla ISLockDoor uses syncIsoObject for the lock
+                        -- bit; transmitting the complete object leaves B42.20
+                        -- clients with their original map lock cached.
+                        if object.syncIsoObject then
+                            object:syncIsoObject(false, 0, nil, nil)
+                        end
+                        unlocked = unlocked + 1
+                    end
+                end
+            end
+        end
+    end
+    if removed > 0 or unlocked > 0 then
+        print("[BunkerCampaignArkMP] safe bunker maintenance removedZombies="
+            .. tostring(removed) .. " unlockedDoors=" .. tostring(unlocked))
+    end
+    return removed, unlocked
+end
+
+function Server.initializeSafeBunker()
+    if not Server.state or Server.state.safetyInitialized then return end
+    Server.maintainSafeBunker(true)
+    Server.state.safetyInitialized = true
+    transmitState()
+end
+
+transmitState = function()
+    if not isServer() then return end
+    if not Server.networkReady then
+        Server.transmitPending = true
+        return
+    end
+    Server.transmitPending = false
+    ModData.transmit(Constants.STATE_KEY)
 end
 
 local function missingProbes()
@@ -131,6 +220,8 @@ end
 function Server.tryBuild()
     if not Server.state then return end
     if Server.state.status == "ready" then
+        Server.initializeSafeBunker()
+        Server.maintainSafeBunker(false)
         Server.repairWaterPump()
         -- Minute maintenance keeps bridge generators and water state healthy;
         -- the larger light scan is driven by power changes, initialization and
@@ -170,6 +261,7 @@ function Server.tryBuild()
     transmitState()
     ModData.transmit(Constants.ARK_STATE_KEY)
     Server.repairWaterPump()
+    Server.initializeSafeBunker()
     PowerGrid.sync(true)
     Server.sanitizeLightUpdaters()
     print("[BunkerCampaignArkMP] bunker construction ready")
@@ -214,6 +306,14 @@ end
 local function sendLightingState(player)
     if not player or not isServer() then return end
     sendServerCommand(player, Constants.NETWORK_MODULE, "powerLighting", PowerGrid.getLightingState())
+end
+
+local function sendEntryDoorAccess(player)
+    if player and isServer() then
+        sendServerCommand(player, Constants.NETWORK_MODULE, "entryDoorAccess", {
+            unlocked=true,
+        })
+    end
 end
 
 local function isMapSwitch(object)
@@ -384,6 +484,19 @@ local function playerAtBunker(player)
         and math.abs(player:getZ() - Constants.SPAWN.z) < 0.1
 end
 
+local function playerInsideBunker(player)
+    if not player then return false end
+    local bounds = Constants.LIGHT_SCAN
+    local z = math.floor(player:getZ())
+    local validLevel = false
+    for _, level in ipairs(bounds.levels or {}) do
+        if z == level then validLevel = true; break end
+    end
+    return validLevel
+        and player:getX() >= bounds.x1 and player:getX() <= bounds.x2
+        and player:getY() >= bounds.y1 and player:getY() <= bounds.y2
+end
+
 local function entryCompleted(player)
     local data = player and player:getModData() or nil
     return type(data) == "table" and tonumber(data[Constants.CHARACTER_SPAWN_KEY]) == Constants.SPAWN_VERSION
@@ -400,6 +513,7 @@ local function synchronizePlayer(player)
     Server.tryBuild()
     PowerGrid.sync(true)
     sendLightingState(player)
+    sendEntryDoorAccess(player)
     local username = player:getUsername()
     local manifestKey = username .. ":" .. tostring(player)
     if Server.state.status == "ready" and not Server.lightManifestSent[manifestKey] then
@@ -425,6 +539,12 @@ function Server.onClientCommand(module, command, player, args)
         return
     end
     if command == "enterBunker" then
+        if playerInsideBunker(player) then
+            print("[BunkerCampaignArkMP] ignored manual entry for player already inside="
+                .. player:getUsername())
+            synchronizePlayer(player)
+            return
+        end
         print("[BunkerCampaignArkMP] manual entry requested player=" .. player:getUsername())
         sendSpawn(player)
         sendStatus(player)
@@ -445,6 +565,14 @@ function Server.onClientCommand(module, command, player, args)
     end
     if command == "requestStatus" then
         sendStatus(player)
+        return
+    end
+    if command == "requestLightManifest" then
+        if Server.state.status == "ready" and playerInsideBunker(player) then
+            sendLightManifest(player)
+            local manifestKey = player:getUsername() .. ":" .. tostring(player)
+            Server.lightManifestSent[manifestKey] = true
+        end
         return
     end
     if command == "retryBuild" and player:isAccessLevel("admin") then
@@ -481,6 +609,8 @@ function Server.initialize(isNewGame)
 end
 
 function Server.onServerStarted()
+    Server.networkReady = true
+    transmitState()
     PowerGrid.setNetworkReady(true)
     -- Broadcast the current logical state now that GameServer.udpEngine exists;
     -- no physical light scan is needed here.

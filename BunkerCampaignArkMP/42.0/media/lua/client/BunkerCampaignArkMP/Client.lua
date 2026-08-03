@@ -25,6 +25,8 @@ local Client = {
     lightManifest = nil,
     lightManifestTicks = 0,
     lightManifestDirty = false,
+    lightManifestRefreshTicks = 0,
+    lightManifestRefreshPending = false,
     lightingState = nil,
 }
 
@@ -63,6 +65,27 @@ local function trackServerTeleport(player, args)
         .. " target=" .. tostring(args.x) .. "," .. tostring(args.y) .. "," .. tostring(args.z))
 end
 
+local function applyEntryDoorAccess(args)
+    if type(args) ~= "table" or args.unlocked ~= true then return end
+    for _, definition in ipairs(Constants.UNDERGROUND_ENTRY_DOORS or {}) do
+        local square = getCell():getGridSquare(definition.x, definition.y, definition.z)
+        if square then
+            local objects = square:getObjects()
+            for index = 0, objects:size() - 1 do
+                local object = objects:get(index)
+                local isDoor = instanceof(object, "IsoDoor")
+                    or (instanceof(object, "IsoThumpable") and object.isDoor and object:isDoor())
+                if isDoor then
+                    object:setLocked(false)
+                    object:setLockedByKey(false)
+                    object:setIsLocked(false)
+                    object:getModData().CustomLock = false
+                end
+            end
+        end
+    end
+end
+
 local function onServerCommand(module, command, args)
     if module ~= Constants.NETWORK_MODULE then return end
     if command == "teleportToBunker" then
@@ -74,6 +97,8 @@ local function onServerCommand(module, command, args)
         Client.lightingState = type(args.lighting) == "table" and args.lighting or Client.lightingState
         Client.lightManifestTicks = 0
         Client.lightManifestDirty = true
+        Client.lightManifestRefreshTicks = 0
+        Client.lightManifestRefreshPending = false
     elseif command == "powerLighting" and type(args) == "table" then
         Client.lightingState = {
             mainActive=args.mainActive == true,
@@ -81,6 +106,8 @@ local function onServerCommand(module, command, args)
         }
         Client.lightManifestTicks = 4
         Client.lightManifestDirty = Client.lightManifest ~= nil
+    elseif command == "entryDoorAccess" then
+        applyEntryDoorAccess(args)
     end
 end
 
@@ -207,6 +234,11 @@ local function onLoadGridSquare(square)
         if z == level then
             Client.lightManifestDirty = true
             Client.lightManifestTicks = 0
+            -- The server can send the initial manifest before all chunks around
+            -- a joining player have streamed in.  Wait for a short quiet period,
+            -- then request a replacement containing newly loaded fixtures.
+            Client.lightManifestRefreshTicks = 0
+            Client.lightManifestRefreshPending = true
             return
         end
     end
@@ -215,6 +247,15 @@ end
 local function onPlayerUpdate(player)
     if not player or player:getPlayerNum() ~= 0 then return end
     reconcileLightManifest()
+
+    if Client.lightManifestRefreshPending and Client.joinSent then
+        Client.lightManifestRefreshTicks = Client.lightManifestRefreshTicks + 1
+        if Client.lightManifestRefreshTicks >= 120 then
+            Client.lightManifestRefreshPending = false
+            Client.lightManifestRefreshTicks = 0
+            sendClientCommand(player, Constants.NETWORK_MODULE, "requestLightManifest", {})
+        end
+    end
 
     if not Client.joinSent then
         Client.joinTicks = Client.joinTicks + 1
@@ -258,11 +299,26 @@ local function retryEntry(player)
     sendClientCommand(player, Constants.NETWORK_MODULE, "enterBunker", {})
 end
 
+local function playerInsideBunker(player)
+    if not player then return false end
+    local bounds = Constants.LIGHT_SCAN
+    local z = math.floor(player:getZ())
+    local validLevel = false
+    for _, level in ipairs(bounds.levels or {}) do
+        if z == level then validLevel = true; break end
+    end
+    return validLevel
+        and player:getX() >= bounds.x1 and player:getX() <= bounds.x2
+        and player:getY() >= bounds.y1 and player:getY() <= bounds.y2
+end
+
 local function addContextOptions(playerNum, context, worldObjects, test)
-    if test and ISWorldObjectContextMenu and ISWorldObjectContextMenu.Test then return true end
     local player = getSpecificPlayer(playerNum)
     if not player then return end
-    context:addOption("Bunker Campaign: Enter bunker", player, retryEntry)
+    if not playerInsideBunker(player) then
+        if test and ISWorldObjectContextMenu and ISWorldObjectContextMenu.Test then return true end
+        context:addOption("Bunker Campaign: Enter bunker", player, retryEntry)
+    end
 
     if isAdmin() or getAccessLevel() == "admin" then
         context:addOption("Bunker Campaign: Retry bunker construction", player, function(p)

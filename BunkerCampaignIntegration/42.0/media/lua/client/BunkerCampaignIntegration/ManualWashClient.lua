@@ -1,5 +1,6 @@
 require "TimedActions/ISWashClothing"
 require "TimedActions/ISWashYourself"
+require "TimedActions/ISBaseTimedAction"
 require "TimedActions/ISTimedActionQueue"
 require "ISUI/ISWorldObjectContextMenu"
 require "BunkerCampaignIntegration/Constants"
@@ -12,6 +13,58 @@ local IntegrationConstants = BunkerCampaignIntegration.Constants
 local ToxicConstants = BunkerCampaignToxicMP.Constants
 local ManualWashShared = BunkerCampaignIntegration.ManualWashShared
 local ManualWashClient = {}
+
+ISBunkerManualWash = ISBaseTimedAction:derive("ISBunkerManualWash")
+
+local function inBunkerWashRange(player)
+    if not player or player:isDead() then return false end
+    local bounds = IntegrationConstants.DECONTAMINATION.INTERACTION
+    local x, y, z = player:getX(), player:getY(), math.floor(player:getZ())
+    return x >= bounds.x1 and x <= bounds.x2
+        and y >= bounds.y1 and y <= bounds.y2 and z == bounds.z
+end
+
+function ISBunkerManualWash:isValid()
+    if not inBunkerWashRange(self.character) then return false end
+    if self.target == "item" then
+        return self.item ~= nil and self.item:getContainer() ~= nil
+            and ManualWashShared.contamination(self.item) > ToxicConstants.SURFACE_TRACE
+    end
+    return self.target == "body"
+end
+
+function ISBunkerManualWash:start()
+    self:setActionAnim("Loot")
+    self.character:SetVariable("LootPosition", "Mid")
+end
+
+function ISBunkerManualWash:stop()
+    ISBaseTimedAction.stop(self)
+end
+
+function ISBunkerManualWash:perform()
+    sendClientCommand(self.character, IntegrationConstants.DECON_NETWORK_MODULE,
+        "manualWashBunker", {
+            target=self.target,
+            itemId=self.item and self.item:getID() or nil,
+            correlationId=self.correlationId,
+        })
+    ISBaseTimedAction.perform(self)
+end
+
+function ISBunkerManualWash:new(character, target, item, contamination)
+    local action = ISBaseTimedAction.new(self, character)
+    action.target = target
+    action.item = item
+    action.stopOnWalk = true
+    action.stopOnRun = true
+    action.maxTime = math.max(IntegrationConstants.DECONTAMINATION.MANUAL_WASH.minimumDuration,
+        math.floor((tonumber(contamination) or 0) * 2))
+    action.correlationId = "manual-wash:" .. tostring(character:getUsername()) .. ":"
+        .. tostring(getTimestampMs()) .. ":" .. tostring(target) .. ":"
+        .. tostring(item and item:getID() or "body")
+    return action
+end
 
 local function collectCarriedItems(player, limit)
     local result = {}
@@ -92,16 +145,13 @@ local function addExternalWaterMenu(playerNum, context, worldObjects, test)
     end
 end
 
-local function requestBunkerWash(player, target, item)
-    if not player or not isClient() then return end
-    sendClientCommand(player, IntegrationConstants.DECON_NETWORK_MODULE, "manualWashBunker", {
-        target=target,
-        itemId=item and item:getID() or nil,
-    })
+local function queueBunkerWash(player, target, item, contamination)
+    if not player or not isClient() or not inBunkerWashRange(player) then return end
+    ISTimedActionQueue.add(ISBunkerManualWash:new(player, target, item, contamination))
 end
 
 function ManualWashClient.addBunkerOptions(menu, player, status)
-    local root = menu:addOption("Manual radioactive wash (bunker water, instant)")
+    local root = menu:addOption("Manual radioactive wash (bunker water)")
     local washMenu = ISContextMenu:getNew(menu)
     menu:addSubMenu(root, washMenu)
     local body = tonumber(status and status.surfaceContamination) or 0
@@ -109,7 +159,7 @@ function ManualWashClient.addBunkerOptions(menu, player, status)
     if body > ToxicConstants.SURFACE_TRACE then
         washMenu:addOption(string.format("Body (%.1f%%, %d L, %d agent uses)",
             body, ManualWashShared.additionalWater(body), ManualWashShared.contaminationUses(body)),
-            player, function(p) requestBunkerWash(p, "body", nil) end)
+            player, function(p) queueBunkerWash(p, "body", nil, body) end)
         added = added + 1
     end
     for _, item in ipairs(collectCarriedItems(player, ToxicConstants.MAX_CARRIED_ITEMS_PER_SCAN)) do
@@ -118,7 +168,7 @@ function ManualWashClient.addBunkerOptions(menu, player, status)
             local option = washMenu:addOption(string.format("%s (%.1f%%, %d L, %d agent uses)",
                 item:getName(), value, ManualWashShared.additionalWater(value),
                 ManualWashShared.contaminationUses(value)), player,
-                function(p) requestBunkerWash(p, "item", item) end)
+                function(p) queueBunkerWash(p, "item", item, value) end)
             option.itemForTexture = item
             added = added + 1
         end

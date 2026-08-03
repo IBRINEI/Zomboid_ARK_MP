@@ -2,6 +2,19 @@ require "BunkerCampaignToxicMP/Constants"
 
 BunkerCampaignToxicMP = BunkerCampaignToxicMP or {}
 
+local previous = BunkerCampaignToxicMP.Client
+if type(previous) == "table" then
+    if previous.onCreatePlayer then Events.OnCreatePlayer.Remove(previous.onCreatePlayer) end
+    if previous.onServerCommand then Events.OnServerCommand.Remove(previous.onServerCommand) end
+    if previous.onPlayerUpdate then Events.OnPlayerUpdate.Remove(previous.onPlayerUpdate) end
+    if previous.draw then Events.OnPreUIDraw.Remove(previous.draw) end
+    if ISInventoryPane and previous.inventoryRenderDetails
+        and ISInventoryPane.renderdetails == previous.inventoryRenderDetails
+        and previous.inventoryRenderBase then
+        ISInventoryPane.renderdetails = previous.inventoryRenderBase
+    end
+end
+
 local Constants = BunkerCampaignToxicMP.Constants
 local Client = { status={inZone=false, exposure=0, protection=0, surfaceContamination=0, gearContamination=0}, alpha=0, geigerTicks=0, lastCommandResult=nil }
 local overlay = getTexture("media/textures/UI/ToxicOverlay.png")
@@ -57,6 +70,15 @@ local function cleanLocalItem(item, removalFraction)
         tonumber(data[Constants.CONTAMINATION_MODDATA_KEY]) or 0))
     data[Constants.CONTAMINATION_MODDATA_KEY] = current
         * (1 - math.max(0, math.min(1, tonumber(removalFraction) or 0)))
+    data.radiated = data[Constants.CONTAMINATION_MODDATA_KEY] > Constants.SURFACE_TRACE
+end
+
+local function setLocalItemContamination(item, value)
+    if not item or not item.getModData then return end
+    local data = item:getModData()
+    value = math.max(0, math.min(100, tonumber(value) or 0))
+    data[Constants.CONTAMINATION_MODDATA_KEY] = value
+    data.radiated = value > Constants.SURFACE_TRACE
 end
 
 local function visitContainer(container, callback, limit)
@@ -90,10 +112,82 @@ local function applyCarriedItemContamination(args)
     if not player or not itemId then return end
     visitContainer(player:getInventory(), function(item)
         if item:getID() == itemId then
-            item:getModData()[Constants.CONTAMINATION_MODDATA_KEY] = math.max(0,
-                math.min(100, tonumber(args.value) or 0))
+            setLocalItemContamination(item, args.value)
         end
     end, Constants.MAX_CARRIED_ITEMS_PER_SCAN)
+end
+
+local function applyCarriedSnapshot(entries)
+    if type(entries) ~= "table" then return end
+    local values = {}
+    for _, entry in ipairs(entries) do
+        if type(entry) == "table" and tonumber(entry.itemId) then
+            values[tonumber(entry.itemId)] = tonumber(entry.value) or 0
+        end
+    end
+    local player = getSpecificPlayer(0)
+    if not player then return end
+    visitContainer(player:getInventory(), function(item)
+        local value = item.getID and values[tonumber(item:getID())] or nil
+        if value ~= nil then setLocalItemContamination(item, value) end
+    end, Constants.MAX_CARRIED_ITEMS_PER_SCAN)
+end
+
+local function visitWorldBounds(args, callback)
+    local cell = getCell()
+    if not cell then return end
+    local remaining = Constants.MAX_WORLD_ITEMS_PER_CYCLE
+    for x = math.ceil(tonumber(args.x1) or 0), math.floor(tonumber(args.x2) or -1) do
+        for y = math.ceil(tonumber(args.y1) or 0), math.floor(tonumber(args.y2) or -1) do
+            if remaining <= 0 then break end
+            local square = cell:getGridSquare(x, y, tonumber(args.z) or 0)
+            if square then
+                local function handleContainer(container)
+                    remaining = remaining - visitContainer(container, callback, remaining)
+                end
+                local worldObjects = square:getWorldObjects()
+                if worldObjects then
+                    for index = 0, worldObjects:size() - 1 do
+                        local object = worldObjects:get(index)
+                        local item = object and instanceof(object, "IsoWorldInventoryObject") and object:getItem() or nil
+                        if item then
+                            callback(item); remaining = remaining - 1
+                            if instanceof(item, "InventoryContainer") then handleContainer(item:getInventory()) end
+                        end
+                    end
+                end
+                local staticObjects = square:getStaticMovingObjects()
+                if staticObjects then
+                    for index = 0, staticObjects:size() - 1 do
+                        local object = staticObjects:get(index)
+                        if object and instanceof(object, "IsoDeadBody") then
+                            callback(object); handleContainer(object:getContainer())
+                        end
+                    end
+                end
+                local objects = square.getObjects and square:getObjects() or nil
+                if objects then
+                    for index = 0, objects:size() - 1 do
+                        local object = objects:get(index)
+                        local container = object and object.getContainer and object:getContainer() or nil
+                        if container then handleContainer(container) end
+                    end
+                end
+            end
+        end
+        if remaining <= 0 then break end
+    end
+end
+
+local function applyWorldSpread(args)
+    local source = math.max(0, math.min(100, tonumber(args.sourceContamination) or 0))
+    local fraction = math.max(0, math.min(1, tonumber(args.fraction) or 0))
+    visitWorldBounds(args, function(item)
+        local data = item:getModData()
+        local current = math.max(0, math.min(100,
+            tonumber(data[Constants.CONTAMINATION_MODDATA_KEY]) or 0))
+        if source > current then setLocalItemContamination(item, current + (source - current) * fraction) end
+    end)
 end
 
 local function applyWorldCleanup(args)
@@ -158,12 +252,25 @@ end
 local function onServerCommand(module, command, args)
     if module ~= Constants.NETWORK_MODULE or type(args) ~= "table" then return end
     if command == "exposureStatus" then
+        local previousStatus = Client.status or {}
         Client.status = args
         applyFilterRemaining(getSpecificPlayer(0), args.filterRemaining, args.filterItemId)
+        applyCarriedSnapshot(args.carriedContamination)
+        local player = getSpecificPlayer(0)
+        local previousClass = previousStatus.surfaceClass or "clean"
+        local nextClass = args.surfaceClass or "clean"
+        if player and HaloTextHelper and previousClass ~= nextClass then
+            local worsening = nextClass == "dirty" or nextClass == "dangerous"
+            local color = worsening and HaloTextHelper.getColorRed() or HaloTextHelper.getColorGreen()
+            HaloTextHelper.addTextWithArrow(player,
+                "Surface contamination: " .. tostring(nextClass), worsening, color)
+        end
     elseif command == "itemContamination" then
         applyCarriedItemContamination(args)
     elseif command == "worldContaminationCleaned" then
         applyWorldCleanup(args)
+    elseif command == "worldContaminationSpread" then
+        applyWorldSpread(args)
     elseif command == "zoneCommandResult" then
         Client.lastCommandResult = args
         local player = getSpecificPlayer(0)
@@ -209,10 +316,46 @@ local function draw()
     end
 end
 
+local function installInventoryHighlight()
+    if not ISInventoryPane or not ISInventoryPane.renderdetails then return end
+    local base = BunkerCampaignToxicMP.InventoryRenderBase or ISInventoryPane.renderdetails
+    BunkerCampaignToxicMP.InventoryRenderBase = base
+    Client.inventoryRenderBase = base
+    Client.inventoryRenderDetails = function(self, doDragged)
+        base(self, doDragged)
+        local y = 0
+        local xoff, yoff = 0, 0
+        local scroll, height = self:getYScroll(), self:getHeight()
+        for _, group in ipairs(self.itemslist or {}) do
+            for _, item in ipairs(group.items or {}) do
+                local top = y * self.itemHgt + scroll
+                if top + self.itemHgt >= 0 and top <= height and item and item.getModData then
+                    local data = item:getModData()
+                    local value = tonumber(data[Constants.CONTAMINATION_MODDATA_KEY]) or 0
+                    if value > Constants.SURFACE_TRACE or data.radiated == true then
+                        local alpha = value >= Constants.SURFACE_DANGEROUS and 0.22 or 0.13
+                        self:drawRect(1 + xoff, y * self.itemHgt + self.headerHgt + yoff,
+                            self:getWidth() - 2, self.itemHgt, alpha, 0.25, 1, 0.08)
+                    end
+                end
+                y = y + 1
+                if self.collapsed[group.name] then break end
+            end
+        end
+    end
+    ISInventoryPane.renderdetails = Client.inventoryRenderDetails
+end
+
+installInventoryHighlight()
+
 Events.OnCreatePlayer.Add(onCreatePlayer)
 Events.OnServerCommand.Add(onServerCommand)
 Events.OnPlayerUpdate.Add(onPlayerUpdate)
 Events.OnPreUIDraw.Add(draw)
 
+Client.onCreatePlayer = onCreatePlayer
+Client.onServerCommand = onServerCommand
+Client.onPlayerUpdate = onPlayerUpdate
+Client.draw = draw
 BunkerCampaignToxicMP.Client = Client
 return Client

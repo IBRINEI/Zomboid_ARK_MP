@@ -62,8 +62,7 @@ BWOARooms.Library.Build = function ()
     local md = oasis:getModData()
     md.printContent = "book_dacr_research"
     md.BWOA = {}
-    md.BWOA.onRead = {}
-    md.BWOA.onRead.progressMissionId = 15
+    md.BWOA.legacyStoryInactive = {progressMissionId = 15}
     BWOAPrepareTools.AddWorldItemSpecial(9960, 12607, -4, oasis, {x=0.35, y=0.45, z=0.19})
 
     local nuclearWinter = BanditCompatibility.InstanceItem("Bandits.Book2")
@@ -72,8 +71,7 @@ BWOARooms.Library.Build = function ()
     local md = nuclearWinter:getModData()
     md.printContent = "book_nuclear_winter"
     md.BWOA = {}
-    md.BWOA.onRead = {}
-    md.BWOA.onRead.progressMissionId = 15
+    md.BWOA.legacyStoryInactive = {progressMissionId = 15}
     BWOAPrepareTools.AddItemsToContainer(9959, 12605, -4, {nuclearWinter}, "Shelves")
 
     local items = {["Base.Book_Science"] = 12, ["Book_Philosophy"] = 6}
@@ -89,5 +87,4 @@ end
 BWOARooms.Library.Prepare = function ()
     BWOARooms.Library.Init()
 end
-
 

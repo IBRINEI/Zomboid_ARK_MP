@@ -2,4 +2,4 @@ name=Bunker Campaign: Technical Prototype
 id=BunkerCampaign
 description=Server-authoritative cooperative bunker campaign prototype for Build 42.
 version=0.7.1
-versionMin=42.19
+versionMin=42.20
